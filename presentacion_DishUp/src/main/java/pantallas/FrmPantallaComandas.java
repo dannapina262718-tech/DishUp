@@ -4,7 +4,6 @@
  */
 package pantallas;
 
-import control.MesaControl;
 import coordinador.CoordinadorInterfaces;
 import dtos.ComandaDTO;
 import dtos.EmpleadoDTO;
@@ -12,6 +11,7 @@ import dtos.MesaDTO;
 import dtos.PedidoDTO;
 import enums.EstadoPedidoDTO;
 import excepciones.MesasException;
+import fachada.MesaFachada;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -39,7 +39,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
     private coordinador.CoordinadorInterfaces coordinador;
     EmpleadoDTO mesero;
 
-    MesaControl control = new MesaControl();
+    MesaFachada fachada = new MesaFachada();
 
     /**
      * Creates new form FrmPantallaComandas
@@ -378,9 +378,9 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         panMesas.removeAll();
         btnLevantarComanda.setVisible(false);
         List<MesaDTO> mesas = new ArrayList<>();
-
+        
         try {
-            mesas = control.obtenerMesasPorMesero(mesero);
+            mesas = fachada.obtenerMesasPorMesero(mesero);
         } catch (MesasException ex) {
             System.out.println("Error al obtener mesas: " + ex.getMessage());
         }

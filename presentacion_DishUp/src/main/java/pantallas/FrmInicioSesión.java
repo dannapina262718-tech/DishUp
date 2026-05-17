@@ -163,10 +163,10 @@ public class FrmInicioSesión extends javax.swing.JFrame {
             coordinador.activarEmpleado(resultado);
             
             switch (resultado.getRol()) {
-                case RolEmpleadoDTO.MESERO:
+                case MESERO:
                     coordinador.abrirFrmComandasMesero(resultado, resultado.getNombres());
                     break;
-                case RolEmpleadoDTO.GERENTE:
+                case GERENTE:
                     coordinador.pantallaMesas(resultado);
                     break;
                 default:
