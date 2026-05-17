@@ -13,6 +13,7 @@ import excepciones.PersistenciaException;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,11 +47,11 @@ public class EmpleadoDAONGTest {
     }
 
     @Test
-    public void testObtenerEmpleado_correcto() throws PersistenciaException {
+    public void testObtenerEmpleadoPorId_correcto() throws PersistenciaException {
         EmpleadoEntidadMongo emp1 = new EmpleadoEntidadMongo( null, "Alejandra", "Leal", "Armenta", "ME-001", RolEmpleado.MESERO.name(), EstadoEmpleado.ACTIVO.name() );
         EmpleadoEntidadMongo resultado = insertarEmpleadoMongo(emp1);
 
-        Empleado consultado = emDAO.obtenerEmpleado(adapter.aDominio(resultado));
+        Empleado consultado = emDAO.obtenerEmpleadoPorId(adapter.aDominio(resultado).getId());
 
         assertNotNull(consultado);
         assertEquals(emp1.getUser(), consultado.getUser());
@@ -58,23 +59,48 @@ public class EmpleadoDAONGTest {
     }
 
     @Test
-    public void testObtenerEmpleadoPorRol_noEncontrado() throws PersistenciaException {
-        EmpleadoEntidadMongo emp1 = new EmpleadoEntidadMongo( null, "Alejandra", "Leal", "Armenta", "ME-001", RolEmpleado.MESERO.name(), EstadoEmpleado.ACTIVO.name() );
-
+    public void testObtenerEmpleadoPorId_noEncontrado() {
         assertThrows(PersistenciaException.class, () -> {
-            emDAO.obtenerEmpleado(adapter.aDominio(emp1));
+            emDAO.obtenerEmpleadoPorId(new ObjectId().toHexString());
         });
     }
     
     @Test
-    public void testObtenerEmpleadoPorRol_null() throws PersistenciaException {
-        EmpleadoEntidadMongo emp1 = new EmpleadoEntidadMongo( null, "Alejandra", "Leal", "Armenta", "ME-001", RolEmpleado.MESERO.name(), EstadoEmpleado.ACTIVO.name() );
-
+    public void testObtenerEmpleadoPorId_idInvalido() {
         assertThrows(PersistenciaException.class, () -> {
-            emDAO.obtenerEmpleado(null);
+            emDAO.obtenerEmpleadoPorId("123");
         });
     }
+    
+    @Test
+    public void testObtenerEmpleadoPorUser_correcto() throws PersistenciaException {
+        EmpleadoEntidadMongo emp = new EmpleadoEntidadMongo(
+                null, "Alejandra", "Leal", "Armenta",
+                "ME-001", RolEmpleado.MESERO.name(), EstadoEmpleado.ACTIVO.name()
+        );
 
+        insertarEmpleadoMongo(emp);
+
+        Empleado consultado = emDAO.obtenerEmpleadoPorUser("ME-001");
+
+        assertNotNull(consultado);
+        assertEquals("ME-001", consultado.getUser());
+    }
+    
+    @Test
+    public void testObtenerEmpleadoPorUser_noEncontrado() {
+        assertThrows(PersistenciaException.class, () -> {
+            emDAO.obtenerEmpleadoPorUser("NO_EXISTE");
+        });
+    }
+    
+    @Test
+    public void testObtenerEmpleadoPorUser_invalido() {
+        assertThrows(PersistenciaException.class, () -> {
+            emDAO.obtenerEmpleadoPorUser("");
+        });
+    }
+    
     @Test
     public void testActualizarEstadoEmpleado_correcto() throws PersistenciaException {
         EmpleadoEntidadMongo emp1 = new EmpleadoEntidadMongo( null, "Alejandra", "Leal", "Armenta", "ME-001", RolEmpleado.MESERO.name(), EstadoEmpleado.ACTIVO.name() );
@@ -82,7 +108,7 @@ public class EmpleadoDAONGTest {
      
         emDAO.actualizarEstadoEmpleado(adapter.aDominio(resultado), EstadoEmpleado.INACTIVO);
 
-        Empleado actualizado = emDAO.obtenerEmpleado(adapter.aDominio(resultado));
+        Empleado actualizado = emDAO.obtenerEmpleadoPorId(adapter.aDominio(resultado).getId());
 
         assertEquals(EstadoEmpleado.INACTIVO, actualizado.getEstado());
     }
@@ -111,11 +137,11 @@ public class EmpleadoDAONGTest {
         EmpleadoEntidadMongo emp4 = new EmpleadoEntidadMongo(null, "Luis", "Hernández", "Morales", "ME-004", RolEmpleado.MESERO.name(), EstadoEmpleado.ACTIVO.name());
         EmpleadoEntidadMongo emp5 = new EmpleadoEntidadMongo(null, "Sofía", "Vázquez", "Torres", "ME-005", RolEmpleado.MESERO.name(), EstadoEmpleado.ACTIVO.name());
         
-        EmpleadoEntidadMongo resultado1 = insertarEmpleadoMongo(emp1);
-        EmpleadoEntidadMongo resultado2 = insertarEmpleadoMongo(emp2);
-        EmpleadoEntidadMongo resultado3 = insertarEmpleadoMongo(emp3);
-        EmpleadoEntidadMongo resultado4 = insertarEmpleadoMongo(emp4);
-        EmpleadoEntidadMongo resultado5 = insertarEmpleadoMongo(emp5);
+        insertarEmpleadoMongo(emp1);
+        insertarEmpleadoMongo(emp2);
+        insertarEmpleadoMongo(emp3);
+        insertarEmpleadoMongo(emp4);
+        insertarEmpleadoMongo(emp5);
         
         List<Empleado> activos = emDAO.obtenerMeserosActivos();
         
@@ -131,11 +157,11 @@ public class EmpleadoDAONGTest {
         EmpleadoEntidadMongo emp4 = new EmpleadoEntidadMongo(null, "Luis", "Hernández", "Morales", "ME-004", RolEmpleado.MESERO.name(), EstadoEmpleado.INACTIVO.name());
         EmpleadoEntidadMongo emp5 = new EmpleadoEntidadMongo(null, "Sofía", "Vázquez", "Torres", "ME-005", RolEmpleado.MESERO.name(), EstadoEmpleado.INACTIVO.name());
         
-        EmpleadoEntidadMongo resultado1 = insertarEmpleadoMongo(emp1);
-        EmpleadoEntidadMongo resultado2 = insertarEmpleadoMongo(emp2);
-        EmpleadoEntidadMongo resultado3 = insertarEmpleadoMongo(emp3);
-        EmpleadoEntidadMongo resultado4 = insertarEmpleadoMongo(emp4);
-        EmpleadoEntidadMongo resultado5 = insertarEmpleadoMongo(emp5);
+        insertarEmpleadoMongo(emp1);
+        insertarEmpleadoMongo(emp2);
+        insertarEmpleadoMongo(emp3);
+        insertarEmpleadoMongo(emp4);
+        insertarEmpleadoMongo(emp5);
         
         List<Empleado> activos = emDAO.obtenerMeserosActivos();
         

@@ -111,7 +111,7 @@ public class MesaDAO implements IMesaDAO {
     @Override
     public Mesa obtenerMesaPorId(String id) throws PersistenciaException {
         if (id == null) {
-            throw new PersistenciaException("La mesa es nula");
+            throw new PersistenciaException("El id de la mesa es nulo");
         }
         
         try{
@@ -147,30 +147,70 @@ public class MesaDAO implements IMesaDAO {
     }
 
     @Override
-    public void asignarMesaAMesero(Mesa mesa, Empleado mesero) throws PersistenciaException {
-        if (mesa == null) {
-            throw new PersistenciaException("La mesa es nula");
+    public void asignarMesasAMesero(List<Mesa> mesas, Empleado mesero) throws PersistenciaException {
+        if (mesas == null) {
+            throw new PersistenciaException("La lista es nula");
         }
         
         if (mesero == null) {
             throw new PersistenciaException("El mesero es nulo");
         }
+        
+        if (mesas.isEmpty()) {
+            return;
+        }
         try{
-            MesaEntidadMongo mesaMongo = this.coleccion.find(eq("_id", new ObjectId(mesa.getId()))).first();
-
-            if (mesaMongo == null) {
-                throw new PersistenciaException("No se encontró la mesa");
-            }
-
             EmpleadoEntidadMongo meseroMongo = this.coleccionEmpleados.find(and(eq("_id", new ObjectId(mesero.getId())), eq("rol", RolEmpleado.MESERO.name()))).first();
 
             if (meseroMongo == null) {
                 throw new PersistenciaException("No se encontró el mesero");
             }
+            
+            for(Mesa mesa: mesas){
+                MesaEntidadMongo mesaMongo = this.coleccion.find(eq("_id", new ObjectId(mesa.getId()))).first();
+                
+                if (mesaMongo == null) {
+                    throw new PersistenciaException("No se encontró la mesa");
+                }
+                
+                this.coleccion.updateOne(eq("_id", new ObjectId(mesa.getId())), set("idMesero", mesero.getId()));
+                mesaMongo.setIdMesero(mesero.getId());
+            }  
+        } catch (MongoException ex) {
+            throw new PersistenciaException("No fue posible asignar el mesero a la mesa.", ex);
+        }  
+    }
+    
+    @Override
+    public void desasignarMesasAMesero(List<Mesa> mesas, Empleado mesero) throws PersistenciaException {
+        if (mesas == null) {
+            throw new PersistenciaException("La lista es nula");
+        }
+        
+        if (mesero == null) {
+            throw new PersistenciaException("El mesero es nulo");
+        }
+        
+        if (mesas.isEmpty()) {
+            return;
+        }
+        
+        try{
+            EmpleadoEntidadMongo meseroMongo = this.coleccionEmpleados.find(and(eq("_id", new ObjectId(mesero.getId())), eq("rol", RolEmpleado.MESERO.name()))).first();
 
-            this.coleccion.updateOne(eq("_id", new ObjectId(mesa.getId())), set("idMesero", mesero.getId()));
-
-            mesaMongo.setIdMesero(mesero.getId());
+            if (meseroMongo == null) {
+                throw new PersistenciaException("No se encontró el mesero");
+            }
+            
+            for(Mesa mesa: mesas){
+                MesaEntidadMongo mesaMongo = this.coleccion.find(eq("_id", new ObjectId(mesa.getId()))).first();
+                
+                if (mesaMongo == null) {
+                    throw new PersistenciaException("No se encontró la mesa");
+                }
+                
+                this.coleccion.updateOne(eq("_id", new ObjectId(mesa.getId())), unset("idMesero"));
+            }  
         } catch (MongoException ex) {
             throw new PersistenciaException("No fue posible asignar el mesero a la mesa.", ex);
         }  
@@ -207,25 +247,6 @@ public class MesaDAO implements IMesaDAO {
             return mesasDominio;
         } catch (MongoException ex) {
             throw new PersistenciaException("No fue posible consultar las mesas disponibles", ex);
-        }
-    }
-    
-    @Override
-    public void desasignarMesero(Mesa mesa) throws PersistenciaException {
-
-        if (mesa == null) {
-            throw new PersistenciaException("La mesa es nula");
-        }
-
-        try {
-            UpdateResult result = this.coleccion.updateOne(eq("_id", new ObjectId(mesa.getId())), unset("idMesero"));
-            
-            if (result.getMatchedCount() == 0) {
-                throw new PersistenciaException("No se encontró la mesa.");
-            }
-
-        } catch (MongoException ex) {
-            throw new PersistenciaException("No fue posible desasignar el mesero.", ex);
         }
     }
 }

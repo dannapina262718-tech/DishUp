@@ -50,6 +50,29 @@ public class EmpleadoDAO implements IEmpleadoDAO {
             throw new PersistenciaException("No fue posible obtener el empleado.", ex);
         }
     }
+    
+    @Override
+    public Empleado obtenerEmpleadoPorUser(String user) throws PersistenciaException {
+        if (user == null || user.isBlank()) {
+            throw new PersistenciaException("El user del empleado es inválido");
+        }
+
+        try {
+            EmpleadoEntidadMongo empleadoMongo = this.coleccion.find(eq("user", user)).first();
+
+            if (empleadoMongo == null) {
+                throw new PersistenciaException("Empleado no encontrado");
+            }
+
+            return empleadoAdapter.aDominio(empleadoMongo);
+
+        } catch (IllegalArgumentException ex) {
+            throw new PersistenciaException("El formato del user es inválido.", ex);
+
+        } catch (MongoException ex) {
+            throw new PersistenciaException("No fue posible obtener el empleado.", ex);
+        }
+    }
 
 
     @Override

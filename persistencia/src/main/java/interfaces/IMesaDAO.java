@@ -25,11 +25,11 @@ public interface IMesaDAO {
     
     public Mesa obtenerMesaPorNumero(Integer numero) throws PersistenciaException;
     
-    public void asignarMesaAMesero(Mesa mesa, Empleado mesero) throws PersistenciaException; 
+    public void asignarMesasAMesero(List<Mesa> mesas, Empleado mesero) throws PersistenciaException; 
+    
+    void desasignarMesasAMesero(List<Mesa> mesas, Empleado mesero) throws PersistenciaException;
     
     public List<Mesa> obtenerMesasDisponibles() throws PersistenciaException;
     
     public List<Mesa> obtenerMesas() throws PersistenciaException;
-    
-    void desasignarMesero(Mesa mesa) throws PersistenciaException;
 }

@@ -36,8 +36,8 @@ public class MesaFachada implements IGestionMesas{
     }
 
     @Override
-    public void asignarMesaAMesero(MesaDTO mesa, EmpleadoDTO mesero) throws MesasException {
-        mesaControl.asignarMesaAMesero(mesa, mesero);
+    public void actualizarMesasDeMesero(List<MesaDTO> mesasAsignadas, List<MesaDTO> mesasQuitar, EmpleadoDTO mesero) throws MesasException {
+        mesaControl.actualizarMesasDeMesero(mesasAsignadas, mesasQuitar, mesero);
     }
 
     @Override

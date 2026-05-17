@@ -48,16 +48,15 @@ public class EmpleadoBO {
             return empleadoAdapter.aDTO(consultado);
 
         } catch (PersistenciaException ex) {
-            throw new NegocioException("Error al consultar empleado.", ex);
+            throw new NegocioException(ex.getMessage(), ex);
         }
     }
 
     public EmpleadoDTO login(EmpleadoDTO empleadoDTO) throws NegocioException {
 
         try {
-            Empleado empleado = empleadoAdapter.aEntidad(empleadoDTO);
 
-            Empleado consultado = empleadoDAO.obtenerEmpleadoPorId(empleadoDTO.getId());
+            Empleado consultado = empleadoDAO.obtenerEmpleadoPorUser(empleadoDTO.getUser());
 
             if (consultado == null) {
                 throw new NegocioException("Usuario incorrecto.");
@@ -66,7 +65,7 @@ public class EmpleadoBO {
             return empleadoAdapter.aDTO(consultado);
 
         } catch (PersistenciaException ex) {
-            throw new NegocioException("No fue posible iniciar sesión.", ex);
+            throw new NegocioException(ex.getMessage(), ex);
         }
     }
 
@@ -107,9 +106,7 @@ public class EmpleadoBO {
 
             empleadoDAO.actualizarEstadoEmpleado(consultado, EstadoEmpleado.INACTIVO);
                
-            for (Mesa mesa : mesasAsignadas) {
-                mesaDAO.desasignarMesero(mesa);
-            }
+            mesaDAO.desasignarMesasAMesero(mesasAsignadas, consultado);
 
         } catch (PersistenciaException ex) {
             throw new NegocioException(ex.getMessage(), ex);

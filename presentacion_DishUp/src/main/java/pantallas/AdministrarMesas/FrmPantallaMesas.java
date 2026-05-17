@@ -12,8 +12,6 @@ import excepciones.EmpleadosException;
 import excepciones.MesasException;
 import java.awt.Color;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.YES_OPTION;
@@ -25,24 +23,27 @@ import javax.swing.table.DefaultTableModel;
  * @author Alejandra Leal Armenta, 262719
  */
 public class FrmPantallaMesas extends javax.swing.JFrame {
-    private CoordinadorInterfaces coordinador;
+    private final CoordinadorInterfaces coordinador;
     Timer clickTimer;
     Timer searchTimer;
-    EmpleadoDTO empleado;
+    private final EmpleadoDTO gerente;
     private List<EmpleadoDTO> listaMeseros;
     
 
     /**
      * Creates new form FrmPantallaMesas
      * @param coordinador
+     * @param gerente
      */
-    public FrmPantallaMesas(CoordinadorInterfaces coordinador) {
+    public FrmPantallaMesas(CoordinadorInterfaces coordinador, EmpleadoDTO gerente) {
         this.coordinador = coordinador;
+        this.gerente = gerente;
         initComponents();
         eventosTabla();
         recargarMeseros();
         recargarMesas();
         estiloTabla();
+        lblEmpleado.setText(gerente.getNombres()+" "+gerente.getApellidoPaterno());
         this.setLocationRelativeTo(null);
     }
 
@@ -62,7 +63,7 @@ public class FrmPantallaMesas extends javax.swing.JFrame {
         panHeader = new javax.swing.JPanel();
         imgLogo = new javax.swing.JLabel();
         lblEmpleado = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btnCerrarSesion = new javax.swing.JButton();
         txtBuscador = new javax.swing.JTextField();
         scrollTabla = new javax.swing.JScrollPane();
         tblMeseros = new javax.swing.JTable();
@@ -90,21 +91,26 @@ public class FrmPantallaMesas extends javax.swing.JFrame {
         lblEmpleado.setForeground(new java.awt.Color(255, 255, 255));
         lblEmpleado.setText("nombre Gerente");
 
-        jButton2.setBackground(new java.awt.Color(213, 210, 203));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        jButton2.setText("Cerrar Sesión");
+        btnCerrarSesion.setBackground(new java.awt.Color(213, 210, 203));
+        btnCerrarSesion.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        btnCerrarSesion.setText("Cerrar Sesión");
+        btnCerrarSesion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCerrarSesionMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout panHeaderLayout = new javax.swing.GroupLayout(panHeader);
         panHeader.setLayout(panHeaderLayout);
         panHeaderLayout.setHorizontalGroup(
             panHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panHeaderLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addContainerGap()
                 .addComponent(imgLogo)
-                .addGap(18, 18, 18)
-                .addComponent(lblEmpleado)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 490, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addGap(27, 27, 27)
+                .addComponent(lblEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addComponent(btnCerrarSesion)
                 .addGap(18, 18, 18))
         );
         panHeaderLayout.setVerticalGroup(
@@ -118,7 +124,7 @@ public class FrmPantallaMesas extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panHeaderLayout.createSequentialGroup()
                         .addGroup(panHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblEmpleado)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(24, 24, 24))))
         );
 
@@ -356,10 +362,15 @@ public class FrmPantallaMesas extends javax.swing.JFrame {
         searchTimer.start();
     }//GEN-LAST:event_txtBuscadorKeyReleased
 
+    private void btnCerrarSesionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCerrarSesionMouseClicked
+        coordinador.cerrarSesion();
+        this.dispose();
+    }//GEN-LAST:event_btnCerrarSesionMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarMesa;
+    private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JLabel imgLogo;
-    private javax.swing.JButton jButton2;
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -515,11 +526,18 @@ public class FrmPantallaMesas extends javax.swing.JFrame {
         tblMeseros.addMouseListener(new java.awt.event.MouseAdapter() {
         @Override
         public void mouseClicked(java.awt.event.MouseEvent e) {
+            int fila = tblMeseros.getSelectedRow();
 
+            if (fila == -1) {
+                return;
+            }
+
+            EmpleadoDTO seleccionado = listaMeseros.get(fila);
             if (e.getClickCount() == 2) {
-
-                int fila = tblMeseros.getSelectedRow();
-                EmpleadoDTO seleccionado = listaMeseros.get(fila);
+                
+                if (clickTimer != null) {
+                    clickTimer.stop();
+                }
                 
                 int opcion = JOptionPane.showConfirmDialog(FrmPantallaMesas.this, "¿Está seguro de desactivar al mesero " + seleccionado.getUser() + " " + seleccionado.getNombres() + "?", "CONFIRMACIÓN", JOptionPane.YES_NO_OPTION );
                 if(opcion == YES_OPTION){
@@ -531,9 +549,17 @@ public class FrmPantallaMesas extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(FrmPantallaMesas.this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+                return;
             }
-        }
-    });
+            clickTimer = new javax.swing.Timer(250, ev -> {
+                coordinador.pantallaAsignarMesas(seleccionado, gerente);
+                FrmPantallaMesas.this.dispose();
+            });
+
+            clickTimer.setRepeats(false);
+            clickTimer.start();
+            }
+        });
     }
     
     private void obtenerInfoMesa(MesaDTO mesa) {        
@@ -580,9 +606,5 @@ public class FrmPantallaMesas extends javax.swing.JFrame {
 
         }
     }
-    
-        
-    public void setEmpleado(EmpleadoDTO em){
-        empleado = em;
-    }
+            
 }

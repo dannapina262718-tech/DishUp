@@ -28,10 +28,13 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import pantallas.AdministrarMesas.FrmAsignarMesas;
+import pantallas.AdministrarMesas.FrmPantallaMesas;
 import pantallas.AdministrarMesas.panInfoMesa;
 import pantallas.DlgModificarProducto;
 import pantallas.DlgResumenComanda;
 import pantallas.FrmCliente;
+import pantallas.FrmInicioSesión;
 import pantallas.FrmPantallaComandas;
 import pantallas.FrmProductos;
 
@@ -48,6 +51,9 @@ public class CoordinadorInterfaces {
     private FrmCliente frmCliente;
     private FrmProductos frmProductos;
     private panInfoMesa panInfoMesa;
+    private FrmAsignarMesas frmAsignarMesas;
+    private FrmPantallaMesas frmMesas;
+    private FrmInicioSesión frmSesion;
 
     private IGestionProductos productoFachada;
     private IGestionComandas comandaFachada;
@@ -70,6 +76,11 @@ public class CoordinadorInterfaces {
     }
 
     private List<PedidoDTO> comandaTemporal = new ArrayList<>();
+    
+    public void cerrarSesion(){
+        frmSesion = new FrmInicioSesión();
+        frmSesion.setVisible(true);
+    }
 
     public void mostrarRegistrarCliente(MesaDTO mesa) {
         frmCliente = new FrmCliente(this);
@@ -398,7 +409,6 @@ public class CoordinadorInterfaces {
     
     //-----------------------------CU ADMINISTRAR MESAS-------------------------------
     
-    
     public List<EmpleadoDTO> obtenerMeserosActivos() throws EmpleadosException{
         return empleadoFachada.obtenerMeserosActivos();
     }
@@ -436,6 +446,32 @@ public class CoordinadorInterfaces {
     public void desactivarMesero(EmpleadoDTO mesero) throws EmpleadosException{
         empleadoFachada.desactivarEmpleado(mesero);
     }
+    
+    public void pantallaMesas(EmpleadoDTO gerente){
+        frmMesas = new FrmPantallaMesas(this, gerente);
+        frmMesas.setVisible(true);
+    }
+    
+    public void pantallaAsignarMesas(EmpleadoDTO mesero, EmpleadoDTO gerente){
+        frmAsignarMesas = new FrmAsignarMesas(mesero, gerente, this);
+        frmAsignarMesas.setVisible(true);
+    }
+    
+    public List<MesaDTO> obtenerMesasDelMesero(EmpleadoDTO mesero) throws MesasException{
+        return mesaFachada.obtenerMesasPorMesero(mesero);
+    }
+    
+    public List<MesaDTO> obtenerMesasDisponibles() throws MesasException{
+        return mesaFachada.obtenerMesasDisponibles();
+    }
+    
+    public void actualizarMesasDeMesero(List<MesaDTO> mesasAgregar, List<MesaDTO> mesasQuitar, EmpleadoDTO mesero) throws MesasException{
+        frmComandas = new FrmPantallaComandas(this);
+        frmComandas.actualizarPantalla();
+        mesaFachada.actualizarMesasDeMesero(mesasAgregar, mesasQuitar, mesero);
+    }
+    
+    //-----------------------------CU ADMINISTRAR MESAS-------------------------------
     
 
     public void entregarPedido(PedidoDTO pedido) throws ComandasException {

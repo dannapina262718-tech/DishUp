@@ -18,6 +18,8 @@ public interface IEmpleadoDAO {
     
     public Empleado obtenerEmpleadoPorId(String id) throws PersistenciaException;
     
+    public Empleado obtenerEmpleadoPorUser(String id) throws PersistenciaException;
+    
     public void actualizarEstadoEmpleado(Empleado empleado, EstadoEmpleado estado) throws PersistenciaException;
     
     public List<Empleado> obtenerMeserosActivos() throws PersistenciaException;

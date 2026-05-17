@@ -4,17 +4,49 @@
  */
 package pantallas.AdministrarMesas;
 
+import coordinador.CoordinadorInterfaces;
+import dtos.EmpleadoDTO;
+import dtos.MesaDTO;
+import excepciones.MesasException;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Alejandra Leal Armenta, 262719
  */
 public class FrmAsignarMesas extends javax.swing.JFrame {
-
-    /**
-     * Creates new form FrmAsignarMesas
-     */
-    public FrmAsignarMesas() {
+    
+    private final EmpleadoDTO mesero;
+    private final EmpleadoDTO gerente;
+    private final CoordinadorInterfaces coordinador;
+    private final ImageIcon iconoOff = new ImageIcon(getClass().getResource("/img/checks/check_off.png"));
+    private final ImageIcon iconoOn = new ImageIcon(getClass().getResource("/img/checks/check_on.png"));
+    private boolean huboCambios = false;
+    
+    public FrmAsignarMesas(EmpleadoDTO mesero, EmpleadoDTO gerente, CoordinadorInterfaces coordinador) {
         initComponents();
+        this.mesero = mesero;
+        this.gerente = gerente;
+        this.coordinador = coordinador;
+
+        this.setLocationRelativeTo(null);
+        
+        panAsignadas.setLayout( new BoxLayout( panAsignadas, BoxLayout.Y_AXIS ));
+        panDisponibles.setLayout( new BoxLayout( panDisponibles, BoxLayout.Y_AXIS ) );
+        setTextos();
+        lblEmpleado.setText(gerente.getNombres()+" "+gerente.getApellidoPaterno());
+        refrescarMesas();
     }
 
     /**
@@ -31,15 +63,15 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
         panHeader = new javax.swing.JPanel();
         imgLogo = new javax.swing.JLabel();
         lblEmpleado = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btnCerrarSesion = new javax.swing.JButton();
         lblAsignadas = new javax.swing.JLabel();
         lblDisponibles = new javax.swing.JLabel();
         scrollMesasAsignadas = new javax.swing.JScrollPane();
         panAsignadas = new javax.swing.JPanel();
         scrollDisponibles = new javax.swing.JScrollPane();
         panDisponibles = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        btnConfirmar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -57,9 +89,14 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
         lblEmpleado.setForeground(new java.awt.Color(255, 255, 255));
         lblEmpleado.setText("nombre Gerente");
 
-        jButton2.setBackground(new java.awt.Color(213, 210, 203));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        jButton2.setText("Cerrar Sesión");
+        btnCerrarSesion.setBackground(new java.awt.Color(213, 210, 203));
+        btnCerrarSesion.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        btnCerrarSesion.setText("Cerrar Sesión");
+        btnCerrarSesion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCerrarSesionMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout panHeaderLayout = new javax.swing.GroupLayout(panHeader);
         panHeader.setLayout(panHeaderLayout);
@@ -69,9 +106,9 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(imgLogo)
                 .addGap(18, 18, 18)
-                .addComponent(lblEmpleado)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 380, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(lblEmpleado, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(btnCerrarSesion)
                 .addGap(18, 18, 18))
         );
         panHeaderLayout.setVerticalGroup(
@@ -85,7 +122,7 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panHeaderLayout.createSequentialGroup()
                         .addGroup(panHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblEmpleado)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(24, 24, 24))))
         );
 
@@ -95,6 +132,7 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
         lblDisponibles.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         lblDisponibles.setText("Mesas disponibles:");
 
+        scrollMesasAsignadas.setBackground(new java.awt.Color(255, 255, 255));
         scrollMesasAsignadas.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollMesasAsignadas.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -114,6 +152,7 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
 
         scrollMesasAsignadas.setViewportView(panAsignadas);
 
+        scrollDisponibles.setBackground(new java.awt.Color(255, 255, 255));
         scrollDisponibles.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollDisponibles.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -133,15 +172,25 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
 
         scrollDisponibles.setViewportView(panDisponibles);
 
-        jButton1.setBackground(new java.awt.Color(169, 42, 0));
-        jButton1.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cancelar");
+        btnCancelar.setBackground(new java.awt.Color(169, 42, 0));
+        btnCancelar.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCancelarMouseClicked(evt);
+            }
+        });
 
-        jButton3.setBackground(new java.awt.Color(99, 143, 77));
-        jButton3.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Confirmar cambios");
+        btnConfirmar.setBackground(new java.awt.Color(99, 143, 77));
+        btnConfirmar.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        btnConfirmar.setForeground(new java.awt.Color(255, 255, 255));
+        btnConfirmar.setText("Confirmar cambios");
+        btnConfirmar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnConfirmarMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout panComponentesLayout = new javax.swing.GroupLayout(panComponentes);
         panComponentes.setLayout(panComponentesLayout);
@@ -166,9 +215,9 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
                 .addGap(74, 74, 74))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panComponentesLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(56, 56, 56)
-                .addComponent(jButton3)
+                .addComponent(btnConfirmar)
                 .addGap(43, 43, 43))
         );
         panComponentesLayout.setVerticalGroup(
@@ -189,8 +238,8 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
                         .addComponent(scrollMesasAsignadas, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(41, 41, 41)
                 .addGroup(panComponentesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(24, 24, 24))
         );
 
@@ -210,47 +259,73 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked
+        if (!huboCambios) {
+            coordinador.pantallaMesas(gerente);
+            this.dispose();
+            return;
+        }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+        int opcion = JOptionPane.showConfirmDialog( this, "¿Esta seguro de cancelar la operación?", "CONFIRMACION", JOptionPane.YES_NO_OPTION );
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            coordinador.pantallaMesas(gerente);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnCancelarMouseClicked
+
+    private void btnConfirmarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfirmarMouseClicked
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Esta seguro de confirmar esta accion?", "CONFIRMACION", JOptionPane.YES_NO_OPTION);
+        
+        if(opcion == JOptionPane.YES_OPTION){
+            List<MesaDTO> mesasAsignar = new ArrayList<>();
+            List<MesaDTO> mesasDesasignar = new ArrayList<>();
+            
+            Component[] checksDisponibles = panDisponibles.getComponents();
+            for (Component componente: checksDisponibles) {
+
+                JCheckBox check = (JCheckBox) componente;
+                if (check.isSelected()) {
+                    MesaDTO mesa = (MesaDTO)check.getClientProperty("mesa");
+                    mesasAsignar.add(mesa);
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmAsignarMesas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmAsignarMesas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmAsignarMesas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmAsignarMesas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmAsignarMesas().setVisible(true);
+            
+            Component[] checksAsignadas = panAsignadas.getComponents();
+            for (Component componente: checksAsignadas) {
+                JCheckBox check = (JCheckBox) componente;
+                
+                if (!check.isSelected()) {
+                    MesaDTO mesa = (MesaDTO)check.getClientProperty("mesa");
+                    mesasDesasignar.add(mesa);
+                } 
             }
-        });
-    }
+            
+            try {
+                coordinador.actualizarMesasDeMesero(mesasAsignar, mesasDesasignar, mesero);
+                
+                JOptionPane.showMessageDialog(this, "Las mesas se actualizaron correctamente", "Mesas Asignadas", JOptionPane.INFORMATION_MESSAGE);
+                coordinador.pantallaMesas(gerente);
+                this.dispose();
+            } catch (MesasException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        
+    }//GEN-LAST:event_btnConfirmarMouseClicked
+
+    private void btnCerrarSesionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCerrarSesionMouseClicked
+        coordinador.cerrarSesion();
+        this.dispose();
+    }//GEN-LAST:event_btnCerrarSesionMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnCerrarSesion;
+    private javax.swing.JButton btnConfirmar;
     private javax.swing.JLabel imgLogo;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel lblAsignadas;
     private javax.swing.JLabel lblDisponibles;
     private javax.swing.JLabel lblEmpleado;
@@ -262,4 +337,104 @@ public class FrmAsignarMesas extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrollDisponibles;
     private javax.swing.JScrollPane scrollMesasAsignadas;
     // End of variables declaration//GEN-END:variables
+
+    public void refrescarMesas(){
+        try {
+            List<MesaDTO> listaMesero = coordinador.obtenerMesasDelMesero(mesero);
+            List<MesaDTO> listaDisponibles = coordinador.obtenerMesasDisponibles();
+            cargarMesasMesero(listaMesero);
+            cargarMesasDisponibles(listaDisponibles);
+        } catch (MesasException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    public void cargarMesasMesero(List<MesaDTO> lista){
+        panAsignadas.removeAll();
+
+        for (MesaDTO mesa : lista) {
+
+            JCheckBox checkMesa = new JCheckBox(
+                    "Mesa " + mesa.getNumeroMesa()
+            );
+
+            checkMesa.setSelected(true);
+            
+            checkMesa.setIcon(iconoOff);
+            
+            checkMesa.setSelectedIcon(iconoOn);
+
+            checkMesa.putClientProperty("mesa", mesa);
+
+            checkMesa.setMaximumSize(
+                    new Dimension(Integer.MAX_VALUE, 40)
+            );
+            
+            aplicarEstiloCheck(checkMesa);
+            
+            checkMesa.addActionListener(e -> {
+                aplicarEstiloCheck(checkMesa);
+                huboCambios = true;
+            });
+
+            panAsignadas.add(checkMesa);
+        }
+
+        panAsignadas.revalidate();
+        panAsignadas.repaint();
+    }
+    
+    public void cargarMesasDisponibles(List<MesaDTO> lista) {
+
+        panDisponibles.removeAll();
+
+        for (MesaDTO mesa : lista) {
+
+            JCheckBox checkMesa = new JCheckBox(
+                    "Mesa " + mesa.getNumeroMesa()
+            );
+
+            checkMesa.setSelected(false);
+
+            checkMesa.setIcon(iconoOff);
+
+            checkMesa.setSelectedIcon(iconoOn);
+
+            checkMesa.putClientProperty("mesa", mesa);
+
+            checkMesa.setMaximumSize(
+                    new Dimension(Integer.MAX_VALUE, 40)
+            );
+            
+            aplicarEstiloCheck(checkMesa);
+            
+            checkMesa.addActionListener(e -> {
+                aplicarEstiloCheck(checkMesa);
+                huboCambios = true;
+            });
+
+            panDisponibles.add(checkMesa);
+        }
+
+        panDisponibles.revalidate();
+        panDisponibles.repaint();
+    }
+    
+    private void aplicarEstiloCheck(JCheckBox check) {
+        Color morado = new Color(68, 59, 85);
+
+        check.setFont(
+                new Font("Segoe UI", Font.BOLD, 16)
+        );
+
+        check.setFocusPainted(false);
+
+        check.setOpaque(true);
+
+        check.setBackground(Color.WHITE);
+    }
+    
+    public void setTextos(){
+        lblTitle.setText("Mesero "+mesero.getUser()+": "+mesero.getNombres());
+    }
 }

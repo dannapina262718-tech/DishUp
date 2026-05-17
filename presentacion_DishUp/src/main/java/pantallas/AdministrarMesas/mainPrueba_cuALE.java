@@ -6,6 +6,10 @@
 package pantallas.AdministrarMesas;
 
 import coordinador.CoordinadorInterfaces;
+import dtos.EmpleadoDTO;
+import enums.EstadoEmpleadoDTO;
+import enums.RolEmpleadoDTO;
+import excepciones.EmpleadosException;
 
 /**
  *
@@ -16,9 +20,20 @@ public class mainPrueba_cuALE {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws EmpleadosException {
         coordinador.CoordinadorInterfaces coordinador = new CoordinadorInterfaces();
-        FrmPantallaMesas frm = new FrmPantallaMesas(coordinador);
+        EmpleadoDTO gerente = new EmpleadoDTO(
+            "6a0a17cace6b3d935f8e25ec",
+            "Juan",
+            "Pérez",
+            "Hernández",
+            "GE-001",
+            RolEmpleadoDTO.GERENTE,
+            EstadoEmpleadoDTO.ACTIVO
+        );
+        
+        EmpleadoDTO g = coordinador.validarExistenciaUsuario(gerente);
+        FrmPantallaMesas frm = new FrmPantallaMesas(coordinador, g);
         frm.setVisible(true);
     }
 

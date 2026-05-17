@@ -47,7 +47,7 @@ public class MesaControl {
         try {
             return mesaBO.obtenerMesasPorMesero(empleado);
         } catch (NegocioException ex) {
-            throw new MesasException("No fue posible obtener las mesas asignadas al mesero.");
+            throw new MesasException(ex.getMessage());
         }
     }
 
@@ -57,7 +57,7 @@ public class MesaControl {
         try {
             return mesaBO.obtenerMesa(mesa);
         } catch (NegocioException ex) {
-            throw new MesasException("No fue posible obtener la mesa.");
+            throw new MesasException(ex.getMessage());
         }
     }
 
@@ -67,7 +67,7 @@ public class MesaControl {
         try {
             mesaBO.eliminarMesa(mesa);
         } catch (NegocioException ex) {
-            throw new MesasException("No fue posible eliminar la mesa.");
+            throw new MesasException(ex.getMessage());
         }
     }
 
@@ -85,13 +85,19 @@ public class MesaControl {
         try {
             mesaBO.agregarMesa(mesa);
         } catch (NegocioException ex) {
-            throw new MesasException("No fue posible agregar la mesa.");
+            throw new MesasException(ex.getMessage());
         }
     }
 
-    public void asignarMesaAMesero(MesaDTO mesa, EmpleadoDTO mesero) throws MesasException {
+    public void actualizarMesasDeMesero(List<MesaDTO> mesasAsignar, List<MesaDTO> mesasQuitar, EmpleadoDTO mesero) throws MesasException {
 
-        validarMesa(mesa);
+        for(MesaDTO mesa: mesasAsignar){
+            validarMesa(mesa);
+        }
+        for(MesaDTO mesa: mesasQuitar){
+            validarMesa(mesa);
+        }
+        
         validarEmpleado(mesero);
 
         if (mesero.getRol() == null) {
@@ -111,9 +117,9 @@ public class MesaControl {
         }
 
         try {
-            mesaBO.asignarMesaAMesero(mesa, mesero);
+            mesaBO.actualizarMesasDeMesero(mesasAsignar, mesasQuitar, mesero);
         } catch (NegocioException ex) {
-            throw new MesasException("No fue posible asignar la mesa al mesero.");
+            throw new MesasException(ex.getMessage());
         }
     }
 
@@ -121,7 +127,7 @@ public class MesaControl {
         try {
             return mesaBO.obtenerMesasDisponibles();
         } catch (NegocioException ex) {
-            throw new MesasException("No fue posible obtener las mesas disponibles.");
+            throw new MesasException(ex.getMessage());
         }
     }
     
@@ -129,7 +135,7 @@ public class MesaControl {
         try {
             return mesaBO.obtenerMesas();
         } catch (NegocioException ex) {
-            throw new MesasException("No fue posible obtener las mesas disponibles.");
+            throw new MesasException(ex.getMessage());
         }
     }
 }
