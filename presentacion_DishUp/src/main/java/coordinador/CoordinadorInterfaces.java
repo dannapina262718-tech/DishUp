@@ -110,7 +110,7 @@ public class CoordinadorInterfaces {
     }
 
     public void abrirPersonalizacionProducto(FrmProductos frm, ProductoDTO producto, List<IngredienteEnProductoDTO> removibles) {
-        DlgModificarProducto dlg = new DlgModificarProducto(frm, producto, removibles);
+        DlgModificarProducto dlg = new DlgModificarProducto(frm, producto, removibles, null);
         dlg.setVisible(true);
         PedidoDTO pedido = dlg.getResultado();
         if (pedido != null) {
@@ -329,7 +329,7 @@ public class CoordinadorInterfaces {
         productoTemp.setNombre(pedidoOriginal.getNombreProducto());
         productoTemp.setPrecio(pedidoOriginal.getPrecioProducto());
 
-        DlgModificarProducto dlg = new DlgModificarProducto(frm, productoTemp, removibles);
+        DlgModificarProducto dlg = new DlgModificarProducto(frm, productoTemp, removibles, pedidoOriginal);
         dlg.setVisible(true);
 
         PedidoDTO modificado = dlg.getResultado();

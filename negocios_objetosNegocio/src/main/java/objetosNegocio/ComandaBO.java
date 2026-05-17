@@ -105,6 +105,9 @@ public class ComandaBO {
         List<Pedido> pedidos = pedidoAdapter.listaAEntidad(comandaDTO.getPedidos());
         try {
             comandaDAO.actualizarComanda(comandaDTO.getId(), pedidos);
+            // RECALCULAR ESTADO
+            EstadoComanda nuevoEstado = calcularEstadoComanda(pedidos);
+            comandaDAO.actualizarEstado(comandaDTO.getId(), nuevoEstado.name());
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al actualizar comanda", e);
         }
@@ -134,8 +137,6 @@ public class ComandaBO {
             throw new NegocioException("Error al obtener comandas listas", e);
         }
     }
-
-    
 
     public ComandaDTO obtenerComandaPorId(String id) throws NegocioException {
         try {

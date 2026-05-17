@@ -27,7 +27,7 @@ public class DlgModificarProducto extends javax.swing.JDialog {
     private PedidoDTO resultado;
     private List<JCheckBox> checksIngredientes = new ArrayList<>();
 
-    public DlgModificarProducto(java.awt.Frame parent, ProductoDTO producto, List<IngredienteEnProductoDTO> ingredientesRemovibles) {
+    public DlgModificarProducto(java.awt.Frame parent, ProductoDTO producto, List<IngredienteEnProductoDTO> ingredientesRemovibles, PedidoDTO pedidoExistente) {
         super(parent, true);
         initComponents();
         // System.out.println("ID RECIBIDO: " + producto.getId());
@@ -35,6 +35,7 @@ public class DlgModificarProducto extends javax.swing.JDialog {
         this.precioProductoActual = producto.getPrecio();
         lblNombreProducto.setText(producto.getNombre());
         configurarPanelIngredientes(ingredientesRemovibles);
+        cargarIngredientesSeleccionados(pedidoExistente);
         this.setLocationRelativeTo(null);
     }
 
@@ -68,6 +69,27 @@ public class DlgModificarProducto extends javax.swing.JDialog {
 
         pnlListaIngredientes.revalidate();
         pnlListaIngredientes.repaint();
+    }
+
+    private void cargarIngredientesSeleccionados(PedidoDTO pedido) {
+
+        if (pedido == null || pedido.getDescripcion() == null) {
+            return;
+        }
+
+        String[] especificaciones = pedido.getDescripcion().split(",");
+
+        for (String esp : especificaciones) {
+
+            String texto = esp.trim();
+
+            for (JCheckBox chk : checksIngredientes) {
+
+                if (chk.getText().equalsIgnoreCase(texto)) {
+                    chk.setSelected(true);
+                }
+            }
+        }
     }
 
     public PedidoDTO getResultado() {

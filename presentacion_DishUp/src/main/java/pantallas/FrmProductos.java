@@ -9,6 +9,7 @@ import dtos.ComandaDTO;
 import dtos.IngredienteEnProductoDTO;
 import dtos.PedidoDTO;
 import dtos.ProductoDTO;
+import enums.EstadoPedidoDTO;
 import enums.TipoProductoDTO;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -693,35 +694,47 @@ public final class FrmProductos extends javax.swing.JFrame {
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
         header.add(lblNombre, BorderLayout.WEST);
 
-        // Botón X — siempre presente, comportamiento distinto según modo
-        JLabel btnX = new JLabel("X");
-        btnX.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnX.setForeground(Color.decode("#000000"));
-        btnX.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int confirmacion = JOptionPane.showConfirmDialog(
-                        FrmProductos.this,
-                        "¿Quitar \"" + pedido.getNombreProducto() + "\" del pedido?",
-                        "Confirmar eliminación",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE
-                );
-                if (confirmacion != JOptionPane.YES_OPTION) {
-                    return;
-                }
+        JLabel btnX = null;
 
-                if (comandaOrigen != null) {
-                    comandaOrigen.getPedidos().remove(pedido);
-                } else {
-                    coordinador.eliminarPedidoTemporal(pedido);
+        if (pedido.getEstado() == null || pedido.getEstado() == EstadoPedidoDTO.PENDIENTE) {
+
+            btnX = new JLabel("X");
+
+            btnX.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btnX.setForeground(Color.decode("#000000"));
+
+            btnX.addMouseListener(new java.awt.event.MouseAdapter() {
+
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+
+                    int confirmacion = JOptionPane.showConfirmDialog(
+                            FrmProductos.this,
+                            "¿Quitar \"" + pedido.getNombreProducto() + "\" del pedido?",
+                            "Confirmar eliminación",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+
+                    if (confirmacion != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+
+                    if (comandaOrigen != null) {
+                        comandaOrigen.getPedidos().remove(pedido);
+                    } else {
+                        coordinador.eliminarPedidoTemporal(pedido);
+                    }
+
+                    pnlPedidos.remove(item);
+
+                    pnlPedidos.revalidate();
+                    pnlPedidos.repaint();
                 }
-                pnlPedidos.remove(item);
-                pnlPedidos.revalidate();
-                pnlPedidos.repaint();
-            }
-        });
-        header.add(btnX, BorderLayout.EAST);
+            });
+
+            header.add(btnX, BorderLayout.EAST);
+        }
 
         // DETALLES
         JTextArea txtLista = new JTextArea();
@@ -737,12 +750,12 @@ public final class FrmProductos extends javax.swing.JFrame {
         txtLista.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         txtLista.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Doble clic — solo en modo edición
+        // Doble clic
         item.setCursor(new Cursor(Cursor.HAND_CURSOR));
         item.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (e.getClickCount() == 2) {
+                if (e.getClickCount() == 2  && pedido.getEstado() == EstadoPedidoDTO.PENDIENTE || pedido.getEstado() == null) {
                     coordinador.abrirModificacionPedidoExistente(
                             FrmProductos.this, pedido, comandaOrigen, item, txtLista
                     );
@@ -911,4 +924,3 @@ public final class FrmProductos extends javax.swing.JFrame {
         pnlPedidos.repaint();
     }
 }
-

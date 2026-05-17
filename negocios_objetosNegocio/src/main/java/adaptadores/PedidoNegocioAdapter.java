@@ -23,8 +23,18 @@ public class PedidoNegocioAdapter {
         p.setNombreProducto(dto.getNombreProducto());
         p.setCantidad(dto.getCantidad());
         p.setDescripcion(dto.getDescripcion());
-        p.setEstado(EstadoPedido.PENDIENTE);
-        p.setFechaPedido(dto.getFechaPedido() != null ? dto.getFechaPedido() : LocalDateTime.now());
+        if (dto.getEstado() != null) {
+            p.setEstado(
+                    EstadoPedido.valueOf(dto.getEstado().name())
+            );
+        }else{
+             p.setEstado(EstadoPedido.PENDIENTE);
+        }
+        p.setFechaPedido(
+                dto.getFechaPedido() != null
+                ? dto.getFechaPedido()
+                : LocalDateTime.now()
+        );
         p.setPrecioProducto(dto.getPrecioProducto());
         return p;
     }

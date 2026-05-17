@@ -474,6 +474,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
     private JPanel contenedorComandas;
 
     public void mostrarComandasDeMesa(int numeroMesa, List<ComandaDTO> comandas) {
+
         panComandasLlenas.removeAll();
 
         if (comandas == null || comandas.isEmpty()) {
@@ -557,15 +558,27 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
 
                 JLabel lblPedido = new JLabel();
 
-                String texto = "• " + ped.getNombreProducto() + " $" + ped.getPrecioProducto();
+                String texto = "• " + ped.getNombreProducto();
 
                 if (ped.getDescripcion() != null
                         && !ped.getDescripcion().trim().isEmpty()) {
 
                     texto += " (" + ped.getDescripcion() + ")";
                 }
+                
+                String estadoTexto = ped.getEstado().name();
 
-                lblPedido.setText(texto);
+                switch (estadoTexto) {
+                    case "EN_PREPARACION":
+                        estadoTexto = "EN PREPARACIÓN";
+                        break;
+
+                    case "LISTA":
+                        estadoTexto = "LISTO";
+                        break;
+                }
+
+                lblPedido.setText(texto + " | $" + ped.getPrecioProducto() + " | " + estadoTexto);
 
                 switch (ped.getEstado()) {
                     case PENDIENTE:
@@ -656,16 +669,6 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
             JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
             footer.setBackground(Color.WHITE);
 
-            JButton btnAgregar = new JButton("Agregar pedido");
-            btnAgregar.setBackground(Color.decode("#FFAD72"));
-            btnAgregar.setPreferredSize(new Dimension(140, 35));
-            btnAgregar.setFocusPainted(false);
-
-            btnAgregar.addActionListener(e -> {
-                coordinador.abrirAgregarPedido(comanda);
-                SwingUtilities.getWindowAncestor(this).dispose();
-            });
-
             JButton btnEditar = new JButton("Editar comanda");
             btnEditar.setBackground(Color.decode("#FFAD72"));
             btnEditar.setPreferredSize(new Dimension(140, 35));
@@ -721,24 +724,24 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
             });
 
             if (comanda.getEstado() != null) {
+
                 switch (comanda.getEstado().name()) {
+
                     case "PENDIENTE":
-                        footer.add(btnEditar);
-                        footer.add(btnCancelar);
-                        footer.add(btnEntregar);
-                        break;
-                    case "LISTA":
-                        footer.add(btnAgregar);
-                        footer.add(btnEntregar);
-                        break;
                     case "EN_PREPARACION":
-                        footer.add(btnAgregar);
-                        footer.add(btnEntregar);
+                    case "LISTA":
                     case "ENTREGADA":
-                        footer.add(btnAgregar);
+
+                        footer.add(btnEditar);
                         footer.add(btnEntregar);
+
+                        if (comanda.getEstado().name().equals("PENDIENTE")) {
+                            footer.add(btnCancelar);
+                        }
+
+                        break;
+
                     case "PAGADA":
-                        // no mostrar botones
                         break;
                 }
             }
@@ -810,4 +813,5 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         cargarMesas();
         refrescarMesaActual();
     }
+
 }

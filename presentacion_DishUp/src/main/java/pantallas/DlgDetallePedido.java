@@ -110,7 +110,15 @@ public class DlgDetallePedido extends JDialog {
         JLabel lblPrecio = new JLabel("Precio: $" + pedido.getPrecioProducto());
         lblPrecio.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 
-        JLabel lblEstado = new JLabel("Estado: " + pedido.getEstado());
+        String estadoTexto = pedido.getEstado().toString();
+
+        if (estadoTexto.equals("EN_PREPARACION")) {
+            estadoTexto = "EN PREPARACIÓN";
+        } else if (estadoTexto.equals("LISTA")) {
+            estadoTexto = "LISTO";
+        }
+
+        JLabel lblEstado = new JLabel("Estado: " + estadoTexto);
         lblEstado.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
         lblEstado.setForeground(Color.decode("#000000"));
 
@@ -133,107 +141,6 @@ public class DlgDetallePedido extends JDialog {
         // FOOTER
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 20));
         footer.setBackground(Color.WHITE);
-
-        JButton btnModificar = new JButton("Editar pedido");
-        btnModificar.setBackground(Color.decode("#99C9A1"));
-        btnModificar.setFocusPainted(false);
-        btnModificar.setPreferredSize(new Dimension(140, 40));
-        btnModificar.setFont(new Font("Trebuchet MS", Font.BOLD, 14));
-
-        JButton btnCancelar = new JButton("Cancelar pedido");
-        btnCancelar.setBackground(Color.decode("#99C9A1"));
-        btnCancelar.setFocusPainted(false);
-        btnCancelar.setPreferredSize(new Dimension(140, 40));
-        btnCancelar.setFont(new Font("Trebuchet MS", Font.BOLD, 14));
-
-        JButton btnEntregar = new JButton("Entregar pedido");
-        btnEntregar.setBackground(Color.decode("#B9F6B1"));
-        btnEntregar.setFocusPainted(false);
-        btnEntregar.setPreferredSize(new Dimension(160, 40));
-        btnEntregar.setFont(new Font("Trebuchet MS", Font.BOLD, 14));
-
-        btnModificar.addActionListener(e -> {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Editar pedido"
-            );
-
-        });
-
-        btnCancelar.addActionListener(e -> {
-
-            int opcion = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Cancelar pedido?",
-                    "Confirmación",
-                    JOptionPane.YES_NO_OPTION
-            );
-
-            if (opcion == JOptionPane.YES_OPTION) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Pedido cancelado"
-                );
-
-                dispose();
-            }
-        });
-
-        btnEntregar.addActionListener(e -> {
-
-            int opcion = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Marcar pedido como entregado?",
-                    "Confirmación",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE
-            );
-
-            if (opcion == JOptionPane.YES_OPTION) {
-
-                try {
-
-                    coordinador.entregarPedido(pedido);
-
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Pedido entregado correctamente",
-                            "Éxito",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
-
-                    dispose();
-
-                } catch (Exception ex) {
-
-                    JOptionPane.showMessageDialog(
-                            this,
-                            ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                }
-            }
-        });
-
-        switch (pedido.getEstado()) {
-            case PENDIENTE:
-                footer.add(btnModificar);
-                footer.add(btnCancelar);
-                break;
-
-            case EN_PREPARACION:
-                break;
-
-            case LISTA:
-                footer.add(btnEntregar);
-                break;
-
-            case ENTREGADO:
-                break;
-        }
 
         panelPrincipal.add(footer, BorderLayout.SOUTH);
     }
