@@ -172,8 +172,6 @@ public class CoordinadorInterfaces {
     public void abrirFrmComandasMesero(EmpleadoDTO mesero, String nombre) {
         // FrmPantallaComandas frm = new FrmPantallaComandas(this);
         frmComandas = new FrmPantallaComandas(this);
-        frmComandas.setMesero(mesero, nombre);
-        frmComandas.cargarMesas();
         frmComandas.setVisible(true);
         frmComandas.setMesero(mesero, nombre);
         frmComandas.setVisible(true);
@@ -466,8 +464,6 @@ public class CoordinadorInterfaces {
     }
     
     public void actualizarMesasDeMesero(List<MesaDTO> mesasAgregar, List<MesaDTO> mesasQuitar, EmpleadoDTO mesero) throws MesasException{
-        frmComandas = new FrmPantallaComandas(this);
-        frmComandas.actualizarPantalla();
         mesaFachada.actualizarMesasDeMesero(mesasAgregar, mesasQuitar, mesero);
     }
     

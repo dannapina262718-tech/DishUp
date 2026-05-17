@@ -7,6 +7,7 @@ package pantallas;
 import control.MesaControl;
 import coordinador.CoordinadorInterfaces;
 import dtos.ComandaDTO;
+import dtos.EmpleadoDTO;
 import dtos.MesaDTO;
 import dtos.PedidoDTO;
 import enums.EstadoPedidoDTO;
@@ -27,7 +28,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 /**
@@ -37,7 +37,7 @@ import javax.swing.SwingUtilities;
 public class FrmPantallaComandas extends javax.swing.JFrame {
 
     private coordinador.CoordinadorInterfaces coordinador;
-    String idMesero;
+    EmpleadoDTO mesero;
 
     MesaControl control = new MesaControl();
 
@@ -380,7 +380,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         List<MesaDTO> mesas = new ArrayList<>();
 
         try {
-            mesas = control.obtenerMesasPorMesero(String.valueOf(idMesero));
+            mesas = control.obtenerMesasPorMesero(mesero);
         } catch (MesasException ex) {
             System.out.println("Error al obtener mesas: " + ex.getMessage());
         }
@@ -804,8 +804,8 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         }
     }
 
-    public void setMesero(String id, String empleado) {
-        idMesero = id;
+    public void setMesero(EmpleadoDTO me, String empleado) {
+        mesero = me;
         lblEmpleado.setText(empleado);
     }
 

@@ -130,8 +130,10 @@ public class EmpleadoDAO implements IEmpleadoDAO {
             if (filtro != null && !filtro.isBlank()) {
 
                 filtros.add(or(
-                    regex("user", ".*" + filtro + ".*", "i"),
-                    regex("nombres", ".*" + filtro + ".*", "i")
+                    regex("user", filtro, "i"),
+                    regex("nombres", filtro, "i"),
+                    regex("apellidoPaterno", filtro, "i"),
+                    regex("apellidoMaterno", filtro, "i")
                 ));
             }
 

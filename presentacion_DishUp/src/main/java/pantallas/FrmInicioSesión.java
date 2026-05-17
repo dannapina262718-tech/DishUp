@@ -164,7 +164,10 @@ public class FrmInicioSesión extends javax.swing.JFrame {
             
             switch (resultado.getRol()) {
                 case RolEmpleadoDTO.MESERO:
-                    coordinador.abrirFrmComandasMesero(resultado.getId(), resultado.getNombres());
+                    coordinador.abrirFrmComandasMesero(resultado, resultado.getNombres());
+                    break;
+                case RolEmpleadoDTO.GERENTE:
+                    coordinador.pantallaMesas(resultado);
                     break;
                 default:
                     JOptionPane.showMessageDialog(this, "Rol no reconocido"); 
