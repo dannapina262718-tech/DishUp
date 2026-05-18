@@ -4,13 +4,24 @@
  */
 package pantallas;
 
+import coordinador.CoordinadorInterfaces;
 import dtos.ComandaDTO;
+import dtos.PedidoDTO;
+import dtos.ResultadoPagoDTO;
 import entidades.Pago;
 import fachada.PagoFachada;
 import interfaz.IGestionPagos;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -19,21 +30,28 @@ import javax.swing.BoxLayout;
 public class DlgPagoComanda extends javax.swing.JDialog {
     private float total;
     private float restante;
+    
     private final List<Pago> pagosHechos = new ArrayList<>();
     private final IGestionPagos pagoFachada;
+    
     private final ComandaDTO comanda;
+    private FrmPantallaComandas frmComandas;
+    
+    private coordinador.CoordinadorInterfaces coordinador;
 
     /**
      * Creates new form DlgPagoComanda
      */
-    public DlgPagoComanda(java.awt.Frame parent, boolean modal, ComandaDTO comanda) {
+    public DlgPagoComanda(java.awt.Frame parent, boolean modal, ComandaDTO comanda, FrmPantallaComandas frmComandas, CoordinadorInterfaces coordinador) {
         super(parent, modal);
         initComponents();
         
+        this.coordinador = coordinador;
+        this.frmComandas = frmComandas;
+        this.comanda = comanda;
+        
         this.total = comanda.getTotal();
         this.restante = total;
-        
-        this.comanda = comanda;
         this.pagoFachada = new PagoFachada();
 
         btnFinalizar.setVisible(false);
@@ -79,6 +97,11 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         pnlTicket.setBackground(new java.awt.Color(255, 255, 255));
+        pnlTicket.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pnlTicketMouseClicked(evt);
+            }
+        });
 
         lblTituloTicket.setFont(new java.awt.Font("Trebuchet MS", 1, 15)); // NOI18N
         lblTituloTicket.setForeground(new java.awt.Color(153, 153, 153));
@@ -115,6 +138,20 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         btnMetodoEfectivo.setBackground(new java.awt.Color(204, 204, 204));
         btnMetodoEfectivo.setFont(new java.awt.Font("Telugu Sangam MN", 1, 13)); // NOI18N
         btnMetodoEfectivo.setText("EFECTIVO");
+        btnMetodoEfectivo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnMetodoEfectivoMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnMetodoEfectivoMouseEntered(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnMetodoEfectivoMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                btnMetodoEfectivoMouseReleased(evt);
+            }
+        });
         btnMetodoEfectivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMetodoEfectivoActionPerformed(evt);
@@ -124,10 +161,26 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         btnMetodoTarjeta.setBackground(new java.awt.Color(204, 204, 204));
         btnMetodoTarjeta.setFont(new java.awt.Font("Telugu Sangam MN", 1, 13)); // NOI18N
         btnMetodoTarjeta.setText("TARJETA");
+        btnMetodoTarjeta.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnMetodoTarjetaMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                btnMetodoTarjetaMouseReleased(evt);
+            }
+        });
 
         btnMetodoCodi.setBackground(new java.awt.Color(204, 204, 204));
         btnMetodoCodi.setFont(new java.awt.Font("Telugu Sangam MN", 1, 13)); // NOI18N
         btnMetodoCodi.setText("CoDi");
+        btnMetodoCodi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnMetodoCodiMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                btnMetodoCodiMouseReleased(evt);
+            }
+        });
 
         pnlPagosHechos.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -266,8 +319,81 @@ public class DlgPagoComanda extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMetodoEfectivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (comanda == null) {
+                JOptionPane.showMessageDialog(this, "Comanda inválida.");
+                return;
+            }
+
+            if (restante <= 0) {
+                JOptionPane.showMessageDialog(this, "La cuenta ya fue liquidada.");
+                return;
+            }
+
+            coordinador.mostrarPagoEfectivo(comanda, restante, this);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage()
+            );
+        
+        }
     }//GEN-LAST:event_btnMetodoEfectivoActionPerformed
+
+    private void btnMetodoEfectivoMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnMetodoEfectivoMouseEntered
+
+    private void btnMetodoEfectivoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoMousePressed
+        btnMetodoEfectivo.setFocusPainted(false);
+        btnMetodoEfectivo.setContentAreaFilled(false);
+        btnMetodoEfectivo.setOpaque(true);
+
+        btnMetodoEfectivo.setBackground(Color.decode("#F3AE29"));
+        btnMetodoEfectivo.setBorder(BorderFactory.createLineBorder(Color.decode("#C79A42"), 2));
+    }//GEN-LAST:event_btnMetodoEfectivoMousePressed
+
+    private void btnMetodoTarjetaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoTarjetaMousePressed
+        btnMetodoTarjeta.setFocusPainted(false);
+        btnMetodoTarjeta.setContentAreaFilled(false);
+        btnMetodoTarjeta.setOpaque(true);
+
+        btnMetodoTarjeta.setBackground(Color.decode("#F3AE29"));
+        btnMetodoTarjeta.setBorder(BorderFactory.createLineBorder(Color.decode("#C79A42"), 2));
+    }//GEN-LAST:event_btnMetodoTarjetaMousePressed
+
+    private void btnMetodoCodiMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoCodiMousePressed
+        btnMetodoCodi.setFocusPainted(false);
+        btnMetodoCodi.setContentAreaFilled(false);
+        btnMetodoCodi.setOpaque(true);
+
+        btnMetodoCodi.setBackground(Color.decode("#F3AE29"));
+        btnMetodoCodi.setBorder(BorderFactory.createLineBorder(Color.decode("#C79A42"), 2));
+    }//GEN-LAST:event_btnMetodoCodiMousePressed
+
+    private void btnMetodoEfectivoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoMouseReleased
+        btnMetodoEfectivo.setBackground(Color.decode("#FFE3AC"));
+        btnMetodoEfectivo.setBorder(null);
+    }//GEN-LAST:event_btnMetodoEfectivoMouseReleased
+
+    private void btnMetodoTarjetaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoTarjetaMouseReleased
+        btnMetodoTarjeta.setBackground(Color.decode("#FFE3AC"));
+        btnMetodoTarjeta.setBorder(null);
+    }//GEN-LAST:event_btnMetodoTarjetaMouseReleased
+
+    private void btnMetodoCodiMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoCodiMouseReleased
+        btnMetodoCodi.setBackground(Color.decode("#FFE3AC"));
+        btnMetodoCodi.setBorder(null);
+    }//GEN-LAST:event_btnMetodoCodiMouseReleased
+
+    private void btnMetodoEfectivoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoMouseClicked
+       
+    }//GEN-LAST:event_btnMetodoEfectivoMouseClicked
+
+    private void pnlTicketMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlTicketMouseClicked
+        this.dispose();
+    }//GEN-LAST:event_pnlTicketMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFinalizar;
@@ -294,7 +420,61 @@ public class DlgPagoComanda extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void cargarTicketComanda(ComandaDTO comanda) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (comanda == null) {
+            return;
+        }
+
+        lblMesaCliente.setText("Mesa " + comanda.getNumMesa());
+
+        lblNombreCliente.setText(comanda.getNombreCliente());
+
+        lblTotalPagarCliente.setText("Total a pagar "+ comanda.getNombreCliente()+": $" + comanda.getTotal());
+
+        pnlPedidos.removeAll();
+
+        for (PedidoDTO pedido : comanda.getPedidos()) {
+
+            JPanel panelPedido = new JPanel(new BorderLayout());
+
+            panelPedido.setBackground(Color.WHITE);
+
+            panelPedido.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+            JLabel lblNombre = new JLabel(
+                    pedido.getCantidad()
+                    + "x "
+                    + pedido.getNombreProducto()
+            );
+
+            lblNombre.setFont(
+                    new Font("Arial", Font.BOLD, 13)
+            );
+
+            JLabel lblPrecio = new JLabel(
+                    "$" + pedido.getPrecioProducto()
+            );
+
+            panelPedido.add(lblNombre, BorderLayout.WEST);
+            panelPedido.add(lblPrecio, BorderLayout.EAST);
+
+            if (pedido.getDescripcion() != null && !pedido.getDescripcion().isBlank()) {
+
+                JLabel lblDescripcion = new JLabel(pedido.getDescripcion());
+
+                lblDescripcion.setFont(new Font("Arial", Font.PLAIN, 11));
+
+                lblDescripcion.setForeground(Color.GRAY);
+
+                panelPedido.add(lblDescripcion, BorderLayout.SOUTH);
+            }
+
+            pnlPedidos.add(panelPedido);
+
+            pnlPedidos.add(Box.createVerticalStrut(5));
+        }
+
+        pnlPedidos.revalidate();
+        pnlPedidos.repaint();
     }
 
     private void actualizarRestante() {
@@ -305,5 +485,33 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         btnMetodoEfectivo.setEnabled(restante > 0);
         btnMetodoTarjeta.setEnabled(restante > 0);
         btnMetodoCodi.setEnabled(restante > 0);
+    }
+
+    public void agregarPago(ResultadoPagoDTO resultadoPago) {
+        restante = resultadoPago.getSaldoRestante();
+
+        JPanel panelPago = new JPanel(new BorderLayout());
+
+        panelPago.setBackground(Color.WHITE);
+
+        JLabel lblMetodo = new JLabel(
+                resultadoPago.getMetodoPago().name()
+        );
+
+        JLabel lblMonto = new JLabel(
+                "$" + resultadoPago.getMontoPagado()
+        );
+
+        panelPago.add(lblMetodo, BorderLayout.WEST);
+        panelPago.add(lblMonto, BorderLayout.EAST);
+
+        pnlPagosHechos.add(panelPago);
+
+        pnlPagosHechos.add(Box.createVerticalStrut(5));
+
+        actualizarRestante();
+
+        pnlPagosHechos.revalidate();
+        pnlPagosHechos.repaint();
     }
 }

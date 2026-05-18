@@ -10,6 +10,8 @@ import dtos.IngredienteEnProductoDTO;
 import dtos.MesaDTO;
 import dtos.PedidoDTO;
 import dtos.ProductoDTO;
+import dtos.ResultadoPagoDTO;
+import dtos.SolicitudPagoDTO;
 import enums.TipoProductoDTO;
 import excepciones.ComandasException;
 import excepciones.EmpleadosException;
@@ -28,6 +30,8 @@ import interfaz.IGestionProductos;
 import java.util.ArrayList;
 import java.util.List;
 import pantallas.DlgModificarProducto;
+import pantallas.DlgPagoComanda;
+import pantallas.DlgPagoEfectivo;
 import pantallas.DlgResumenComanda;
 import pantallas.FrmCliente;
 import pantallas.FrmPantallaComandas;
@@ -45,6 +49,9 @@ public class CoordinadorInterfaces {
     private FrmPantallaComandas frmComandas;
     private FrmCliente frmCliente;
     private FrmProductos frmProductos;
+    
+    private DlgPagoComanda dlgPagoComanda;
+    private DlgPagoEfectivo dlgPagoEfectivo;
 
     private IGestionProductos productoFachada;
     private IGestionComandas comandaFachada;
@@ -254,4 +261,24 @@ public class CoordinadorInterfaces {
     public boolean puedePagarMesa(int numeroMesa) throws PagosException {
         return pagoFachada.puedePagarMesa(numeroMesa);
     }
+
+    public void mostrarPagoComanda(ComandaDTO comanda) {
+        DlgPagoComanda dlg = new DlgPagoComanda(frmComandas, true, comanda, frmComandas, this);
+
+        dlg.setLocationRelativeTo(frmComandas);
+
+        dlg.setVisible(true);
+    }
+
+    public void mostrarPagoEfectivo(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
+        DlgPagoEfectivo dlg = new DlgPagoEfectivo(frmComandas, true, comanda, restante, dlgPadre, this);
+        dlg.setLocationRelativeTo(dlgPadre);
+
+        dlg.setVisible(true);
+    }
+
+    public ResultadoPagoDTO registrarPago(SolicitudPagoDTO solicitud) throws PagosException {
+        return pagoFachada.registrarPago(solicitud);
+    }
+    
 }

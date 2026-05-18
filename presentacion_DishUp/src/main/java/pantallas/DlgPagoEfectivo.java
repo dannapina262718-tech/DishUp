@@ -4,18 +4,42 @@
  */
 package pantallas;
 
+import coordinador.CoordinadorInterfaces;
+import dtos.ComandaDTO;
+import dtos.ResultadoPagoDTO;
+import dtos.SolicitudPagoDTO;
+import entidades.DetallePagoEfectivo;
+import enums.MetodoPago;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author valeria
  */
 public class DlgPagoEfectivo extends javax.swing.JDialog {
+    private final ComandaDTO comanda;
 
+    private float restante;
+
+    private ResultadoPagoDTO resultadoPago;
+
+    private final DlgPagoComanda dlgPadre;
+
+    private final CoordinadorInterfaces coordinador;
+    
     /**
      * Creates new form DlgPagoEfectivo
      */
-    public DlgPagoEfectivo(java.awt.Frame parent, boolean modal) {
+    public DlgPagoEfectivo(java.awt.Frame parent, boolean modal, ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre, CoordinadorInterfaces coordinador) {
         super(parent, modal);
         initComponents();
+
+        this.comanda = comanda;
+        this.restante = restante;
+        this.dlgPadre = dlgPadre;
+        this.coordinador = coordinador;
+        
+        inicializarPantalla();
     }
 
     /**
@@ -208,54 +232,63 @@ public class DlgPagoEfectivo extends javax.swing.JDialog {
     }//GEN-LAST:event_txtMontoAPAgarActionPerformed
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        // TODO add your handling code here:
+        try {
+            float montoPagar = Float.parseFloat(txtMontoAPAgar.getText());
+            float montoEntregado = Float.parseFloat(txtMontoEntregado.getText());
+
+            DetallePagoEfectivo detalle = new DetallePagoEfectivo(
+                    montoEntregado,
+                    0
+            );
+
+            SolicitudPagoDTO solicitud = new SolicitudPagoDTO(
+                    comanda.getId(),
+                    MetodoPago.EFECTIVO,
+                    montoPagar,
+                    detalle
+            );
+
+            resultadoPago = coordinador.registrarPago(solicitud);
+
+            DetallePagoEfectivo detalleResultado =
+                    (DetallePagoEfectivo) resultadoPago.getDetallePago();
+
+            txtCambio.setText(String.valueOf(detalleResultado.getCambio()));
+
+            lblPagado.setText(
+                    "Total Pagado en Efectivo: $" + resultadoPago.getMontoPagado()
+            );
+
+            lblRestante.setText(
+                    "Total Restante: $" + resultadoPago.getSaldoRestante()
+            );
+
+            btnContinuar.setEnabled(true);
+            btnAceptar.setEnabled(false);
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Ingresa montos válidos.");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (resultadoPago != null && resultadoPago.isAprobado()) {
+                dlgPadre.agregarPago(resultadoPago);
+            }
+            dispose();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_btnContinuarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DlgPagoEfectivo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DlgPagoEfectivo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DlgPagoEfectivo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DlgPagoEfectivo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                DlgPagoEfectivo dialog = new DlgPagoEfectivo(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
@@ -277,4 +310,16 @@ public class DlgPagoEfectivo extends javax.swing.JDialog {
     private javax.swing.JTextField txtMontoAPAgar;
     private javax.swing.JTextField txtMontoEntregado;
     // End of variables declaration//GEN-END:variables
+
+    private void inicializarPantalla() {
+        txtMontoAPAgar.setText("");
+        txtMontoEntregado.setText("");
+        txtCambio.setText("");
+
+        lblPagado.setText("Total Pagado en Efectivo: $0.00");
+        lblRestante.setText("Total Restante: $" + restante);
+
+        btnContinuar.setEnabled(false);
+    }
+
 }

@@ -39,6 +39,9 @@
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pnlTicketMouseClicked"/>
+      </Events>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -249,6 +252,10 @@
             <Property name="text" type="java.lang.String" value="EFECTIVO"/>
           </Properties>
           <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnMetodoEfectivoMouseClicked"/>
+            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnMetodoEfectivoMouseEntered"/>
+            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnMetodoEfectivoMousePressed"/>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnMetodoEfectivoMouseReleased"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMetodoEfectivoActionPerformed"/>
           </Events>
         </Component>
@@ -262,6 +269,10 @@
             </Property>
             <Property name="text" type="java.lang.String" value="TARJETA"/>
           </Properties>
+          <Events>
+            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnMetodoTarjetaMousePressed"/>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnMetodoTarjetaMouseReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnMetodoCodi">
           <Properties>
@@ -273,6 +284,10 @@
             </Property>
             <Property name="text" type="java.lang.String" value="CoDi"/>
           </Properties>
+          <Events>
+            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnMetodoCodiMousePressed"/>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnMetodoCodiMouseReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JSeparator" name="separator4">
         </Component>

@@ -35,10 +35,10 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
         txtMontoAPAgar = new javax.swing.JTextField();
         btnConectarTerminal = new javax.swing.JButton();
         separator2 = new javax.swing.JSeparator();
-        lblPagado = new javax.swing.JLabel();
-        lblPagado1 = new javax.swing.JLabel();
+        lblEstatus = new javax.swing.JLabel();
+        lblFolio = new javax.swing.JLabel();
         separator3 = new javax.swing.JSeparator();
-        lblPagado2 = new javax.swing.JLabel();
+        lblPagado = new javax.swing.JLabel();
         lblRestante = new javax.swing.JLabel();
         btnContinuar = new javax.swing.JButton();
 
@@ -71,14 +71,14 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
             }
         });
 
-        lblPagado.setFont(new java.awt.Font("Telugu Sangam MN", 0, 13)); // NOI18N
-        lblPagado.setText("Estatus: Null");
+        lblEstatus.setFont(new java.awt.Font("Telugu Sangam MN", 0, 13)); // NOI18N
+        lblEstatus.setText("Estatus: Null");
 
-        lblPagado1.setFont(new java.awt.Font("Telugu Sangam MN", 0, 13)); // NOI18N
-        lblPagado1.setText("Folio: Null");
+        lblFolio.setFont(new java.awt.Font("Telugu Sangam MN", 0, 13)); // NOI18N
+        lblFolio.setText("Folio: Null");
 
-        lblPagado2.setFont(new java.awt.Font("Telugu Sangam MN", 1, 13)); // NOI18N
-        lblPagado2.setText("Total Pagado con Tarjeta: $XXX.XXX");
+        lblPagado.setFont(new java.awt.Font("Telugu Sangam MN", 1, 13)); // NOI18N
+        lblPagado.setText("Total Pagado con Tarjeta: $XXX.XXX");
 
         lblRestante.setFont(new java.awt.Font("Telugu Sangam MN", 1, 13)); // NOI18N
         lblRestante.setText("Total Restante: $XXX.XXX");
@@ -105,9 +105,9 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
                     .addGroup(pnlPagoTarjetaLayout.createSequentialGroup()
                         .addGap(64, 64, 64)
                         .addGroup(pnlPagoTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblPagado2)
+                            .addComponent(lblPagado)
                             .addGroup(pnlPagoTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblPagado)
+                                .addComponent(lblEstatus)
                                 .addGroup(pnlPagoTarjetaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(pnlPagoTarjetaLayout.createSequentialGroup()
                                         .addComponent(lblAPagar)
@@ -117,7 +117,7 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
                                         .addComponent(txtMontoAPAgar, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(separator1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(separator2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(lblPagado1)
+                                .addComponent(lblFolio)
                                 .addComponent(separator3, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lblRestante)
                             .addComponent(btnContinuar))))
@@ -144,13 +144,13 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
                 .addGap(26, 26, 26)
                 .addComponent(separator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblPagado)
+                .addComponent(lblEstatus)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblPagado1)
+                .addComponent(lblFolio)
                 .addGap(18, 18, 18)
                 .addComponent(separator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(lblPagado2)
+                .addComponent(lblPagado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblRestante)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
@@ -230,9 +230,9 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
     private javax.swing.JButton btnConectarTerminal;
     private javax.swing.JButton btnContinuar;
     private javax.swing.JLabel lblAPagar;
+    private javax.swing.JLabel lblEstatus;
+    private javax.swing.JLabel lblFolio;
     private javax.swing.JLabel lblPagado;
-    private javax.swing.JLabel lblPagado1;
-    private javax.swing.JLabel lblPagado2;
     private javax.swing.JLabel lblRestante;
     private javax.swing.JLabel lblSimbolo1;
     private javax.swing.JLabel lblTituloPagoTarjeta;

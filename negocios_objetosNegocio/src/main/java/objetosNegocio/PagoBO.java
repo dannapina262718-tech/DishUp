@@ -95,23 +95,62 @@ public class PagoBO {
     
     public ResultadoPagoDTO registrarPago(SolicitudPagoDTO solicitud) throws NegocioException {
         if (solicitud == null) {
-            throw new NegocioException("Solicitud vacia");
+            throw new NegocioException("Solicitud vacía");
         }
 
         if (solicitud.getIdComanda() == null || solicitud.getIdComanda().isBlank()) {
             throw new NegocioException("Id de comanda inválido");
         }
 
+        if (solicitud.getMonto() <= 0) {
+            throw new NegocioException("El monto a pagar debe ser mayor a cero.");
+        }
+
+        float restante;
+
+        try {
+            Comanda comanda = comandaDAO.obtenerPorId(solicitud.getIdComanda());
+
+            if (comanda == null) {
+                throw new NegocioException("La comanda no existe.");
+            }
+
+            if (comanda.getEstado() != EstadoComanda.LISTA) {
+                throw new NegocioException("Solo se pueden pagar comandas listas.");
+            }
+
+            float totalPagado = 0;
+
+            if (comanda.getPagos() != null) {
+                for (Pago pago : comanda.getPagos()) {
+                    totalPagado += pago.getMonto();
+                }
+            }
+
+            restante = comanda.getMontoTotal() - totalPagado;
+
+            if (restante <= 0) {
+                throw new NegocioException("La comanda ya está liquidada.");
+            }
+
+            if (solicitud.getMonto() > restante) {
+                throw new NegocioException("El monto a pagar no puede ser mayor al restante.");
+            }
+
+        } catch (PersistenciaException e) {
+            throw new NegocioException("Error al validar la comanda.", e);
+        }
+
         IProcesadorPago procesador = ProcesadorPagoFactory.crearProcesador(solicitud.getMetodoPago());
 
         ResultadoPagoDTO resultado = procesador.procesarPago(solicitud);
-        
+
         if (!resultado.isAprobado()) {
             throw new NegocioException(resultado.getMensaje());
         }
-        
+
         Pago pago = adapter.aEntidad(resultado);
-        
+
         try {
             boolean guardado = comandaDAO.insertarPagoAComanda(solicitud.getIdComanda(), pago);
 
@@ -119,12 +158,20 @@ public class PagoBO {
                 throw new NegocioException("No se pudo guardar el pago en la comanda.");
             }
 
+            float nuevoRestante = restante - resultado.getMontoPagado();
+            resultado.setSaldoRestante(nuevoRestante);
+
+            if (Math.abs(nuevoRestante) < 0.01f) {
+                comandaDAO.actualizarEstado(
+                        solicitud.getIdComanda(),
+                        EstadoComanda.PAGADA.toString()
+                );
+            }
+
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al guardar el pago", e);
         }
+
         return resultado;
     }
-
-    
-    
 }

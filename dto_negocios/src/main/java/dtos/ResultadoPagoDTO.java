@@ -17,6 +17,8 @@ public class ResultadoPagoDTO {
     private float montoPagado;
     private MetodoPago metodoPago;
     private DetallePago detallePago;
+    
+    private float saldoRestante;
 
     public ResultadoPagoDTO() {
     }
@@ -68,4 +70,13 @@ public class ResultadoPagoDTO {
     public void setDetallePago(DetallePago detallePago) {
         this.detallePago = detallePago;
     }
+
+    public float getSaldoRestante() {
+        return saldoRestante;
+    }
+
+    public void setSaldoRestante(float saldoRestante) {
+        this.saldoRestante = saldoRestante;
+    }
+    
 }

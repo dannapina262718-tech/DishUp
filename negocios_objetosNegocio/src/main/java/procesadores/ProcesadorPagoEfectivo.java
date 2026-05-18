@@ -29,21 +29,39 @@ public class ProcesadorPagoEfectivo implements IProcesadorPago {
             throw new NegocioException("La solicitud de pago es inválida.");
         }
 
+        if (solicitud.getIdComanda() == null || solicitud.getIdComanda().isBlank()) {
+            throw new NegocioException("El id de la comanda es inválido.");
+        }
+
+        if (solicitud.getMetodoPago() != MetodoPago.EFECTIVO) {
+            throw new NegocioException("El método de pago no corresponde a efectivo.");
+        }
+
         if (solicitud.getMonto() <= 0) {
-            throw new NegocioException("El monto debe ser mayor a cero.");
+            throw new NegocioException("El monto a pagar debe ser mayor a cero.");
+        }
+
+        if (solicitud.getDetallePago() == null) {
+            throw new NegocioException("El detalle del pago es obligatorio.");
         }
 
         if (!(solicitud.getDetallePago() instanceof DetallePagoEfectivo)) {
             throw new NegocioException("El detalle del pago efectivo es inválido.");
         }
 
-        DetallePagoEfectivo detalle = (DetallePagoEfectivo) solicitud.getDetallePago();
+        DetallePagoEfectivo detalle =
+                (DetallePagoEfectivo) solicitud.getDetallePago();
+
+        if (detalle.getMontoRecibido() <= 0) {
+            throw new NegocioException("El monto recibido debe ser mayor a cero.");
+        }
 
         if (detalle.getMontoRecibido() < solicitud.getMonto()) {
             throw new NegocioException("El monto recibido es insuficiente.");
         }
 
         float cambio = detalle.getMontoRecibido() - solicitud.getMonto();
+
         detalle.setCambio(cambio);
 
         return new ResultadoPagoDTO(
@@ -53,5 +71,5 @@ public class ProcesadorPagoEfectivo implements IProcesadorPago {
                 MetodoPago.EFECTIVO,
                 detalle
         );
-    } 
+    }
 }

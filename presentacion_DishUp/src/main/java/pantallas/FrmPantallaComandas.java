@@ -493,6 +493,21 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
             } catch (Exception ex) {
                 btnPago.setVisible(false);
             }
+            
+            // -- PAGO POR COMANDA --
+            btnPago.addActionListener(e -> {
+                try {
+                    coordinador.mostrarPagoComanda(comanda);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            });
+            // ------------------------
 
             header.add(lblTitulo, BorderLayout.WEST);
             header.add(btnPago, BorderLayout.EAST);
