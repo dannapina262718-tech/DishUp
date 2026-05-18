@@ -25,4 +25,8 @@ public interface IComandaDAO {
 
     public boolean actualizarComanda(String idComanda, List<Pedido> pedidos) throws PersistenciaException;
     
+    public float calcularMontoComanda(String idComanda) throws PersistenciaException;
+    
+    public void recalcularMonto(String idComanda) throws PersistenciaException;
+    
 }

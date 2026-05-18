@@ -37,15 +37,21 @@ public class ComandaBO {
     }
 
     public void crearComanda(String nombreCliente, int numeroMesa, List<PedidoDTO> pedidosDTO, EmpleadoDTO empleadoActual) throws NegocioException {
-        procesarComanda(pedidosDTO);
-        for (PedidoDTO pedido : pedidosDTO) {
-            pedido.setEstado(EstadoPedidoDTO.PENDIENTE);
-        }
-        Comanda comanda = adapter.aEntidad(nombreCliente, numeroMesa, pedidosDTO, empleadoActual);
-        comanda.setEstado(calcularEstadoComanda(comanda.getPedidos()));
-
+        
         try {
-            comandaDAO.insertarComanda(comanda);
+            procesarComanda(pedidosDTO);
+
+            for (PedidoDTO pedido : pedidosDTO) {
+                pedido.setEstado(EstadoPedidoDTO.PENDIENTE);
+            }
+
+            Comanda comanda = adapter.aEntidad(nombreCliente, numeroMesa, pedidosDTO, empleadoActual);
+
+            comanda.setEstado(calcularEstadoComanda(comanda.getPedidos()));
+            Comanda insertada = comandaDAO.insertarComanda(comanda);
+            
+            comandaDAO.recalcularMonto(insertada.getId());
+            
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al guardar comanda", e);
         }
@@ -98,6 +104,12 @@ public class ComandaBO {
             }
 
             Comanda comandaActual = comandaDAO.obtenerPorId(idComanda);
+            if (comandaActual == null) {
+                throw new NegocioException("No se encontró la comanda");
+            }
+            
+            comandaDAO.recalcularMonto(comandaActual.getId());
+            
             EstadoComanda nuevoEstado = calcularEstadoComanda(comandaActual.getPedidos());
 
             comandaDAO.actualizarEstado(idComanda, nuevoEstado.name());
@@ -148,7 +160,7 @@ public class ComandaBO {
         try {
             Comanda comanda = comandaDAO.obtenerPorId(id);
             if (comanda == null) {
-                return null;
+                throw new NegocioException("No existe la comanda");
             }
             return adapter.aDTO(comanda);
         } catch (PersistenciaException e) {
