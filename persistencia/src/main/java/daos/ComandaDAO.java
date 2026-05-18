@@ -196,7 +196,7 @@ public class ComandaDAO implements IComandaDAO {
                 boolean tienePedidosListos = false;
 
                 for (PedidoEntidadMongo pedido : mongo.getPedidos()) {
-                    if (pedido.getEstado().name().equals("LISTA")) {
+                    if (pedido.getEstado() != null && "LISTA".equals(pedido.getEstado().name())) {
                         tienePedidosListos = true;
                         break;
                     }

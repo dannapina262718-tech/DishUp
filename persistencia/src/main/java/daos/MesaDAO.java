@@ -390,8 +390,8 @@ public class MesaDAO implements IMesaDAO {
 
             UpdateResult result = coleccion.updateOne(eq("numero", numero), set("estado", estado));
 
-            if (result.getModifiedCount() == 0) {
-                throw new PersistenciaException("No se pudo actualizar la mesa");
+            if (result.getMatchedCount() == 0) {
+                throw new PersistenciaException("No existe la mesa con numero: "+ numero);
             }
 
         } catch (MongoException ex) {

@@ -64,7 +64,7 @@ public class ComandaControl {
         try {
             comandaBO.crearComanda(nombreCliente, numeroMesa, pedidos, empleadoActual);
         } catch (NegocioException ex) {
-            throw new ComandasException("Error al crear la comanda: " + ex.getMessage());
+            throw new ComandasException(ex.getMessage());
         }
     }
 
@@ -232,9 +232,6 @@ public class ComandaControl {
 
             // persistir pedidos
             comandaBO.actualizarComanda(comanda);
-
-            // recalcular estado 
-            comandaBO.recalcularYActualizarEstadoComanda(comanda);
 
         } catch (NegocioException ex) {
             throw new ComandasException("Error al entregar comanda: " + ex.getMessage());

@@ -61,12 +61,16 @@ public class ComandaBO {
             comanda.setEstado(calcularEstadoComanda(comanda.getPedidos()));
             Comanda insertada = comandaDAO.insertarComanda(comanda);
             
+            if(insertada == null){
+                throw new NegocioException("la mesa no se logro insertar");
+            }
+            
             comandaDAO.recalcularMonto(insertada.getId());
             
             mesaDAO.cambiarEstadoMesaPorNumero(comanda.getMesa().getNumero(), EstadoMesa.OCUPADA);
 
         } catch (PersistenciaException e) {
-            throw new NegocioException("Error al guardar comanda", e);
+            throw new NegocioException(e.getMessage());
         }
     }
 
@@ -184,14 +188,22 @@ public class ComandaBO {
 
     public void actualizarComanda(ComandaDTO comandaDTO) throws NegocioException {
         List<Pedido> pedidos = pedidoAdapter.listaAEntidad(comandaDTO.getPedidos());
+        
         try {
             comandaDAO.actualizarComanda(comandaDTO.getId(), pedidos);
             
             comandaDAO.recalcularMonto(comandaDTO.getId());
             
-            EstadoComanda nuevoEstado = calcularEstadoComanda(pedidos);
+            Comanda comandaActualizada = comandaDAO.obtenerPorId(comandaDTO.getId());
+            
+            if (comandaActualizada == null) {
+                throw new NegocioException("No se pudo obtener la comanda actualizada");
+            }
+            
+            EstadoComanda nuevoEstado = calcularEstadoComanda(comandaActualizada.getPedidos());
             
             comandaDAO.actualizarEstado(comandaDTO.getId(), nuevoEstado.name());
+            
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al actualizar comanda", e);
         }

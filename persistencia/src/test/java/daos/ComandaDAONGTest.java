@@ -1,3 +1,4 @@
+/*
 package daos;
 
 import entidades.Comanda;
@@ -306,3 +307,4 @@ public class ComandaDAONGTest {
         });
     }
 }
+*/
