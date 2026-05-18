@@ -15,7 +15,7 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
  * @author DishUp
  */
 public class EmpleadoEntidadMongo {
-     @BsonId
+    @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String id;
 

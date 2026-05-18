@@ -6,6 +6,7 @@ package pantallas;
 
 import coordinador.CoordinadorInterfaces;
 import dtos.EmpleadoDTO;
+import enums.RolEmpleadoDTO;
 import excepciones.EmpleadosException;
 import javax.swing.JOptionPane;
 
@@ -162,8 +163,11 @@ public class FrmInicioSesión extends javax.swing.JFrame {
             coordinador.activarEmpleado(resultado);
             
             switch (resultado.getRol()) {
-                case "MESERO":
-                    coordinador.abrirFrmComandasMesero(resultado.getId(), resultado.getNombres());
+                case MESERO:
+                    coordinador.abrirFrmComandasMesero(resultado, resultado.getNombres());
+                    break;
+                case GERENTE:
+                    coordinador.pantallaMesas(resultado);
                     break;
                 default:
                     JOptionPane.showMessageDialog(this, "Rol no reconocido"); 

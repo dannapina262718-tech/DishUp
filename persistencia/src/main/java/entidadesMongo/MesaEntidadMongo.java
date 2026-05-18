@@ -20,7 +20,7 @@ public class MesaEntidadMongo {
     @BsonId
     @BsonRepresentation(BsonType.OBJECT_ID)
     private String id;
-    
+
     private Integer numero;
     private EstadoMesa estado;
     private String idMesero;

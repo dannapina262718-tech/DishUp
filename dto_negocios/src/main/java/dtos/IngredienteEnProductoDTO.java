@@ -8,7 +8,7 @@ package dtos;
 
 /**
  *
- * @author Alejandra Leal Armenta, 262719
+ * @author DishUp
  */
 
 public class IngredienteEnProductoDTO {

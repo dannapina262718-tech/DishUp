@@ -17,6 +17,7 @@ import entidades.Pago;
 import entidades.Pedido;
 import entidadesMongo.ComandaEntidadMongo;
 import entidadesMongo.PagoEntidadMongo;
+import entidadesMongo.PedidoEntidadMongo;
 import excepciones.PersistenciaException;
 import interfaces.IComandaDAO;
 import java.util.ArrayList;
@@ -172,83 +173,6 @@ public class ComandaDAO implements IComandaDAO {
         }
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /*
-    @Override
-    public boolean insertarPagoAComanda(String idComanda, Pago pago) throws PersistenciaException {
-        if (idComanda == null || idComanda.isBlank()) {
-            throw new PersistenciaException("El id de la comanda es inválido");
-        }
-        
-        if (pago == null){
-            throw new PersistenciaException("Pago nulo");
-        }
-        
-        try {
-            UpdateResult resultado = coleccion.updateOne(
-                    eq("_id", new ObjectId(idComanda)),
-                    com.mongodb.client.model.Updates.push("pagos",pago)
-            );
-
-            return resultado.getModifiedCount() > 0;
-
-        } catch (Exception ex) {
-            throw new PersistenciaException("No fue posible agregar el pago a la comanda.", ex);
-        }
-    }
-    */
-    
     @Override
     public boolean insertarPagoAComanda(String idComanda, Pago pago)
             throws PersistenciaException {
@@ -279,5 +203,46 @@ public class ComandaDAO implements IComandaDAO {
         }
     }
 
+    @Override
+    public List<Comanda> obtenerComandasListas() throws PersistenciaException {
+        try {
+            List<ComandaEntidadMongo> listaMongo = coleccion.find().into(new ArrayList<>());
+            List<Comanda> lista = new ArrayList<>();
+
+            for (ComandaEntidadMongo mongo : listaMongo) {
+
+                boolean tienePedidosListos = false;
+
+                for (PedidoEntidadMongo pedido : mongo.getPedidos()) {
+                    if (pedido.getEstado().name().equals("LISTA")) {
+                        tienePedidosListos = true;
+                        break;
+                    }
+                }
+
+                if (tienePedidosListos) {
+                    lista.add(adapter.aDominio(mongo));
+                }
+            }
+
+            return lista;
+
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al obtener comandas con pedidos listos", e);
+        }
+    }
+
+    @Override
+    public boolean actualizarComanda(String idComanda, List<Pedido> pedidos) throws PersistenciaException {
+        try {
+            UpdateResult result = coleccion.updateOne(
+                    eq("_id", new ObjectId(idComanda)),
+                    set("pedidos", pedidos)
+            );
+            return result.getModifiedCount() > 0;
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al actualizar comanda", e);
+        }
+    }
 }
 

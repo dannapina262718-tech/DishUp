@@ -54,7 +54,6 @@ public class ComandaNegocioAdapter {
 
                 pedidoDTO.setId(pedido.getId());
                 pedidoDTO.setIdProducto(pedido.getIdProducto());
-
                 pedidoDTO.setNombreProducto(pedido.getNombreProducto());
                 pedidoDTO.setCantidad(pedido.getCantidad());
                 pedidoDTO.setDescripcion(pedido.getDescripcion());
@@ -103,6 +102,7 @@ public class ComandaNegocioAdapter {
                 Pedido pedido = new Pedido();
 
                 pedido.setNombreProducto(dto.getNombreProducto());
+                pedido.setIdProducto(dto.getIdProducto());
                 pedido.setCantidad(dto.getCantidad());
                 pedido.setDescripcion(dto.getDescripcion());
                 pedido.setEstado(EstadoPedido.PENDIENTE);

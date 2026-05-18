@@ -23,4 +23,11 @@ public interface IGestionComandas {
     public void agregarPedidosAComanda(String idComanda, List<PedidoDTO> pedidos) throws ComandasException;
 
     public boolean eliminarComanda(String idComanda) throws ComandasException;
+
+    public List<ComandaDTO> obtenerComandasListas() throws ComandasException;
+
+    public void entregarComanda(String idComanda) throws ComandasException;
+    
+    public void actualizarComanda(ComandaDTO comanda) throws ComandasException;
+    
 }

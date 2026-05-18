@@ -10,6 +10,8 @@ package enums;
  */
 public enum EstadoComandaDTO {
     PENDIENTE,
+    EN_PREPARACION,
     LISTA,
+    ENTREGADA,
     PAGADA
 }

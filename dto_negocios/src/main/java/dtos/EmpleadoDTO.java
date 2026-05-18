@@ -5,6 +5,8 @@
 
 package dtos;
 
+import enums.EstadoEmpleadoDTO;
+import enums.RolEmpleadoDTO;
 
 /**
  *
@@ -18,10 +20,10 @@ public class EmpleadoDTO {
     private String apellidoMaterno;
 
     private String user;
-    private String rol;
-    private String estado;
+    private RolEmpleadoDTO rol;
+    private EstadoEmpleadoDTO estado;
 
-    public EmpleadoDTO(String id, String nombres, String apellidoPaterno, String apellidoMaterno, String user, String rol, String estado) {
+    public EmpleadoDTO(String id, String nombres, String apellidoPaterno, String apellidoMaterno, String user, RolEmpleadoDTO rol, EstadoEmpleadoDTO estado) {
         this.id = id;
         this.nombres = nombres;
         this.apellidoPaterno = apellidoPaterno;
@@ -31,7 +33,7 @@ public class EmpleadoDTO {
         this.estado = estado;
     }
 
-    public EmpleadoDTO(String nombres, String apellidoPaterno, String apellidoMaterno, String user, String rol, String estado) {
+    public EmpleadoDTO(String nombres, String apellidoPaterno, String apellidoMaterno, String user, RolEmpleadoDTO rol, EstadoEmpleadoDTO estado) {
         this.nombres = nombres;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
@@ -84,19 +86,19 @@ public class EmpleadoDTO {
         this.user = user;
     }
 
-    public String getRol() {
+    public RolEmpleadoDTO getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(RolEmpleadoDTO rol) {
         this.rol = rol;
     }
 
-    public String getEstado() {
+    public EstadoEmpleadoDTO getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoEmpleadoDTO estado) {
         this.estado = estado;
     }
     

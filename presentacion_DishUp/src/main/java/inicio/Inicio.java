@@ -16,6 +16,8 @@ public class Inicio {
         coordinador.CoordinadorInterfaces coordinador = new CoordinadorInterfaces();
         FrmInicioSesión frm = new FrmInicioSesión();
         frm.setVisible(true);
+        
+        System.out.println("prueba de las branches");
     }
 
 }

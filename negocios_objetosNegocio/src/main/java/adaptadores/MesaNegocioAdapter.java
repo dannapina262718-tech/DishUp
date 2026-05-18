@@ -58,4 +58,14 @@ public class MesaNegocioAdapter {
 
         return listaDTO;
     }
+    
+    public List<Mesa> listaDTOAEntidad(List<MesaDTO> mesas) {
+
+        List<Mesa> listaEntidad = new ArrayList<>();
+
+        for (MesaDTO m : mesas) {
+            listaEntidad.add(aEntidad(m));
+        }
+        return listaEntidad;
+    }
 }

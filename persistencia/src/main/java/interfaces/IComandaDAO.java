@@ -2,6 +2,7 @@ package interfaces;
 
 import entidades.Comanda;
 import entidades.Pago;
+import entidades.Pedido;
 import excepciones.PersistenciaException;
 import java.util.List;
 
@@ -18,10 +19,13 @@ public interface IComandaDAO {
     boolean actualizarEstado(String idComanda, String nuevoEstado) throws PersistenciaException;
 
     boolean agregarPedidoAComanda(String idComanda, entidades.Pedido nuevoPedido) throws PersistenciaException;
-    
+
     public boolean eliminarComanda(String idComanda) throws PersistenciaException;
 
     public boolean insertarPagoAComanda(String idComanda, Pago pago) throws PersistenciaException;
 
+    public List<Comanda> obtenerComandasListas() throws PersistenciaException;
+
+    public boolean actualizarComanda(String idComanda, List<Pedido> pedidos) throws PersistenciaException;
     
 }

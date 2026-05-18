@@ -3,7 +3,9 @@ package adaptadores;
 import dtos.EmpleadoDTO;
 import entidades.Empleado;
 import enums.EstadoEmpleado;
+import enums.EstadoEmpleadoDTO;
 import enums.RolEmpleado;
+import enums.RolEmpleadoDTO;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +26,8 @@ public class EmpleadoNegocioAdapter {
         dto.setApellidoPaterno(empleado.getApellidoPaterno());
         dto.setApellidoMaterno(empleado.getApellidoMaterno());
         dto.setUser(empleado.getUser());
-        dto.setRol(empleado.getRol().name());
-        dto.setEstado(empleado.getEstado().name());
+        dto.setRol(RolEmpleadoDTO.valueOf(empleado.getRol().name()));
+        dto.setEstado(EstadoEmpleadoDTO.valueOf(empleado.getEstado().name()));
 
         return dto;
     }
@@ -42,8 +44,8 @@ public class EmpleadoNegocioAdapter {
         empleado.setApellidoPaterno(dto.getApellidoPaterno());
         empleado.setApellidoMaterno(dto.getApellidoMaterno());
         empleado.setUser(dto.getUser());
-        empleado.setRol(RolEmpleado.valueOf(dto.getRol()));
-        empleado.setEstado(EstadoEmpleado.valueOf(dto.getEstado()));
+        empleado.setRol(RolEmpleado.valueOf(dto.getRol().name()));
+        empleado.setEstado(EstadoEmpleado.valueOf(dto.getEstado().name()));
 
         return empleado;
     }

@@ -2,19 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
  */
+
 package enums;
 
 /**
- * Enumerador para los estados de los pedidos.
- * 
- * Representa el estado en el que se encuentra el pedido durante su proceso de 
- * inicio a fin.
- * 
+ *
  * @author DishUp
  */
-public enum EstadoPedidoDTO {
-    PENDIENTE,
-    EN_PREPARACION,
-    LISTA, 
-    ENTREGADO
+public enum EstadoEmpleadoDTO {
+    ACTIVO,
+    INACTIVO
 }

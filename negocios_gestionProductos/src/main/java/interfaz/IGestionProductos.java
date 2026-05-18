@@ -15,6 +15,6 @@ public interface IGestionProductos {
     List<IngredienteEnProductoDTO> obtenerIngredientesRemovibles(String idProducto) throws ProductosException;
 
     List<ProductoIngredienteDTO> obtenerIngredientesDeProducto(String idProducto) throws ProductosException;
-
-    List<ProductoDTO> obtenerTodos() throws ProductosException;
+    
+    //List<ProductoDTO> obtenerTodos() throws ProductosException;
 }

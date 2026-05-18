@@ -35,4 +35,19 @@ public class ComandaFachada implements IGestionComandas {
     public boolean eliminarComanda(String idComanda) throws ComandasException {
         return comandaControl.eliminarComanda(idComanda);
     }
+
+    @Override
+    public List<ComandaDTO> obtenerComandasListas() throws ComandasException {
+        return comandaControl.obtenerComandasListas();
+    }
+
+    @Override
+    public void entregarComanda(String idComanda) throws ComandasException {
+        comandaControl.entregarComanda(idComanda);
+    }
+
+    @Override
+    public void actualizarComanda(ComandaDTO comanda) throws ComandasException {
+        comandaControl.actualizarComanda(comanda);
+    }
 }

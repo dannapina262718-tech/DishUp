@@ -8,18 +8,21 @@ package interfaces;
 import entidades.Empleado;
 import enums.EstadoEmpleado;
 import excepciones.PersistenciaException;
+import java.util.List;
 
 /**
  *
  * @author DishUp
  */
 public interface IEmpleadoDAO {
-
-    public Empleado insertarEmpleado(Empleado empleado) throws PersistenciaException;
     
-    public Empleado obtenerEmpleado(Empleado empleado) throws PersistenciaException;
+    public Empleado obtenerEmpleadoPorId(String id) throws PersistenciaException;
     
-    public Empleado obtenerEmpleadoPorUser(String user) throws PersistenciaException;
+    public Empleado obtenerEmpleadoPorUser(String id) throws PersistenciaException;
     
-    public void actualizarEstadoEmpleado(String id, EstadoEmpleado estado) throws PersistenciaException;
+    public void actualizarEstadoEmpleado(Empleado empleado, EstadoEmpleado estado) throws PersistenciaException;
+    
+    public List<Empleado> obtenerMeserosActivos() throws PersistenciaException;
+    
+    public List<Empleado> buscarMeserosPorUserNombre(String filtro) throws PersistenciaException;
 }

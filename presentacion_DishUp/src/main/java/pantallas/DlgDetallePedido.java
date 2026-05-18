@@ -1,5 +1,6 @@
 package pantallas;
 
+import coordinador.CoordinadorInterfaces;
 import dtos.PedidoDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,17 +22,19 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 /**
- * 
+ *
  * @author DishUp
  */
 public class DlgDetallePedido extends JDialog {
 
     private PedidoDTO pedido;
 
-    public DlgDetallePedido(java.awt.Frame parent, boolean modal, PedidoDTO pedido) {
-        super(parent, modal);
+    private CoordinadorInterfaces coordinador;
 
+    public DlgDetallePedido(java.awt.Frame parent, boolean modal, PedidoDTO pedido, CoordinadorInterfaces coordinador) {
+        super(parent, modal);
         this.pedido = pedido;
+        this.coordinador = coordinador;
 
         setSize(450, 500);
         setLocationRelativeTo(null);
@@ -107,7 +110,15 @@ public class DlgDetallePedido extends JDialog {
         JLabel lblPrecio = new JLabel("Precio: $" + pedido.getPrecioProducto());
         lblPrecio.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 
-        JLabel lblEstado = new JLabel("Estado: " + pedido.getEstado());
+        String estadoTexto = pedido.getEstado().toString();
+
+        if (estadoTexto.equals("EN_PREPARACION")) {
+            estadoTexto = "EN PREPARACIÓN";
+        } else if (estadoTexto.equals("LISTA")) {
+            estadoTexto = "LISTO";
+        }
+
+        JLabel lblEstado = new JLabel("Estado: " + estadoTexto);
         lblEstado.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
         lblEstado.setForeground(Color.decode("#000000"));
 
@@ -130,50 +141,6 @@ public class DlgDetallePedido extends JDialog {
         // FOOTER
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 20));
         footer.setBackground(Color.WHITE);
-
-        JButton btnModificar = new JButton("Editar pedido");
-        btnModificar.setBackground(Color.decode("#99C9A1"));
-        btnModificar.setFocusPainted(false);
-        btnModificar.setPreferredSize(new Dimension(140, 40));
-        btnModificar.setFont(new Font("Trebuchet MS", Font.BOLD, 14));
-
-        JButton btnCancelar = new JButton("Cancelar pedido");
-        btnCancelar.setBackground(Color.decode("#99C9A1"));
-        btnCancelar.setFocusPainted(false);
-        btnCancelar.setPreferredSize(new Dimension(140, 40));
-        btnCancelar.setFont(new Font("Trebuchet MS", Font.BOLD, 14));
-
-        btnModificar.addActionListener(e -> {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Editar pedido"
-            );
-
-        });
-
-        btnCancelar.addActionListener(e -> {
-
-            int opcion = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Cancelar pedido?",
-                    "Confirmación",
-                    JOptionPane.YES_NO_OPTION
-            );
-
-            if (opcion == JOptionPane.YES_OPTION) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Pedido cancelado"
-                );
-
-                dispose();
-            }
-        });
-
-        footer.add(btnModificar);
-        footer.add(btnCancelar);
 
         panelPrincipal.add(footer, BorderLayout.SOUTH);
     }

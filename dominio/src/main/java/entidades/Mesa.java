@@ -26,6 +26,12 @@ public class Mesa {
         this.idMesero = idMesero;
     }
 
+    public Mesa(Integer numero, EstadoMesa estado) {
+        this.numero = numero;
+        this.estado = estado;
+    }
+
+
     public String getId() {
         return id;
     }

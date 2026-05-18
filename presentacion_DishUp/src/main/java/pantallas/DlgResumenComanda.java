@@ -21,6 +21,7 @@ public class DlgResumenComanda extends javax.swing.JDialog {
     private List<PedidoDTO> pedidosExistentes = new ArrayList<>();
     private List<PedidoDTO> pedidosNuevos = new ArrayList<>();
     private boolean modoAgregar;
+    private boolean modoEdicion;
     private ComandaDTO comandaActual;
 
     /**
@@ -30,8 +31,7 @@ public class DlgResumenComanda extends javax.swing.JDialog {
         super(parent, true);
         this.coordinador = coordinador;
         initComponents();
-        this.productos = productos;
-        this.pedidosNuevos = productos;
+        this.pedidosNuevos = coordinador.getComandaTemporal();
         this.modoAgregar = false;
         this.numMesa = numMesa;
         this.nombreCliente = nombreCliente;
@@ -66,6 +66,27 @@ public class DlgResumenComanda extends javax.swing.JDialog {
 
         setMesaAndCliente(numMesa, nombreCliente);
 
+        this.setLocationRelativeTo(null);
+    }
+
+    public DlgResumenComanda(
+            CoordinadorInterfaces coordinador,
+            java.awt.Frame parent,
+            ComandaDTO comandaEdicion,
+            List<PedidoDTO> pedidosNuevos) {
+        super(parent, true);
+        this.coordinador = coordinador;
+        // Los pedidos existentes son los que quedaron en la comanda tras quitar/modificar
+        this.pedidosExistentes = new ArrayList<>(comandaEdicion.getPedidos());
+        this.pedidosNuevos = pedidosNuevos != null ? pedidosNuevos : new ArrayList<>();
+        this.numMesa = comandaEdicion.getNumMesa();
+        this.nombreCliente = comandaEdicion.getNombreCliente();
+        this.modoAgregar = false;
+        this.modoEdicion = true; // <-- modo edición
+        this.comandaActual = comandaEdicion;
+        initComponents();
+        configurarListaPedidos();
+        setMesaAndCliente(comandaEdicion.getNumMesa(), comandaEdicion.getNombreCliente());
         this.setLocationRelativeTo(null);
     }
 
@@ -183,22 +204,29 @@ public class DlgResumenComanda extends javax.swing.JDialog {
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
     private void btnConfirmarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfirmarMouseClicked
-        if (pedidosNuevos == null || pedidosNuevos.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Debes agregar al menos un pedido nuevo para crear la comanda",
-                    "Validación",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
+        if (modoEdicion) {
+            coordinador.actualizarComanda(comandaActual, pedidosNuevos);
+
+        } else if (modoAgregar) {
+            if (pedidosNuevos == null || pedidosNuevos.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Debes agregar al menos un pedido nuevo",
+                        "Validación", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            coordinador.agregarPedidosAComanda(comandaActual, pedidosNuevos);
+
+        } else {
+            // NUEVA comanda — usa los pedidosNuevos
+            if (pedidosNuevos == null || pedidosNuevos.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Debes agregar al menos un pedido",
+                        "Validación", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            coordinador.enviarComandaAFinal(nombreCliente, numMesa, pedidosNuevos); 
         }
 
-        if (modoAgregar) {
-            coordinador.agregarPedidosAComanda(comandaActual, numMesa, nombreCliente);
-        } else {
-            coordinador.enviarComandaAFinal(nombreCliente, numMesa, productos);
-        }
-        
-        this.dispose();
-        
     }//GEN-LAST:event_btnConfirmarMouseClicked
 
 
@@ -268,5 +296,4 @@ public class DlgResumenComanda extends javax.swing.JDialog {
         pnlListaProductos.revalidate();
         pnlListaProductos.repaint();
     }
-
 }

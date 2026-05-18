@@ -26,6 +26,11 @@ public class MesaDTO {
         this.idMesero = idMesero;
     }
 
+    public MesaDTO(int numeroMesa, EstadoMesaDTO estado) {
+        this.numeroMesa = numeroMesa;
+        this.estado = estado;
+    }
+        
     public MesaDTO() {
     }
 

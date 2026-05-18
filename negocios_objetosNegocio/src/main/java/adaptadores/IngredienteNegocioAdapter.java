@@ -73,7 +73,7 @@ public class IngredienteNegocioAdapter {
                 ProductoIngredienteDTO dto = new ProductoIngredienteDTO();
 
                 dto.setIdProducto(idProducto);
-                dto.setIdIngrediente(ingrediente.getNombre());
+                dto.setIdIngrediente(ingrediente.getId());
                 dto.setCantidadRequerida(ingrediente.getCantidad());
                 dto.setRemovible(ingrediente.isRemovible());
 

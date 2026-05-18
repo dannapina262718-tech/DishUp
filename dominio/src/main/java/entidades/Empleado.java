@@ -34,6 +34,15 @@ public class Empleado {
         this.estado = estado;
     }
 
+    public Empleado(String nombres, String apellidoPaterno, String apellidoMaterno, String user, RolEmpleado rol, EstadoEmpleado estado) {
+        this.nombres = nombres;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
+        this.user = user;
+        this.rol = rol;
+        this.estado = estado;
+    }
+        
     public String getId() {
         return id;
     }

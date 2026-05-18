@@ -79,13 +79,6 @@ public class ProductoBO {
         }
     }
 
-    public List<String> obtenerModificadoresRemoviblesPorProducto(String idProducto) throws NegocioException {
-
-        List<IngredienteEnProductoDTO> ingredientes = obtenerIngredientesRemoviblesPorProducto(idProducto);
-        
-        return ingredienteAdapter.convertirIngredientesAModificadores(ingredientes);
-    }
-
     public List<ProductoIngredienteDTO> obtenerIngredientesDeProducto(String idProducto) throws NegocioException {
 
         if (idProducto == null || idProducto.isBlank()) {
@@ -107,18 +100,4 @@ public class ProductoBO {
             throw new NegocioException("No fue posible obtener los ingredientes.", ex);
         }
     }
-     /*
-    public List<ProductoDTO> obtenerProductos() throws NegocioException {
-
-        try {
-            List<ProductoDTOInfraestructura> productosInfra = fachadaInventario.obtenerProductos();
-            List<Producto> productos = productoAdapter.listaADominio(productosInfra);
-
-            return productoAdapter.listaDominioADTO(productos);
-
-        } catch (InfraestructuraException ex) {
-            throw new NegocioException("No fue posible obtener los productos.", ex);
-        }
-    }
-    */
 }

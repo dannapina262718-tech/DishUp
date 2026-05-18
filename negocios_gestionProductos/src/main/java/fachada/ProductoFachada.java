@@ -33,9 +33,10 @@ public class ProductoFachada implements IGestionProductos{
     public List<ProductoIngredienteDTO> obtenerIngredientesDeProducto(String idProducto) throws ProductosException {
         return productoControl.obtenerIngredientesDeProducto(idProducto);
     }
-
+    /*
     @Override
     public List<ProductoDTO> obtenerTodos() throws ProductosException {
         return productoControl.obtenerTodos();
     }
+    */
 }

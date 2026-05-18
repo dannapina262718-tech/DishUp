@@ -2,9 +2,14 @@ package fachada;
 
 import control.EmpleadoControl;
 import dtos.EmpleadoDTO;
+import dtos.MesaDTO;
 import excepciones.EmpleadosException;
 import interfaz.IGestionEmpleados;
-
+import java.util.List;
+/**
+ * 
+ * @author Home
+ */
 public class EmpleadoFachada implements IGestionEmpleados{
 
     private final EmpleadoControl empleadoControl;
@@ -14,8 +19,8 @@ public class EmpleadoFachada implements IGestionEmpleados{
     }
 
     @Override
-    public EmpleadoDTO obtenerEmpleado(EmpleadoDTO empleado) throws EmpleadosException {
-       return empleadoControl.obtenerEmpleado(empleado);
+    public EmpleadoDTO obtenerEmpleadoPorMesa(MesaDTO mesa) throws EmpleadosException {
+        return empleadoControl.obtenerEmpleadoPorMesa(mesa);
     }
 
     @Override
@@ -26,5 +31,20 @@ public class EmpleadoFachada implements IGestionEmpleados{
     @Override
     public void activarEmpleado(EmpleadoDTO empleado) throws EmpleadosException {
         empleadoControl.activarEmpleado(empleado);
+    }
+
+    @Override
+    public void desactivarEmpleado(EmpleadoDTO empleado) throws EmpleadosException {
+        empleadoControl.desactivarEmpleado(empleado);
+    }
+
+    @Override
+    public List<EmpleadoDTO> obtenerMeserosActivos() throws EmpleadosException {
+        return empleadoControl.obtenerMeserosActivos();
+    }
+
+    @Override
+    public List<EmpleadoDTO> buscarMeserosNombreUser(String filtro) throws EmpleadosException {
+        return empleadoControl.buscarMeserosPorUserNombre(filtro);
     }
 }

@@ -9,6 +9,7 @@ import dtos.ComandaDTO;
 import dtos.IngredienteEnProductoDTO;
 import dtos.PedidoDTO;
 import dtos.ProductoDTO;
+import enums.EstadoPedidoDTO;
 import enums.TipoProductoDTO;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -28,6 +29,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -41,6 +43,8 @@ public final class FrmProductos extends javax.swing.JFrame {
 
     private CoordinadorInterfaces coordinador;
 
+    private boolean esEdicion = false;
+    private ComandaDTO comandaEdicion;
     private ComandaDTO comandaActual;
 
     private Integer numMesa;
@@ -54,7 +58,7 @@ public final class FrmProductos extends javax.swing.JFrame {
     public FrmProductos(CoordinadorInterfaces coor) {
         this.coordinador = coor;
         initComponents();
-
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
 
         // CONFIGURACIÓN pnlPedidos
@@ -452,10 +456,26 @@ public final class FrmProductos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscadorKeyReleased
 
     private void btnEnviarAComandaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarAComandaActionPerformed
-        if (comandaActual != null) {
-            coordinador.abrirResumenAgregarPedido(comandaActual);
+//        if (comandaActual != null) {
+//            coordinador.abrirResumenAgregarPedido(comandaActual);
+//        } else {
+//            coordinador.abrirResumenComanda(this, numMesa, nombreCliente);
+//        }
+
+        if (esEdicion) {
+            coordinador.abrirResumenEditarComanda(comandaEdicion);
         } else {
-            coordinador.abrirResumenComanda(this, numMesa, nombreCliente);
+            if (!comandaTemporalVacia()) {
+                if (comandaActual != null) {
+                    coordinador.abrirResumenAgregarPedido(comandaActual);
+                } else {
+                    coordinador.abrirResumenComanda(this, numMesa, nombreCliente);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No has agregado pedidos aún", "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnEnviarAComandaActionPerformed
 
@@ -638,8 +658,7 @@ public final class FrmProductos extends javax.swing.JFrame {
         coordinador.abrirPersonalizacionProducto(this, producto, removibles);
     }
 
-    public void agregarPedidoVisual(PedidoDTO pedido) {
-        // 1. Limpieza de pegamentos anteriores
+    public void agregarPedidoVisual(PedidoDTO pedido, ComandaDTO comandaOrigen) {
         pnlPedidos.setLayout(new BoxLayout(pnlPedidos, BoxLayout.Y_AXIS));
         for (Component c : pnlPedidos.getComponents()) {
             if (c instanceof Box.Filler) {
@@ -647,95 +666,118 @@ public final class FrmProductos extends javax.swing.JFrame {
             }
         }
 
-        // 2. Tarjeta Blanca (Item)
         JPanel item = new JPanel();
         item.setLayout(new BoxLayout(item, BoxLayout.Y_AXIS));
-        item.setBackground(Color.WHITE);
         item.setOpaque(false);
-
-        Border margenGrisExterior = BorderFactory.createEmptyBorder(8, 18, 8, 18);
-
-        // 2. La línea gris del contorno (puedes ajustar el grosor o el tono de gris)
-        Border lineaGris = BorderFactory.createLineBorder(new Color(160, 160, 160), 2);
-
-        // 3. Margen interior blanco (para que el texto no pegue a la línea gris)
-        Border margenInteriorBlanco = BorderFactory.createEmptyBorder(12, 12, 12, 12);
-
-        item.setBorder(BorderFactory.createCompoundBorder(
-                margenGrisExterior,
-                BorderFactory.createCompoundBorder(lineaGris, margenInteriorBlanco)
-        ));
-        /*
-        // Margen externo (Gris) y margen interno (Blanco)
-        item.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createEmptyBorder(8, 18, 8, 18), 
-            BorderFactory.createEmptyBorder(12, 12, 12, 12)
-        ));
-         */
-
-        // IMPORTANTE: Alineamos la tarjeta al centro del panel de pedidos
         item.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // --- Header ---
+        // Si viene de una comanda (edición) borde naranja, si es nuevo borde gris
+        Border lineaBorde = (comandaOrigen != null)
+                ? BorderFactory.createLineBorder(Color.decode("#E58343"), 2)
+                : BorderFactory.createLineBorder(new Color(160, 160, 160), 2);
+
+        item.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(8, 18, 8, 18),
+                BorderFactory.createCompoundBorder(
+                        lineaBorde,
+                        BorderFactory.createEmptyBorder(12, 12, 12, 12)
+                )
+        ));
+
+        // HEADER
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
         header.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
-        // CLAVE 1: Alinear el header a la izquierda dentro de la tarjeta blanca
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel lblNombre = new JLabel(pedido.getNombreProducto().toUpperCase());
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
-
-        JLabel btnX = new JLabel("X");
-        btnX.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnX.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                coordinador.eliminarPedidoTemporal(pedido);
-                pnlPedidos.remove(item);
-                pnlPedidos.revalidate();
-                pnlPedidos.repaint();
-            }
-        });
         header.add(lblNombre, BorderLayout.WEST);
-        header.add(btnX, BorderLayout.EAST);
 
-        // --- Detalles (Recuadro Gris) ---
+        JLabel btnX = null;
+
+        if (pedido.getEstado() == null || pedido.getEstado() == EstadoPedidoDTO.PENDIENTE) {
+
+            btnX = new JLabel("X");
+
+            btnX.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btnX.setForeground(Color.decode("#000000"));
+
+            btnX.addMouseListener(new java.awt.event.MouseAdapter() {
+
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+
+                    int confirmacion = JOptionPane.showConfirmDialog(
+                            FrmProductos.this,
+                            "¿Quitar \"" + pedido.getNombreProducto() + "\" del pedido?",
+                            "Confirmar eliminación",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+
+                    if (confirmacion != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+
+                    if (comandaOrigen != null) {
+                        comandaOrigen.getPedidos().remove(pedido);
+                    } else {
+                        coordinador.eliminarPedidoTemporal(pedido);
+                    }
+
+                    pnlPedidos.remove(item);
+
+                    pnlPedidos.revalidate();
+                    pnlPedidos.repaint();
+                }
+            });
+
+            header.add(btnX, BorderLayout.EAST);
+        }
+
+        // DETALLES
         JTextArea txtLista = new JTextArea();
         txtLista.setEditable(false);
         txtLista.setBackground(new Color(242, 242, 242));
         txtLista.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         txtLista.setLineWrap(true);
         txtLista.setWrapStyleWord(true);
-
-        // Formatear como lista
-        String detallesFormateados = pedido.getDescripcion().replace(", ", "\n• ");
-        txtLista.setText("• " + detallesFormateados);
-
-        // Relleno interno del recuadro gris
+        String desc = (pedido.getDescripcion() != null && !pedido.getDescripcion().isEmpty())
+                ? pedido.getDescripcion().replace(", ", "\n• ")
+                : "";
+        txtLista.setText("• " + desc);
         txtLista.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        // CLAVE 2: Alinear el recuadro gris a la izquierda
         txtLista.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // --- Ensamblaje ---
+        // Doble clic
+        item.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        item.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2  && pedido.getEstado() == EstadoPedidoDTO.PENDIENTE || pedido.getEstado() == null) {
+                    coordinador.abrirModificacionPedidoExistente(
+                            FrmProductos.this, pedido, comandaOrigen, item, txtLista
+                    );
+                }
+            }
+        });
+
         item.add(header);
         item.add(Box.createVerticalStrut(10));
         item.add(txtLista);
-
-        // Ajuste de tamaño máximo para que no se estire verticalmente
         item.setMaximumSize(new Dimension(Integer.MAX_VALUE, item.getPreferredSize().height));
 
-        // 3. Agregar y poner pegamento al final
         pnlPedidos.add(item);
         pnlPedidos.add(Box.createVerticalGlue());
-
         pnlPedidos.revalidate();
         pnlPedidos.repaint();
 
-        // Auto-scroll
-        SwingUtilities.invokeLater(() -> {
-            scrollPedidos.getVerticalScrollBar().setValue(scrollPedidos.getVerticalScrollBar().getMaximum());
-        });
+        SwingUtilities.invokeLater(()
+                -> scrollPedidos.getVerticalScrollBar().setValue(
+                        scrollPedidos.getVerticalScrollBar().getMaximum()
+                )
+        );
     }
 
     public void cargarPedidosExistentes(ComandaDTO comanda) {
@@ -829,6 +871,54 @@ public final class FrmProductos extends javax.swing.JFrame {
 
         pnlPedidos.add(item);
         pnlPedidos.add(Box.createVerticalGlue());
+
+        pnlPedidos.revalidate();
+        pnlPedidos.repaint();
+    }
+
+    public void setModoNuevo() {
+        this.esEdicion = false;
+        this.comandaActual = null;
+        pnlPedidos.removeAll();
+    }
+
+    public void setModoEdicion(ComandaDTO comanda) {
+        this.esEdicion = true;
+        this.comandaEdicion = comanda;
+        this.comandaActual = comanda;
+        coordinador.limpiarComandaTemporal(); // nuevo método en coordinador
+        pnlPedidos.removeAll();
+        for (PedidoDTO pedido : comanda.getPedidos()) {
+            agregarPedidoVisual(pedido, comanda);
+        }
+        pnlPedidos.revalidate();
+        pnlPedidos.repaint();
+    }
+
+    public void cargarPedidosEditables(ComandaDTO comanda) {
+        this.comandaActual = comanda;
+        pnlPedidos.removeAll();
+
+        for (PedidoDTO pedido : comanda.getPedidos()) {
+            agregarPedidoVisual(pedido, comanda);
+        }
+
+        pnlPedidos.revalidate();
+        pnlPedidos.repaint();
+    }
+
+    private boolean comandaTemporalVacia() {
+        return coordinador.getComandaTemporal().isEmpty();
+    }
+
+    public void refrescarPedidos() {
+        pnlPedidos.removeAll();
+
+        List<PedidoDTO> pedidos = coordinador.getComandaTemporal();
+
+        for (PedidoDTO pedido : pedidos) {
+            agregarPedidoVisual(pedido, null);
+        }
 
         pnlPedidos.revalidate();
         pnlPedidos.repaint();

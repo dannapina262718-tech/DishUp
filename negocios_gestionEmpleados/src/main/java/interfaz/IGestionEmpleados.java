@@ -6,18 +6,25 @@
 package interfaz;
 
 import dtos.EmpleadoDTO;
-import excepcion.NegocioException;
+import dtos.MesaDTO;
 import excepciones.EmpleadosException;
+import java.util.List;
 
 /**
  *
- * @author Alejandra Leal Armenta, 262719
+ * @author DishUp
  */
 public interface IGestionEmpleados {
     
-    EmpleadoDTO obtenerEmpleado(EmpleadoDTO empleado) throws EmpleadosException;
+    public EmpleadoDTO obtenerEmpleadoPorMesa(MesaDTO mesa) throws EmpleadosException;
 
     EmpleadoDTO login(EmpleadoDTO empleado) throws EmpleadosException;
 
     void activarEmpleado(EmpleadoDTO empleado) throws EmpleadosException;
+
+    void desactivarEmpleado(EmpleadoDTO empleado) throws EmpleadosException;
+
+    List<EmpleadoDTO> obtenerMeserosActivos() throws EmpleadosException;
+
+    public List<EmpleadoDTO> buscarMeserosNombreUser(String filtro) throws EmpleadosException;
 }
