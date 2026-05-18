@@ -13,6 +13,7 @@ import enums.EstadoComanda;
 import enums.EstadoPedido;
 import enums.EstadoPedidoDTO;
 import excepcion.NegocioException;
+import excepciones.InfraestructuraException;
 import excepciones.PersistenciaException;
 import fachada.InventarioFachada;
 import interfaces.IComandaDAO;
@@ -59,7 +60,12 @@ public class ComandaBO {
             dto.setCantidad(pedido.getCantidad());
             inventarioList.add(dto);
         }
-        // inventarioAPI.descontarStock(inventarioList); 
+//        try {
+//           // inventarioAPI.descontarStock(inventarioList);
+//            System.out.println("DESCONTANTO STOCK");
+//        } catch (InfraestructuraException e) {
+//            throw new NegocioException("Error al descontar stock", e);
+//        }
     }
 
     public List<ComandaDTO> obtenerComandasPorMesa(int numeroMesa) {

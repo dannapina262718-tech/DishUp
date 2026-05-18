@@ -35,4 +35,9 @@ public class InventarioFachada implements ISistemaInventario{
     public boolean descontarStock(List<InventarioRequestDTO> pedidos) throws InfraestructuraException {
         return sistema.descontarStock(pedidos);
     }
+
+    @Override
+    public boolean agregarStock(String ingrediente, int cantidad) throws InfraestructuraException {
+        return sistema.agregarStock(ingrediente, cantidad);
+    }
 }
