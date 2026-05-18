@@ -303,6 +303,11 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnLevantarComandaActionPerformed
 
+    private void btnLevantarComandaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLevantarComandaMouseReleased
+        btnLevantarComanda.setBackground(Color.decode("#FFE3AC"));
+        btnLevantarComanda.setBorder(null);
+    }//GEN-LAST:event_btnLevantarComandaMouseReleased
+
     private void btnLevantarComandaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLevantarComandaMousePressed
 
         btnLevantarComanda.setFocusPainted(false);
@@ -312,11 +317,6 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         btnLevantarComanda.setBackground(Color.decode("#F3AE29"));
         btnLevantarComanda.setBorder(BorderFactory.createLineBorder(Color.decode("#C79A42"), 2));
     }//GEN-LAST:event_btnLevantarComandaMousePressed
-
-    private void btnLevantarComandaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLevantarComandaMouseReleased
-        btnLevantarComanda.setBackground(Color.decode("#FFE3AC"));
-        btnLevantarComanda.setBorder(null);
-    }//GEN-LAST:event_btnLevantarComandaMouseReleased
 
     private void btnLevantarComandaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLevantarComandaMouseClicked
         if (mesaSeleccionada != null) {
@@ -328,13 +328,13 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_btnLevantarComandaMouseClicked
 
-    private void btnEnviarComandasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarComandasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnEnviarComandasActionPerformed
-
     private void btnPagoGeneralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagoGeneralActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnPagoGeneralActionPerformed
+
+    private void btnEnviarComandasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarComandasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEnviarComandasActionPerformed
 
     private void btnEnviarComandasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnviarComandasMouseClicked
         JOptionPane.showMessageDialog(this, "Comandas enviadas a cocina", "Confirmacion", JOptionPane.INFORMATION_MESSAGE);

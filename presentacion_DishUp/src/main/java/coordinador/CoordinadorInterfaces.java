@@ -35,6 +35,7 @@ import pantallas.DlgModificarProducto;
 import pantallas.DlgResumenComanda;
 import pantallas.FrmCliente;
 import pantallas.FrmInicioSesión;
+import pantallas.FrmPantallaCocina;
 import pantallas.FrmPantallaComandas;
 import pantallas.FrmProductos;
 
@@ -54,6 +55,7 @@ public class CoordinadorInterfaces {
     private FrmAsignarMesas frmAsignarMesas;
     private FrmPantallaMesas frmMesas;
     private FrmInicioSesión frmSesion;
+    private FrmPantallaCocina frmCocina;
 
     private IGestionProductos productoFachada;
     private IGestionComandas comandaFachada;
@@ -473,6 +475,11 @@ public class CoordinadorInterfaces {
         if (frmComandas != null) {
             frmComandas.actualizarPantalla();
         }
+    }
+    
+    //---------------------------CU PREPARAR PEDIDO---------------------------------------
+     public void setFrmCocina(FrmPantallaCocina frmCocina) {
+        this.frmCocina = frmCocina;
     }
 
 }
