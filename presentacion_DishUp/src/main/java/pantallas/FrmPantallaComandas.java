@@ -578,7 +578,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
                         break;
                 }
 
-                lblPedido.setText(texto + " | $" + ped.getPrecioProducto() + " | " + estadoTexto);
+                lblPedido.setText(texto +" | "+ped.getCantidad()+" | $" + ped.getPrecioProducto() + " | " + estadoTexto);
 
                 switch (ped.getEstado()) {
                     case PENDIENTE:
