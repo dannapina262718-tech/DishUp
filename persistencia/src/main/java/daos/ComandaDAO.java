@@ -30,10 +30,12 @@ public class ComandaDAO implements IComandaDAO {
     private final MongoCollection<ComandaEntidadMongo> coleccion;
     private final MongoCollection<Document> coleccionraw;
     private final ComandaPersistenciaAdapter adapter;
+    private MongoCollection<Document> coleccionRaw;
 
     public ComandaDAO() {
         this.coleccion = ConexionMongo.obtenerBaseDatos().getCollection("comandas", ComandaEntidadMongo.class);
         this.coleccionraw = ConexionMongo.obtenerBaseDatos().getCollection("comandas");
+
         this.adapter = new ComandaPersistenciaAdapter();
     }
 
@@ -46,6 +48,7 @@ public class ComandaDAO implements IComandaDAO {
 
         try {
             ComandaEntidadMongo mongo = adapter.aMongo(comanda);
+            
 
             InsertOneResult result = coleccion.insertOne(mongo);
 
@@ -113,7 +116,7 @@ public class ComandaDAO implements IComandaDAO {
 
         try {
             ComandaEntidadMongo mongo = coleccion.find(eq("_id", new ObjectId(id))).first();
-
+            
             return adapter.aDominio(mongo);
 
         } catch (MongoException e) {
@@ -146,7 +149,7 @@ public class ComandaDAO implements IComandaDAO {
     @Override
     public boolean agregarPedidoAComanda(String idComanda, Pedido nuevoPedido) throws PersistenciaException {
         try {
-
+            
             UpdateResult result = coleccion.updateOne(eq("_id", new ObjectId(idComanda)),
                     com.mongodb.client.model.Updates.push(
                             "pedidos",
@@ -251,6 +254,7 @@ public class ComandaDAO implements IComandaDAO {
             );
 
             List<Document> resultado = coleccionraw.aggregate(pipeline).into(new ArrayList<>());
+
             
             if (resultado.isEmpty()) {
                 return 0f;

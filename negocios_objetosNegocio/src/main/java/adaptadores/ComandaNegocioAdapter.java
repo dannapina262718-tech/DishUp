@@ -10,12 +10,11 @@ import enums.EstadoPedido;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ComandaNegocioAdapter {
-
-    public ComandaNegocioAdapter() {
-    }
-
+    
+    
     public ComandaDTO aDTO(Comanda comanda) {
 
         if (comanda == null) {
@@ -96,25 +95,50 @@ public class ComandaNegocioAdapter {
         List<Pedido> pedidos = new ArrayList<>();
 
         if (pedidosDTO != null) {
-
+            
             for (PedidoDTO dto : pedidosDTO) {
 
-                Pedido pedido = new Pedido();
+                Pedido existente = null;
 
-                pedido.setNombreProducto(dto.getNombreProducto());
-                pedido.setIdProducto(dto.getIdProducto());
-                pedido.setCantidad(dto.getCantidad());
-                pedido.setDescripcion(dto.getDescripcion());
-                pedido.setEstado(EstadoPedido.PENDIENTE);
-                pedido.setFechaPedido(LocalDateTime.now());
-                pedido.setPrecioProducto(dto.getPrecioProducto());
+                for (Pedido p : pedidos) {
 
-                pedidos.add(pedido);
+                    boolean mismoProducto = p.getIdProducto().equals(dto.getIdProducto());
+                            
+
+                    boolean mismaDescripcion = Objects.equals(p.getDescripcion(), dto.getDescripcion());
+
+                    System.out.println(mismoProducto);
+                    System.out.println(mismaDescripcion);
+                    if (mismoProducto && mismaDescripcion) {
+                        existente = p;
+                        break;
+                    }
+                }
+
+                if (existente != null) {
+
+                    existente.setCantidad(
+                            existente.getCantidad() + dto.getCantidad()
+                    );
+
+                } else {
+
+                    Pedido pedido = new Pedido();
+
+                    pedido.setNombreProducto(dto.getNombreProducto());
+                    pedido.setIdProducto(dto.getIdProducto());
+                    pedido.setCantidad(dto.getCantidad());
+                    pedido.setDescripcion(dto.getDescripcion());
+                    pedido.setEstado(EstadoPedido.PENDIENTE);
+                    pedido.setFechaPedido(LocalDateTime.now());
+                    pedido.setPrecioProducto(dto.getPrecioProducto());
+
+                    pedidos.add(pedido);
+                }
             }
         }
-
         comanda.setPedidos(pedidos);
-
         return comanda;
     }
 }
+

@@ -1,11 +1,10 @@
-/*
 package daos;
 
-import conexion.ConexionMongo;
 import entidades.Comanda;
 import entidades.Empleado;
 import entidades.Mesa;
 import entidades.Pedido;
+import enums.EstadoPedido;
 import excepciones.PersistenciaException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +20,6 @@ public class ComandaDAONGTest {
 
     @AfterEach
     public void limpiar() {
-        ConexionMongo.obtenerBaseDatos()
-                .getCollection("comandas")
-                .deleteMany(new Document());
     }
 
     @Test
@@ -67,7 +63,7 @@ public class ComandaDAONGTest {
         empleado.setUser("EMP-001");
 
         Mesa mesa = new Mesa();
-        mesa.setNumero(1);
+        mesa.setNumero(5);
 
         Comanda c1 = new Comanda();
         c1.setEmpleado(empleado);
@@ -127,7 +123,7 @@ public class ComandaDAONGTest {
 
         List<Comanda> lista = dao.obtenerComandasPorMesa(999);
 
-        assertTrue(lista.isEmpty());
+        assertEquals(0, lista.size());
     }
 
     @Test
@@ -198,36 +194,6 @@ public class ComandaDAONGTest {
     }
 
     @Test
-    public void actualizarEstado_correcto() throws PersistenciaException {
-
-        Empleado empleado = new Empleado();
-        empleado.setNombres("Juan");
-        empleado.setUser("EMP-001");
-
-        Mesa mesa = new Mesa();
-        mesa.setNumero(1);
-
-        Comanda c = new Comanda();
-        c.setEmpleado(empleado);
-        c.setMesa(mesa);
-        c.setNombreCliente("Test");
-        c.setPedidos(new ArrayList<>());
-
-        Comanda insertada = dao.insertarComanda(c);
-
-        boolean actualizado = dao.actualizarEstado(insertada.getId(), "LISTA");
-
-        assertTrue(actualizado);
-    }
-
-    @Test
-    public void actualizarEstado_null() {
-        assertThrows(PersistenciaException.class, () -> {
-            dao.actualizarEstado(null, "LISTA");
-        });
-    }
-
-    @Test
     public void eliminarComanda_correcto() throws PersistenciaException {
 
         Empleado empleado = new Empleado();
@@ -257,6 +223,7 @@ public class ComandaDAONGTest {
         });
     }
 
+
     @Test
     public void calcularMonto_correcto() throws PersistenciaException {
 
@@ -280,7 +247,7 @@ public class ComandaDAONGTest {
         Comanda c = new Comanda();
         c.setEmpleado(empleado);
         c.setMesa(mesa);
-        c.setNombreCliente("yo");
+        c.setNombreCliente("Test");
         c.setPedidos(new ArrayList<>());
 
         c.setPedidos(List.of(p1, p2));
@@ -318,7 +285,7 @@ public class ComandaDAONGTest {
         Comanda c = new Comanda();
         c.setEmpleado(empleado);
         c.setMesa(mesa);
-        c.setNombreCliente("yo");
+        c.setNombreCliente("Test");
         c.setPedidos(new ArrayList<>());
 
         c.setPedidos(List.of(p));
@@ -338,39 +305,4 @@ public class ComandaDAONGTest {
             dao.recalcularMonto(null);
         });
     }
-
-    @Test
-    public void actualizarComanda_correcto() throws PersistenciaException {
-
-        Pedido p = new Pedido();
-        p.setCantidad(1);
-        p.setPrecioProducto(100);
-
-        Empleado empleado = new Empleado();
-        empleado.setNombres("Juan");
-        empleado.setUser("EMP-001");
-
-        Mesa mesa = new Mesa();
-        mesa.setNumero(1);
-
-        Comanda c = new Comanda();
-        c.setEmpleado(empleado);
-        c.setMesa(mesa);
-        c.setNombreCliente("Test");
-        c.setPedidos(new ArrayList<>());
-
-        Comanda insertada = dao.insertarComanda(c);
-
-        boolean actualizado = dao.actualizarComanda(insertada.getId(), List.of(p));
-
-        assertTrue(actualizado);
-    }
-
-    @Test
-    public void actualizarComanda_null() {
-        assertThrows(PersistenciaException.class, () -> {
-            dao.actualizarComanda(null, new ArrayList<>());
-        });
-    }
 }
-*/

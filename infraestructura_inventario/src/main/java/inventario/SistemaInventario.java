@@ -159,7 +159,23 @@ public class SistemaInventario {
             int responseCode = conn.getResponseCode();
 
             if (responseCode != 200) {
-                throw new InfraestructuraException("Error HTTP al descontar stock: " + responseCode);
+
+                BufferedReader errorReader = new BufferedReader(
+                        new InputStreamReader(conn.getErrorStream())
+                );
+
+                StringBuilder errorResponse = new StringBuilder();
+                String line;
+
+                while ((line = errorReader.readLine()) != null) {
+                    errorResponse.append(line);
+                }
+
+                JSONObject errorJson = new JSONObject(errorResponse.toString());
+
+                throw new InfraestructuraException(
+                        errorJson.getString("mensaje")
+                );
             }
 
             BufferedReader br = new BufferedReader(
@@ -242,5 +258,51 @@ public class SistemaInventario {
                     e
             );
         }
+
     }
+
+    public boolean agregarStock(String ingrediente, int cantidad) throws InfraestructuraException {
+        try {
+            URL url = new URL(BASE_URL + "/agregarStock");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            JSONObject body = new JSONObject();
+            body.put("ingrediente", ingrediente);
+            body.put("cantidad", cantidad);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(body.toString().getBytes());
+                os.flush();
+            }
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != 200) {
+                throw new InfraestructuraException("Error al agregar stock: " + responseCode);
+            }
+
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream())
+            );
+
+            StringBuilder response = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
+
+            JSONObject json = new JSONObject(response.toString());
+
+            return json.getBoolean("exito");
+
+        } catch (Exception e) {
+            throw new InfraestructuraException("No fue posible agregar stock.", e);
+        }
+    }
+
 }

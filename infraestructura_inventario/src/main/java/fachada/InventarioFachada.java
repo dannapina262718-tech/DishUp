@@ -65,7 +65,6 @@ public class InventarioFachada implements ISistemaInventario {
             throws InfraestructuraException {
         return sistema.descontarStock(pedidos);
     }
-
     /**
      * Agrega stock a un ingrediente en inventario.
      *

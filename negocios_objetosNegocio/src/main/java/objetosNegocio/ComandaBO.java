@@ -14,8 +14,10 @@ import entidades.Comanda;
 import entidades.Pedido;
 import enums.EstadoComanda;
 import enums.EstadoMesa;
+import enums.EstadoPedido;
 import enums.EstadoPedidoDTO;
 import excepcion.NegocioException;
+import excepciones.InfraestructuraException;
 import excepciones.PersistenciaException;
 import fachada.InventarioFachada;
 import interfaces.IComandaDAO;
@@ -45,12 +47,7 @@ public class ComandaBO {
         this.mesaBO = new MesaBO();
     }
 
-    public void crearComanda(String nombreCliente, int numeroMesa, List<PedidoDTO> pedidosDTO, EmpleadoDTO empleadoActual) throws NegocioException {
-        procesarComanda(pedidosDTO);
-        for (PedidoDTO pedido : pedidosDTO) {
-            pedido.setEstado(EstadoPedidoDTO.PENDIENTE);
-        }
-        
+    public void crearComanda(String nombreCliente, int numeroMesa, List<PedidoDTO> pedidosDTO, EmpleadoDTO empleadoActual) throws NegocioException {  
         try {
             procesarComanda(pedidosDTO);
 
@@ -60,12 +57,14 @@ public class ComandaBO {
 
             Comanda comanda = comandaAdapter.aEntidad(nombreCliente, numeroMesa, pedidosDTO, empleadoActual);
 
+
             comanda.setEstado(calcularEstadoComanda(comanda.getPedidos()));
             Comanda insertada = comandaDAO.insertarComanda(comanda);
             
             comandaDAO.recalcularMonto(insertada.getId());
             
             mesaDAO.cambiarEstadoMesaPorNumero(comanda.getMesa().getNumero(), EstadoMesa.OCUPADA);
+
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al guardar comanda", e);
         }
@@ -80,7 +79,12 @@ public class ComandaBO {
             dto.setCantidad(pedido.getCantidad());
             inventarioList.add(dto);
         }
-        // inventarioAPI.descontarStock(inventarioList); 
+//        try {
+//           // inventarioAPI.descontarStock(inventarioList);
+//            System.out.println("DESCONTANTO STOCK");
+//        } catch (InfraestructuraException e) {
+//            throw new NegocioException("Error al descontar stock", e);
+//        }
     }
 
     public List<ComandaDTO> obtenerComandasPorMesa(int numeroMesa) {
@@ -97,25 +101,81 @@ public class ComandaBO {
     }
 
     public void agregarPedidosAComanda(String idComanda, List<PedidoDTO> pedidosDTO) throws NegocioException {
-        for (PedidoDTO pedido : pedidosDTO) {
-            pedido.setEstado(EstadoPedidoDTO.PENDIENTE);
-        }
-
-        procesarComanda(pedidosDTO);
-
-        List<Pedido> pedidos = pedidoAdapter.listaAEntidad(pedidosDTO);
+        
         try {
-            for (Pedido pedido : pedidos) {
-                boolean ok = comandaDAO.agregarPedidoAComanda(idComanda, pedido);
-                if (!ok) {
-                    throw new NegocioException("No se pudo agregar el pedido");
+            
+            Comanda comandaActual = comandaDAO.obtenerPorId(idComanda);
+            
+            if (comandaActual == null) {
+                throw new NegocioException("No se encontró la comanda");
+            }
+            
+            for (PedidoDTO pedido : pedidosDTO) {
+                pedido.setEstado(EstadoPedidoDTO.PENDIENTE);
+            }
+            
+            procesarComanda(pedidosDTO);
+            
+            List<Pedido> pedidosActuales = comandaActual.getPedidos();
+            
+            List<Pedido> pedidosNuevos = pedidoAdapter.listaAEntidad(pedidosDTO);
+            
+            for (Pedido nuevo : pedidosNuevos) {
+                
+                if (nuevo.getEstado() == null) {
+                    nuevo.setEstado(EstadoPedido.PENDIENTE);
+                }
+                
+                Pedido existente = null;
+                
+                for (Pedido actual : pedidosActuales) {
+                    
+                    String descActual = "";
+                    String descNuevo = "";
+                    
+                    if (actual.getDescripcion() != null) {
+                        descActual = actual.getDescripcion().trim().toLowerCase();
+                    }
+                    
+                    if (nuevo.getDescripcion() != null) {
+                        descNuevo = nuevo.getDescripcion().trim().toLowerCase();
+                    }
+                    
+                    boolean mismoProducto = actual.getIdProducto() .trim() .equalsIgnoreCase(nuevo.getIdProducto().trim());
+
+                    boolean mismaDesc = descActual.equals(descNuevo);
+                    
+                    boolean pedidoEditable = actual.getEstado() == EstadoPedido.PENDIENTE;
+                    
+                    if (mismoProducto && mismaDesc && pedidoEditable) {
+                        existente = actual;
+                        break;
+                    }
+                }
+                
+                if (existente != null) {
+                    
+                    existente.setCantidad( existente.getCantidad() + nuevo.getCantidad() );
+                    
+                } else {
+                    
+                    boolean ok = comandaDAO.agregarPedidoAComanda(
+                            idComanda,
+                            nuevo
+                    );
+                    
+                    if (!ok) {
+                        throw new NegocioException("No se pudo agregar el pedido");
+                    }
+                    
+                    pedidosActuales.add(nuevo);
                 }
             }
-
-            Comanda comandaActual = comandaDAO.obtenerPorId(idComanda);
-            EstadoComanda nuevoEstado = calcularEstadoComanda(comandaActual.getPedidos());
-
-            comandaDAO.actualizarEstado(idComanda, nuevoEstado.name());
+            
+            comandaDAO.actualizarComanda(idComanda, pedidosActuales);
+            comandaDAO.recalcularMonto(idComanda);
+            EstadoComanda nuevoEstado = calcularEstadoComanda(pedidosActuales);
+            comandaDAO.actualizarEstado(idComanda,nuevoEstado.name());
 
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al agregar pedidos", e);
@@ -126,8 +186,11 @@ public class ComandaBO {
         List<Pedido> pedidos = pedidoAdapter.listaAEntidad(comandaDTO.getPedidos());
         try {
             comandaDAO.actualizarComanda(comandaDTO.getId(), pedidos);
-            // RECALCULAR ESTADO
+            
+            comandaDAO.recalcularMonto(comandaDTO.getId());
+            
             EstadoComanda nuevoEstado = calcularEstadoComanda(pedidos);
+            
             comandaDAO.actualizarEstado(comandaDTO.getId(), nuevoEstado.name());
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al actualizar comanda", e);
@@ -168,7 +231,7 @@ public class ComandaBO {
         try {
             Comanda comanda = comandaDAO.obtenerPorId(id);
             if (comanda == null) {
-                return null;
+                throw new NegocioException("No existe la comanda");
             }
             return comandaAdapter.aDTO(comanda);
         } catch (PersistenciaException e) {

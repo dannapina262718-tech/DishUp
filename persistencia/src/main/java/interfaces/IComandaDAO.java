@@ -98,8 +98,7 @@ public interface IComandaDAO {
      * @throws PersistenciaException si ocurre un error en la operación
      */
     public boolean actualizarComanda(String idComanda, List<Pedido> pedidos) throws PersistenciaException;
- 
-
+    
     /**
      * Calcula el monto total de una comanda.
      *
@@ -116,5 +115,4 @@ public interface IComandaDAO {
      * @throws PersistenciaException si ocurre un error en la operación
      */
     void recalcularMonto(String idComanda) throws PersistenciaException;
-
 }

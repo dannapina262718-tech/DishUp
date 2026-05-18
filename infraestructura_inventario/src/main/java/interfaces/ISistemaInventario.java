@@ -1,3 +1,4 @@
+
 package interfaces;
 
 import dtos_infraestructura.*;
@@ -14,7 +15,6 @@ import excepciones.InfraestructuraException;
  * @author DishUp
  */
 public interface ISistemaInventario {
-
     /**
      * Obtiene la lista de productos disponibles en el sistema de inventario.
      *
