@@ -32,6 +32,7 @@ import java.util.List;
 import pantallas.DlgModificarProducto;
 import pantallas.DlgPagoComanda;
 import pantallas.DlgPagoEfectivo;
+import pantallas.DlgPagoTarjeta;
 import pantallas.DlgResumenComanda;
 import pantallas.FrmCliente;
 import pantallas.FrmPantallaComandas;
@@ -52,6 +53,7 @@ public class CoordinadorInterfaces {
     
     private DlgPagoComanda dlgPagoComanda;
     private DlgPagoEfectivo dlgPagoEfectivo;
+    private DlgPagoTarjeta dlgPagoTarjeta;
 
     private IGestionProductos productoFachada;
     private IGestionComandas comandaFachada;
@@ -272,6 +274,13 @@ public class CoordinadorInterfaces {
 
     public void mostrarPagoEfectivo(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
         DlgPagoEfectivo dlg = new DlgPagoEfectivo(frmComandas, true, comanda, restante, dlgPadre, this);
+        dlg.setLocationRelativeTo(dlgPadre);
+
+        dlg.setVisible(true);
+    }
+    
+    public void mostrarPagoTarjeta(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
+        DlgPagoTarjeta dlg = new DlgPagoTarjeta(frmComandas, true, comanda, restante, dlgPadre, this);
         dlg.setLocationRelativeTo(dlgPadre);
 
         dlg.setVisible(true);

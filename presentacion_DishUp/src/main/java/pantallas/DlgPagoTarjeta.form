@@ -68,6 +68,10 @@
                                   </Group>
                                   <Component id="lblFolio" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="separator3" alignment="0" min="-2" pref="293" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
+                                      <Component id="lblTituloPagoTarjeta1" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                               <Component id="lblRestante" alignment="1" min="-2" max="-2" attributes="0"/>
                               <Component id="btnContinuar" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -98,7 +102,9 @@
                   </Group>
                   <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                   <Component id="btnConectarTerminal" min="-2" pref="40" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="lblTituloPagoTarjeta1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="separator2" min="-2" pref="10" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="lblEstatus" min="-2" max="-2" attributes="0"/>
@@ -110,7 +116,7 @@
                   <Component id="lblPagado" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="lblRestante" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="44" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Component id="btnContinuar" min="-2" pref="37" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
               </Group>
@@ -218,6 +224,17 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnContinuarActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lblTituloPagoTarjeta1">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Trebuchet MS" size="15" style="1"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="66" green="66" red="66" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Informaci&#xf3;n de Pago"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

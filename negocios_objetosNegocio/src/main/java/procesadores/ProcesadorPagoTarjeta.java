@@ -30,11 +30,40 @@ public class ProcesadorPagoTarjeta implements IProcesadorPago {
 
     @Override
     public ResultadoPagoDTO procesarPago(SolicitudPagoDTO solicitud) throws NegocioException {
+        if (solicitud == null) {
+            throw new NegocioException("La solicitud de pago es inválida.");
+        }
+        
+        if (solicitud.getIdComanda() == null || solicitud.getIdComanda().isBlank()) {
+            throw new NegocioException("El id de la comanda es inválido.");
+        }
+        
+        if (solicitud.getMetodoPago() != MetodoPago.TARJETA) {
+            throw new NegocioException("El método de pago no corresponde a tarjeta.");
+        }
+        
+        if (solicitud.getMonto() <= 0) {
+            throw new NegocioException("El monto a pagar debe ser mayor a cero.");
+        }
         
         SolicitudTerminalDTO solicitudTerminal = new SolicitudTerminalDTO(solicitud.getMonto());
 
         try {
             RespuestaTerminalDTO respuesta = terminal.cobrarTarjeta(solicitudTerminal);
+            
+            if (respuesta == null) {
+                throw new NegocioException("La terminal no regresó respuesta.");
+            }
+            
+            if (!respuesta.isAprobado()) {
+                return new ResultadoPagoDTO(
+                        false,
+                        respuesta.getMensaje(),
+                        solicitud.getMonto(),
+                        MetodoPago.TARJETA,
+                        null
+                );
+            }
 
             DetallePagoTarjeta detalle = new DetallePagoTarjeta(
                     respuesta.getNumeroAutorizacion(),

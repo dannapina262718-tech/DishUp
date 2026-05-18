@@ -13,6 +13,7 @@ import fachada.PagoFachada;
 import interfaz.IGestionPagos;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,10 +109,14 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         lblTituloTicket.setText("Pago por Comanda");
 
         lblMesaCliente.setFont(new java.awt.Font("Telugu Sangam MN", 1, 22)); // NOI18N
+        lblMesaCliente.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblMesaCliente.setText("Mesa X - Cliente X");
+        lblMesaCliente.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         lblNombreCliente.setFont(new java.awt.Font("Telugu Sangam MN", 1, 14)); // NOI18N
         lblNombreCliente.setText("Cliente X");
+
+        scrlPedidos.setBorder(null);
 
         pnlPedidos.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -119,11 +124,11 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         pnlPedidos.setLayout(pnlPedidosLayout);
         pnlPedidosLayout.setHorizontalGroup(
             pnlPedidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 311, Short.MAX_VALUE)
+            .addGap(0, 313, Short.MAX_VALUE)
         );
         pnlPedidosLayout.setVerticalGroup(
             pnlPedidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 161, Short.MAX_VALUE)
+            .addGap(0, 163, Short.MAX_VALUE)
         );
 
         scrlPedidos.setViewportView(pnlPedidos);
@@ -169,6 +174,11 @@ public class DlgPagoComanda extends javax.swing.JDialog {
                 btnMetodoTarjetaMouseReleased(evt);
             }
         });
+        btnMetodoTarjeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMetodoTarjetaActionPerformed(evt);
+            }
+        });
 
         btnMetodoCodi.setBackground(new java.awt.Color(204, 204, 204));
         btnMetodoCodi.setFont(new java.awt.Font("Telugu Sangam MN", 1, 13)); // NOI18N
@@ -182,13 +192,17 @@ public class DlgPagoComanda extends javax.swing.JDialog {
             }
         });
 
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setForeground(new java.awt.Color(255, 255, 255));
+
         pnlPagosHechos.setBackground(new java.awt.Color(255, 255, 255));
+        pnlPagosHechos.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout pnlPagosHechosLayout = new javax.swing.GroupLayout(pnlPagosHechos);
         pnlPagosHechos.setLayout(pnlPagosHechosLayout);
         pnlPagosHechosLayout.setHorizontalGroup(
             pnlPagosHechosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 301, Short.MAX_VALUE)
+            .addGap(0, 303, Short.MAX_VALUE)
         );
         pnlPagosHechosLayout.setVerticalGroup(
             pnlPagosHechosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,47 +226,12 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         pnlTicket.setLayout(pnlTicketLayout);
         pnlTicketLayout.setHorizontalGroup(
             pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTicketLayout.createSequentialGroup()
-                .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(pnlTicketLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(separator2, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlTicketLayout.createSequentialGroup()
-                            .addGap(54, 54, 54)
-                            .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(lblTotalPagarCliente)
-                                .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblNombreCliente)
-                                    .addComponent(scrlPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(pnlTicketLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblRestantePagar)
-                            .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(pnlTicketLayout.createSequentialGroup()
-                                    .addComponent(lblMetodosPago)
-                                    .addGap(100, 100, 100))
-                                .addComponent(separator3, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlTicketLayout.createSequentialGroup()
-                                    .addComponent(btnMetodoEfectivo)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(btnMetodoTarjeta)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(btnMetodoCodi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(separator4)
-                                .addComponent(jScrollPane1)
-                                .addComponent(separator5, javax.swing.GroupLayout.Alignment.LEADING)))))
-                .addGap(0, 50, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTicketLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTicketLayout.createSequentialGroup()
                         .addComponent(lblTituloTicket)
                         .addGap(143, 143, 143))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTicketLayout.createSequentialGroup()
-                        .addComponent(lblMesaCliente)
-                        .addGap(116, 116, 116))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTicketLayout.createSequentialGroup()
                         .addComponent(separator1, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(65, 65, 65))
@@ -262,6 +241,43 @@ public class DlgPagoComanda extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTicketLayout.createSequentialGroup()
                         .addComponent(btnFinalizar)
                         .addGap(20, 20, 20))))
+            .addGroup(pnlTicketLayout.createSequentialGroup()
+                .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnlTicketLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(separator2, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlTicketLayout.createSequentialGroup()
+                                .addGap(54, 54, 54)
+                                .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lblTotalPagarCliente)
+                                    .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lblNombreCliente)
+                                        .addComponent(scrlPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGroup(pnlTicketLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblRestantePagar)
+                                .addGroup(pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(pnlTicketLayout.createSequentialGroup()
+                                        .addComponent(lblMetodosPago)
+                                        .addGap(100, 100, 100))
+                                    .addComponent(separator3, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlTicketLayout.createSequentialGroup()
+                                        .addComponent(btnMetodoEfectivo)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnMetodoTarjeta)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnMetodoCodi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(separator4)
+                                    .addComponent(jScrollPane1)
+                                    .addComponent(separator5, javax.swing.GroupLayout.Alignment.LEADING)))))
+                    .addGroup(pnlTicketLayout.createSequentialGroup()
+                        .addGap(116, 116, 116)
+                        .addComponent(lblMesaCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(70, 70, 70)))
+                .addGap(50, 50, 50))
         );
         pnlTicketLayout.setVerticalGroup(
             pnlTicketLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -346,12 +362,12 @@ public class DlgPagoComanda extends javax.swing.JDialog {
     }//GEN-LAST:event_btnMetodoEfectivoMouseEntered
 
     private void btnMetodoEfectivoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoMousePressed
+        
         btnMetodoEfectivo.setFocusPainted(false);
         btnMetodoEfectivo.setContentAreaFilled(false);
         btnMetodoEfectivo.setOpaque(true);
 
         btnMetodoEfectivo.setBackground(Color.decode("#F3AE29"));
-        btnMetodoEfectivo.setBorder(BorderFactory.createLineBorder(Color.decode("#C79A42"), 2));
     }//GEN-LAST:event_btnMetodoEfectivoMousePressed
 
     private void btnMetodoTarjetaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoTarjetaMousePressed
@@ -360,7 +376,6 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         btnMetodoTarjeta.setOpaque(true);
 
         btnMetodoTarjeta.setBackground(Color.decode("#F3AE29"));
-        btnMetodoTarjeta.setBorder(BorderFactory.createLineBorder(Color.decode("#C79A42"), 2));
     }//GEN-LAST:event_btnMetodoTarjetaMousePressed
 
     private void btnMetodoCodiMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoCodiMousePressed
@@ -369,7 +384,6 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         btnMetodoCodi.setOpaque(true);
 
         btnMetodoCodi.setBackground(Color.decode("#F3AE29"));
-        btnMetodoCodi.setBorder(BorderFactory.createLineBorder(Color.decode("#C79A42"), 2));
     }//GEN-LAST:event_btnMetodoCodiMousePressed
 
     private void btnMetodoEfectivoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoMouseReleased
@@ -394,6 +408,29 @@ public class DlgPagoComanda extends javax.swing.JDialog {
     private void pnlTicketMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlTicketMouseClicked
         this.dispose();
     }//GEN-LAST:event_pnlTicketMouseClicked
+
+    private void btnMetodoTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMetodoTarjetaActionPerformed
+        try {
+            if (comanda == null) {
+                JOptionPane.showMessageDialog(this, "Comanda inválida.");
+                return;
+            }
+
+            if (restante <= 0) {
+                JOptionPane.showMessageDialog(this, "La cuenta ya fue liquidada.");
+                return;
+            }
+
+            coordinador.mostrarPagoTarjeta(comanda, restante, this);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage()
+            );
+        
+        }
+    }//GEN-LAST:event_btnMetodoTarjetaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFinalizar;
@@ -425,6 +462,7 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         }
 
         lblMesaCliente.setText("Mesa " + comanda.getNumMesa());
+        lblMesaCliente.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         lblNombreCliente.setText(comanda.getNombreCliente());
 
@@ -436,7 +474,7 @@ public class DlgPagoComanda extends javax.swing.JDialog {
 
             JPanel panelPedido = new JPanel(new BorderLayout());
 
-            panelPedido.setBackground(Color.WHITE);
+            panelPedido.setBackground(Color.decode("#F5F5F5"));
 
             panelPedido.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
@@ -514,4 +552,6 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         pnlPagosHechos.revalidate();
         pnlPagosHechos.repaint();
     }
+    
+ 
 }

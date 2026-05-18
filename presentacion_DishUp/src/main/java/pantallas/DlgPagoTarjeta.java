@@ -4,18 +4,42 @@
  */
 package pantallas;
 
+import coordinador.CoordinadorInterfaces;
+import dtos.ComandaDTO;
+import dtos.ResultadoPagoDTO;
+import dtos.SolicitudPagoDTO;
+import entidades.DetallePagoTarjeta;
+import enums.MetodoPago;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author valeria
  */
 public class DlgPagoTarjeta extends javax.swing.JDialog {
+    private final ComandaDTO comanda;
+
+    private float restante;
+
+    private ResultadoPagoDTO resultadoPago;
+
+    private final DlgPagoComanda dlgPadre;
+
+    private final CoordinadorInterfaces coordinador;
 
     /**
      * Creates new form DlgPagoTarjeta
      */
-    public DlgPagoTarjeta(java.awt.Frame parent, boolean modal) {
+    public DlgPagoTarjeta(java.awt.Frame parent, boolean modal, ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre, CoordinadorInterfaces coordinador) {
         super(parent, modal);
         initComponents();
+        
+        this.comanda = comanda;
+        this.restante = restante;
+        this.dlgPadre = dlgPadre;
+        this.coordinador = coordinador;
+        
+        inicializarPantalla();
     }
 
     /**
@@ -41,6 +65,7 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
         lblPagado = new javax.swing.JLabel();
         lblRestante = new javax.swing.JLabel();
         btnContinuar = new javax.swing.JButton();
+        lblTituloPagoTarjeta1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -93,6 +118,10 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
             }
         });
 
+        lblTituloPagoTarjeta1.setFont(new java.awt.Font("Trebuchet MS", 1, 15)); // NOI18N
+        lblTituloPagoTarjeta1.setForeground(new java.awt.Color(102, 102, 102));
+        lblTituloPagoTarjeta1.setText("Información de Pago");
+
         javax.swing.GroupLayout pnlPagoTarjetaLayout = new javax.swing.GroupLayout(pnlPagoTarjeta);
         pnlPagoTarjeta.setLayout(pnlPagoTarjetaLayout);
         pnlPagoTarjetaLayout.setHorizontalGroup(
@@ -118,7 +147,10 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
                                     .addComponent(separator1, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(separator2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(lblFolio)
-                                .addComponent(separator3, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(separator3, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(pnlPagoTarjetaLayout.createSequentialGroup()
+                                    .addGap(68, 68, 68)
+                                    .addComponent(lblTituloPagoTarjeta1)))
                             .addComponent(lblRestante)
                             .addComponent(btnContinuar))))
                 .addContainerGap(63, Short.MAX_VALUE))
@@ -141,7 +173,9 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
                     .addComponent(txtMontoAPAgar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addComponent(btnConectarTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addGap(40, 40, 40)
+                .addComponent(lblTituloPagoTarjeta1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(separator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblEstatus)
@@ -153,7 +187,7 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
                 .addComponent(lblPagado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblRestante)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnContinuar, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31))
         );
@@ -177,54 +211,74 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
     }//GEN-LAST:event_txtMontoAPAgarActionPerformed
 
     private void btnConectarTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConectarTerminalActionPerformed
-        // TODO add your handling code here:
+        try {
+
+            float montoPagar = Float.parseFloat(txtMontoAPAgar.getText());
+
+            SolicitudPagoDTO solicitud = new SolicitudPagoDTO(comanda.getId(), MetodoPago.TARJETA, montoPagar, null);
+
+            resultadoPago = coordinador.registrarPago(solicitud);
+
+            lblEstatus.setText("Estatus: " + resultadoPago.getMensaje());
+
+            DetallePagoTarjeta detalle = (DetallePagoTarjeta) resultadoPago.getDetallePago();
+
+            lblFolio.setText(
+                    "Folio: "
+                    + detalle.getNumeroAutorizacion()
+            );
+
+            lblPagado.setText(
+                    "Total Pagado con Tarjeta: $"
+                    + resultadoPago.getMontoPagado()
+            );
+
+            lblRestante.setText(
+                    "Total Restante: $"
+                    + resultadoPago.getSaldoRestante()
+            );
+
+            btnContinuar.setEnabled(true);
+
+            btnConectarTerminal.setEnabled(false);
+
+        } catch (NumberFormatException ex) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Ingresa un monto válido."
+            );
+
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage()
+            );
+        }
+
     }//GEN-LAST:event_btnConectarTerminalActionPerformed
 
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
-        // TODO add your handling code here:
+        try {
+
+            if (resultadoPago != null
+                    && resultadoPago.isAprobado()) {
+
+                dlgPadre.agregarPago(resultadoPago);
+            }
+
+            dispose();
+
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage()
+            );
+        }
     }//GEN-LAST:event_btnContinuarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DlgPagoTarjeta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DlgPagoTarjeta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DlgPagoTarjeta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DlgPagoTarjeta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                DlgPagoTarjeta dialog = new DlgPagoTarjeta(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConectarTerminal;
@@ -236,10 +290,23 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
     private javax.swing.JLabel lblRestante;
     private javax.swing.JLabel lblSimbolo1;
     private javax.swing.JLabel lblTituloPagoTarjeta;
+    private javax.swing.JLabel lblTituloPagoTarjeta1;
     private javax.swing.JPanel pnlPagoTarjeta;
     private javax.swing.JSeparator separator1;
     private javax.swing.JSeparator separator2;
     private javax.swing.JSeparator separator3;
     private javax.swing.JTextField txtMontoAPAgar;
     // End of variables declaration//GEN-END:variables
+
+    private void inicializarPantalla() {
+        txtMontoAPAgar.setText("");
+        
+        lblEstatus.setText("");
+        lblFolio.setText("");
+        
+        lblPagado.setText("Total Pagado con Tarjeta: $0.00");
+        lblRestante.setText("Total Restante: $" + restante);
+
+        btnContinuar.setEnabled(false);
+    }
 }
