@@ -13,24 +13,11 @@
 
     <artifactId>negocios_objetosNegocio</artifactId>
     <packaging>jar</packaging>
-
     <dependencies>
-
-        <!-- Infraestructura inventario -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>infraestructura_inventario</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- DTOs -->
-
-        <!-- Persistencia -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>persistencia</artifactId>
             <version>${project.version}</version>
-           
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -43,12 +30,16 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.262719</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>dominio</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>infraestructura_inventario</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
-
     <properties>
         <maven.compiler.release>23</maven.compiler.release>
         <exec.mainClass>

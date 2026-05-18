@@ -140,6 +140,7 @@ public class CoordinadorInterfaces {
             }
 
             comandaTemporal.clear();
+            frmComandas.cargarMesas();
 
         } catch (ComandasException e) {
             System.out.println("Error: " + e.getMessage());
@@ -257,8 +258,8 @@ public class CoordinadorInterfaces {
         dlg.setVisible(true);
     }
 
-    public boolean eliminarComanda(String idComanda) throws ComandasException {
-        return comandaFachada.eliminarComanda(idComanda);
+    public boolean eliminarComanda(String idComanda, MesaDTO mesa) throws ComandasException {
+        return comandaFachada.eliminarComanda(idComanda, mesa);
     }
 
     public List<Integer> obtenerMesasConComandasListas() {

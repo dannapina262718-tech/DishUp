@@ -1,21 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package excepciones;
 
-
 /**
+ * ProductosException.
+ * Representa errores relacionados con la gestion de productos en el sistema.
  *
- * @author DishUp
+ * Esta excepcion se utiliza cuando ocurre un problema al consultar,
+ * filtrar o procesar informacion de productos dentro del sistema.
  */
+public class ProductosException extends Exception {
 
-public class ProductosException extends Exception{
-
+    /**
+     * Constructor vacio.
+     */
     public ProductosException() {
     }
 
+    /**
+     * Constructor que recibe un mensaje de error.
+     *
+     * @param message Mensaje que describe el error ocurrido.
+     */
     public ProductosException(String message) {
         super(message);
     }

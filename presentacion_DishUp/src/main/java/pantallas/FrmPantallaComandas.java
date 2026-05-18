@@ -10,6 +10,7 @@ import dtos.ComandaDTO;
 import dtos.EmpleadoDTO;
 import dtos.MesaDTO;
 import dtos.PedidoDTO;
+import enums.EstadoMesaDTO;
 import enums.EstadoPedidoDTO;
 import excepciones.MesasException;
 import java.awt.BorderLayout;
@@ -377,6 +378,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
     public void cargarMesas() {
         panMesas.removeAll();
         btnLevantarComanda.setVisible(false);
+
         List<MesaDTO> mesas = new ArrayList<>();
 
         try {
@@ -384,93 +386,75 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         } catch (MesasException ex) {
             System.out.println("Error al obtener mesas: " + ex.getMessage());
         }
+
         List<Integer> mesasConComandasListas = coordinador.obtenerMesasConComandasListas();
-        mesas.sort((m1, m2) -> {
-            boolean m1Lista = mesasConComandasListas.contains(m1.getNumeroMesa());
 
-            boolean m2Lista = mesasConComandasListas.contains(m2.getNumeroMesa());
+            for (MesaDTO mesa : mesas) {
 
-            if (m1Lista && !m2Lista) {
-                return -1;
-            }
+                JButton btn = new JButton("Mesa " + mesa.getNumeroMesa());
 
-            if (!m1Lista && m2Lista) {
-                return 1;
-            }
+                btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+                btn.setMaximumSize(new Dimension(150, 60));
+                btn.setFocusPainted(false);
 
-            return Integer.compare(m1.getNumeroMesa(), m2.getNumeroMesa());
-        });
-
-        for (MesaDTO mesa : mesas) {
-            JButton btn = new JButton("Mesa " + mesa.getNumeroMesa());
-
-            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-            btn.setMaximumSize(new Dimension(150, 60));
-
-            btn.setFocusPainted(false);
-
-            btn.addActionListener(e -> {
-
-                panComandasLlenas.remove(lblSeleccioneMesa);
-                panComandasLlenas.remove(lblEspacio);
-                btnLevantarComanda.setVisible(true);
-                panComandas.revalidate();
-                panComandas.repaint();
-
-                if (btnSeleccionado != null) {
-
-                    if (mesasConComandasListas.contains(mesaSeleccionada.getNumeroMesa())) {
-                        btnSeleccionado.setBackground(Color.decode("#B9F6B1"));
-                    } else {
-                        btnSeleccionado.setBackground(Color.decode("#FFE3AC"));
-                    }
-
-                    btnSeleccionado.setFont(new Font("Arial", Font.PLAIN, 18));
-                    btnSeleccionado.setBorder(null);
+                if (mesa.getEstado() == EstadoMesaDTO.LIBRE) {
+                    btn.setBackground(Color.decode("#FFE3AC"));
+                } else {
+                    btn.setBackground(Color.decode("#D6D6D6"));
                 }
 
-                btn.setBackground(Color.decode("#FFD481"));
-                btn.setFont(new Font("Arial", Font.BOLD, 18));
-                btn.setBorder(BorderFactory.createLineBorder(Color.decode("#FFBE41"), 2));
-
-                btnSeleccionado = btn;
-                mesaSeleccionada = mesa;
-
-                List<ComandaDTO> comandas = coordinador.getComandasDeMesa(mesa.getNumeroMesa());
-                mostrarComandasDeMesa(mesa.getNumeroMesa(), comandas);
-                // System.out.println("Seleccionaste Mesa " + mesa);
-            });
-
-            if (mesaSeleccionada != null && mesa.getNumeroMesa() == mesaSeleccionada.getNumeroMesa()) {
-                btn.setBackground(Color.decode("#FFD481"));
-                btn.setFont(new Font("Arial", Font.BOLD, 18));
-                btn.setBorder(BorderFactory.createLineBorder(Color.decode("#FFBE41"), 2));
-
-                btnSeleccionado = btn;
-
-                // Restaurar comportamiento de selección
-                btnLevantarComanda.setVisible(true);
-
-                List<ComandaDTO> comandas = coordinador.getComandasDeMesa(mesa.getNumeroMesa());
-
-                mostrarComandasDeMesa(mesa.getNumeroMesa(), comandas);
-            } else if (mesasConComandasListas.contains(mesa.getNumeroMesa())) {
-                btn.setBackground(Color.decode("#B9F6B1"));
                 btn.setFont(new Font("Arial", Font.PLAIN, 18));
                 btn.setBorder(null);
-            } else {
-                btn.setBackground(Color.decode("#FFE3AC"));
-                btn.setFont(new Font("Arial", Font.PLAIN, 18));
-                btn.setBorder(null);
+
+                btn.addActionListener(e -> {
+
+                    panComandasLlenas.remove(lblSeleccioneMesa);
+                    panComandasLlenas.remove(lblEspacio);
+                    btnLevantarComanda.setVisible(true);
+                    panComandas.revalidate();
+                    panComandas.repaint();
+
+                    if (btnSeleccionado != null && mesaSeleccionada != null) {
+
+                        MesaDTO anterior = mesaSeleccionada;
+
+                        if (anterior.getEstado() == EstadoMesaDTO.LIBRE) {
+                            btnSeleccionado.setBackground(Color.decode("#FFE3AC"));
+                        } else {
+                            btnSeleccionado.setBackground(Color.decode("#D6D6D6"));
+                        }
+
+                        btnSeleccionado.setFont(new Font("Arial", Font.PLAIN, 18));
+                        btnSeleccionado.setBorder(null);
+                    }
+
+
+                    if(mesa.getEstado() == EstadoMesaDTO.LIBRE){
+                        btn.setBackground(Color.decode("#FFD481"));
+                        btn.setFont(new Font("Arial", Font.BOLD, 18));
+                        btn.setBorder(BorderFactory.createLineBorder(Color.decode("#FFBE41"), 2));
+                    } else {
+                        btn.setBackground(Color.decode("#808080"));
+                        btn.setFont(new Font("Arial", Font.BOLD, 18));
+                        btn.setBorder(BorderFactory.createLineBorder(Color.decode("#4D4D4D"), 2));
+                    }
+
+                    btnSeleccionado = btn;
+                    mesaSeleccionada = mesa;
+
+                    List<ComandaDTO> comandas =
+                            coordinador.getComandasDeMesa(mesa.getNumeroMesa());
+
+                    mostrarComandasDeMesa(mesa.getNumeroMesa(), comandas);
+                });
+
+                panMesas.add(btn);
+                panMesas.add(Box.createVerticalStrut(28));
             }
-
-            panMesas.add(btn);
-            panMesas.add(Box.createVerticalStrut(28));
-        }
-
         panMesas.revalidate();
         panMesas.repaint();
     }
+    
     private JPanel contenedorComandas;
 
     public void mostrarComandasDeMesa(int numeroMesa, List<ComandaDTO> comandas) {
@@ -760,7 +744,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
 
                     try {
 
-                        boolean eliminada = coordinador.eliminarComanda(comanda.getId());
+                        boolean eliminada = coordinador.eliminarComanda(comanda.getId(), mesaSeleccionada);
 
                         if (eliminada) {
 

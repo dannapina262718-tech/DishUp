@@ -9,24 +9,47 @@ import interfaces.IEmpleadoDAO;
 import java.util.List;
 import objetosNegocio.EmpleadoBO;
 
+/**
+ * EmpleadoControl.
+ * Clase de control encargada de validar y gestionar las operaciones
+ * relacionadas con empleados dentro del sistema.
+ *
+ * Esta clase actua como intermediario entre la capa de presentacion
+ * y la capa de negocio (EmpleadoBO), validando la informacion antes
+ * de enviarla y manejando las excepciones del sistema.
+ *
+ * @author DishUp
+ */
 public class EmpleadoControl {
 
     private final EmpleadoBO empleadoBO;
 
+    /**
+     * Constructor que inicializa la capa de negocio de empleados
+     * junto con su DAO correspondiente.
+     */
     public EmpleadoControl() {
         IEmpleadoDAO empleadoDAO = new EmpleadoDAO();
         this.empleadoBO = new EmpleadoBO(empleadoDAO);
     }
 
+    /**
+     * Obtiene el empleado asignado a una mesa.
+     *
+     * @param mesa Mesa desde la cual se busca el empleado.
+     * @return Empleado asociado a la mesa.
+     * @throws EmpleadosException Si la mesa es invalida o ocurre un error.
+     */
     public EmpleadoDTO obtenerEmpleadoPorMesa(MesaDTO mesa) throws EmpleadosException {
-        
+
         if (mesa == null) {
             throw new EmpleadosException("La mesa no puede ser nula.");
         }
 
-        if (mesa.getIdMesa()== null || mesa.getIdMesa().isBlank()) {
+        if (mesa.getIdMesa() == null || mesa.getIdMesa().isBlank()) {
             throw new EmpleadosException("El ID de la mesa es obligatorio.");
         }
+
         try {
             return empleadoBO.obtenerEmpleadoPorMesa(mesa);
         } catch (NegocioException ex) {
@@ -34,6 +57,13 @@ public class EmpleadoControl {
         }
     }
 
+    /**
+     * Realiza el login de un empleado en el sistema.
+     *
+     * @param empleado Empleado con credenciales.
+     * @return Empleado autenticado.
+     * @throws EmpleadosException Si los datos son invalidos o falla el login.
+     */
     public EmpleadoDTO login(EmpleadoDTO empleado) throws EmpleadosException {
 
         if (empleado == null) {
@@ -51,6 +81,12 @@ public class EmpleadoControl {
         }
     }
 
+    /**
+     * Activa un empleado en el sistema.
+     *
+     * @param empleado Empleado a activar.
+     * @throws EmpleadosException Si los datos son invalidos o ocurre un error.
+     */
     public void activarEmpleado(EmpleadoDTO empleado) throws EmpleadosException {
 
         if (empleado == null) {
@@ -68,6 +104,12 @@ public class EmpleadoControl {
         }
     }
 
+    /**
+     * Desactiva un empleado en el sistema.
+     *
+     * @param empleado Empleado a desactivar.
+     * @throws EmpleadosException Si los datos son invalidos o ocurre un error.
+     */
     public void desactivarEmpleado(EmpleadoDTO empleado) throws EmpleadosException {
 
         if (empleado == null) {
@@ -85,6 +127,12 @@ public class EmpleadoControl {
         }
     }
 
+    /**
+     * Obtiene la lista de meseros activos.
+     *
+     * @return Lista de empleados con rol mesero activos.
+     * @throws EmpleadosException Si ocurre un error en la consulta.
+     */
     public List<EmpleadoDTO> obtenerMeserosActivos() throws EmpleadosException {
 
         try {
@@ -94,7 +142,14 @@ public class EmpleadoControl {
         }
     }
 
-    public List<EmpleadoDTO> buscarMeserosPorUserNombre(String filtro)throws EmpleadosException {
+    /**
+     * Busca meseros por nombre o usuario.
+     *
+     * @param filtro Texto de busqueda.
+     * @return Lista de meseros que coinciden con el filtro.
+     * @throws EmpleadosException Si ocurre un error en la busqueda.
+     */
+    public List<EmpleadoDTO> buscarMeserosPorUserNombre(String filtro) throws EmpleadosException {
         try {
             return empleadoBO.buscarMeserosNombreUser(filtro);
         } catch (NegocioException ex) {

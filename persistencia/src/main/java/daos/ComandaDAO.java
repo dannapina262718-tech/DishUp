@@ -3,7 +3,10 @@ package daos;
 import adaptadores.ComandaPersistenciaAdapter;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.Projections;
 import static com.mongodb.client.model.Updates.set;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
@@ -16,16 +19,21 @@ import entidadesMongo.PedidoEntidadMongo;
 import excepciones.PersistenciaException;
 import interfaces.IComandaDAO;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 public class ComandaDAO implements IComandaDAO {
 
     private final MongoCollection<ComandaEntidadMongo> coleccion;
+    private final MongoCollection<Document> coleccionraw;
     private final ComandaPersistenciaAdapter adapter;
 
     public ComandaDAO() {
         this.coleccion = ConexionMongo.obtenerBaseDatos().getCollection("comandas", ComandaEntidadMongo.class);
+        this.coleccionraw = ConexionMongo.obtenerBaseDatos().getCollection("comandas");
         this.adapter = new ComandaPersistenciaAdapter();
     }
 
@@ -99,6 +107,9 @@ public class ComandaDAO implements IComandaDAO {
 
     @Override
     public Comanda obtenerPorId(String id) throws PersistenciaException {
+        if(id == null){
+            throw new PersistenciaException("El id es nulo");
+        }
 
         try {
             ComandaEntidadMongo mongo = coleccion.find(eq("_id", new ObjectId(id))).first();
@@ -112,7 +123,13 @@ public class ComandaDAO implements IComandaDAO {
 
     @Override
     public boolean actualizarEstado(String idComanda, String nuevoEstado) throws PersistenciaException {
+        if (idComanda == null || idComanda.isBlank()) {
+            throw new PersistenciaException("El id de la comanda es inválido");
+        }
 
+        if (nuevoEstado == null || nuevoEstado.isBlank()) {
+            throw new PersistenciaException("El estado es inválido");
+        }
         try {
             UpdateResult result = coleccion.updateOne(
                     eq("_id", new ObjectId(idComanda)),
@@ -196,6 +213,13 @@ public class ComandaDAO implements IComandaDAO {
 
     @Override
     public boolean actualizarComanda(String idComanda, List<Pedido> pedidos) throws PersistenciaException {
+        if (idComanda == null || idComanda.isBlank()) {
+            throw new PersistenciaException("El id de la comanda es inválido");
+        }
+
+        if (pedidos == null) {
+            throw new PersistenciaException("La lista de los pedidos es nula");
+        }
         try {
             UpdateResult result = coleccion.updateOne(
                     eq("_id", new ObjectId(idComanda)),
@@ -205,5 +229,47 @@ public class ComandaDAO implements IComandaDAO {
         } catch (MongoException e) {
             throw new PersistenciaException("Error al actualizar comanda", e);
         }
+    }
+    @Override
+    public float calcularMontoComanda(String idComanda) throws PersistenciaException{
+        if(idComanda == null){
+            throw new PersistenciaException("El id es nulo");
+        }
+        try{
+            List<Bson> pipeline = Arrays.asList(
+                    
+                    Aggregates.match(eq("_id", new ObjectId(idComanda))),
+                    
+                    Aggregates.unwind("$pedidos"),
+                    
+                    Aggregates.project(
+                            Projections.fields(
+                                    Projections.computed("subtotal", new Document("$multiply", Arrays.asList("$pedidos.cantidad","$pedidos.precioProducto")))
+                            )
+                    ),
+                    Aggregates.group(null, Accumulators.sum("montoTotal", "$subtotal"))  
+            );
+
+            List<Document> resultado = coleccionraw.aggregate(pipeline).into(new ArrayList<>());
+            
+            if (resultado.isEmpty()) {
+                return 0f;
+            }
+            
+            return ((Number) resultado.get(0).get("montoTotal")).floatValue();
+
+        } catch (Exception e) {
+            throw new PersistenciaException("Error al calcular monto de comanda", e);
+        }
+    }
+
+    @Override
+    public void recalcularMonto(String idComanda) throws PersistenciaException {
+        float total = calcularMontoComanda(idComanda);
+
+        coleccion.updateOne(
+            eq("_id", new ObjectId(idComanda)),
+            set("montoTotal", total)
+        );
     }
 }
