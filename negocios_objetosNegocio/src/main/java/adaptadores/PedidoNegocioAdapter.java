@@ -19,6 +19,7 @@ public class PedidoNegocioAdapter {
 
     public Pedido aEntidad(PedidoDTO dto) {
         Pedido p = new Pedido();
+        p.setIdProducto(dto.getId());
         p.setIdProducto(dto.getIdProducto());
         p.setNombreProducto(dto.getNombreProducto());
         p.setCantidad(dto.getCantidad());
