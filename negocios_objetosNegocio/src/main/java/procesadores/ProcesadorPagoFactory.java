@@ -1,18 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package procesadores;
 
 import enums.MetodoPago;
 import excepcion.NegocioException;
 
 /**
- *
- * @author valeria
+ * Fábrica encargada de instanciar el procesador de pago correspondiente.
+ * <p>
+ * Centraliza la creación de estrategias de pago (EFECTIVO, TARJETA, CODI),
+ * evitando que la lógica de negocio dependa directamente de las implementaciones
+ * concretas de cada método de pago.
+ * </p>
  */
 public class ProcesadorPagoFactory {
-    
+
+    /**
+     * Crea una instancia del procesador de pago según el método indicado.
+     *
+     * @param metodo método de pago seleccionado
+     * @return instancia del procesador correspondiente
+     * @throws NegocioException si el método de pago no está soportado
+     */
     public static IProcesadorPago crearProcesador(MetodoPago metodo) throws NegocioException {
 
         switch (metodo) {
@@ -27,10 +34,7 @@ public class ProcesadorPagoFactory {
                 return new ProcesadorPagoCodi();
 
             default:
-                throw new NegocioException (
-                        "Método no soportado"
-                );
+                throw new NegocioException("Método no soportado");
         }
     }
-    
 }

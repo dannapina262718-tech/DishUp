@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package procesadores;
 
 import dtos.ResultadoPagoDTO;
@@ -9,25 +5,42 @@ import dtos.SolicitudPagoDTO;
 import dtos_infraestructura.RespuestaCodiDTO;
 import dtos_infraestructura.SolicitudCodiDTO;
 import entidades.DetallePagoCodi;
-import entidades.Pago;
 import enums.MetodoPago;
 import excepcion.NegocioException;
 import excepciones.InfraestructuraTerminalException;
 import terminal.SistemaTerminal;
 
 /**
+ * Procesador de pago para el método CoDi.
  *
+ * Se encarga de validar la solicitud de pago, comunicarse con la terminal
+ * de infraestructura y construir el resultado del pago en formato DTO.
+ *
+ * Implementa el patrón Strategy como parte del sistema de pagos.
+ * 
  * @author valeria
  */
 public class ProcesadorPagoCodi implements IProcesadorPago {
+
     private final SistemaTerminal terminal;
-    
+
     public ProcesadorPagoCodi() {
         this.terminal = new SistemaTerminal();
     }
 
+    /**
+     * Procesa un pago mediante CoDi.
+     *
+     * Valida la solicitud, la envía a la terminal de infraestructura
+     * y construye la respuesta del pago con base en la respuesta obtenida.
+     *
+     * @param solicitud datos del pago a procesar
+     * @return resultado del pago procesado
+     * @throws NegocioException si la solicitud es inválida o falla la comunicación con la terminal
+     */
     @Override
     public ResultadoPagoDTO procesarPago(SolicitudPagoDTO solicitud) throws NegocioException {
+
         if (solicitud == null) {
             throw new NegocioException("La solicitud es inválida.");
         }
@@ -41,9 +54,7 @@ public class ProcesadorPagoCodi implements IProcesadorPago {
         }
 
         SolicitudCodiDTO solicitudCodi =
-                new SolicitudCodiDTO(
-                        solicitud.getMonto()
-                );
+                new SolicitudCodiDTO(solicitud.getMonto());
 
         try {
 
@@ -65,13 +76,10 @@ public class ProcesadorPagoCodi implements IProcesadorPago {
             );
 
         } catch (InfraestructuraTerminalException ex) {
-
             throw new NegocioException(
                     "Error al conectar con CoDi.",
                     ex
             );
         }
-
     }
-    
 }

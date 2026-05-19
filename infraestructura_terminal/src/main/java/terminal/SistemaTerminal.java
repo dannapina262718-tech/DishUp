@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package terminal;
 
 import adaptadores.TerminalInfraestructuraAdapter;
@@ -18,18 +14,44 @@ import java.net.URL;
 import org.json.JSONObject;
 
 /**
- *
+ * SistemaTerminal.
+ * 
+ * Representa la implementacion del sistema de terminal de pagos
+ * dentro de la capa de infraestructura.
+ * 
+ * Esta clase se encarga de comunicarse con un servicio externo
+ * mediante HTTP para procesar pagos con tarjeta y CoDi.
+ * 
+ * Funciona como un puente entre el sistema interno y la API externa,
+ * enviando solicitudes en formato JSON y recibiendo respuestas que
+ * posteriormente son convertidas a DTOs mediante un adaptador.
+ * 
+ * Utiliza {@link TerminalInfraestructuraAdapter} para transformar
+ * las respuestas JSON en objetos tipados del sistema.
+ * 
  * @author valeria
  */
 public class SistemaTerminal {
+
     private final String BASE_URL = "http://localhost:5002";
     private final TerminalInfraestructuraAdapter adapter;
 
+    /**
+     * Constructor que inicializa el adaptador de infraestructura.
+     */
     public SistemaTerminal() {
         this.adapter = new TerminalInfraestructuraAdapter();
     }
 
-    public RespuestaTerminalDTO cobrarTarjeta(SolicitudTerminalDTO solicitud) throws InfraestructuraTerminalException {
+    /**
+     * Realiza un cobro con tarjeta contra el servicio externo de terminal.
+     *
+     * @param solicitud datos necesarios para el cobro con tarjeta
+     * @return respuesta del sistema de terminal convertida a DTO
+     * @throws InfraestructuraTerminalException si ocurre un error en la comunicacion
+     */
+    public RespuestaTerminalDTO cobrarTarjeta(SolicitudTerminalDTO solicitud)
+            throws InfraestructuraTerminalException {
 
         if (solicitud == null || solicitud.getMonto() <= 0) {
             throw new InfraestructuraTerminalException("Solicitud de cobro inválida.");
@@ -77,8 +99,16 @@ public class SistemaTerminal {
             );
         }
     }
-    
-    public RespuestaCodiDTO cobrarCodi(SolicitudCodiDTO solicitud) throws InfraestructuraTerminalException {
+
+    /**
+     * Realiza un cobro mediante CoDi contra el servicio externo.
+     *
+     * @param solicitud datos necesarios para el cobro CoDi
+     * @return respuesta del sistema CoDi convertida a DTO
+     * @throws InfraestructuraTerminalException si ocurre un error en la comunicacion
+     */
+    public RespuestaCodiDTO cobrarCodi(SolicitudCodiDTO solicitud)
+            throws InfraestructuraTerminalException {
 
         if (solicitud == null || solicitud.getMonto() <= 0) {
             throw new InfraestructuraTerminalException("Solicitud CoDi inválida.");
@@ -126,5 +156,4 @@ public class SistemaTerminal {
             );
         }
     }
-    
 }

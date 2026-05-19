@@ -1,36 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package procesadores;
 
 import dtos.ResultadoPagoDTO;
 import dtos.SolicitudPagoDTO;
 import entidades.DetallePagoEfectivo;
-import entidades.Pago;
-import enums.EstadoPago;
 import enums.MetodoPago;
 import excepcion.NegocioException;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
- *
- * @author valeria
+ * Procesador de pagos en efectivo.
+ * <p>
+ * Valida el monto recibido, calcula el cambio y construye
+ * el resultado del pago sin depender de infraestructura externa.
+ * </p>
  */
 public class ProcesadorPagoEfectivo implements IProcesadorPago {
 
     public ProcesadorPagoEfectivo() {
     }
 
+    /**
+     * Procesa un pago en efectivo.
+     *
+     * @param solicitud datos del pago en efectivo
+     * @return resultado del pago con cambio calculado
+     * @throws NegocioException si la solicitud es inválida o el monto es incorrecto
+     */
     @Override
     public ResultadoPagoDTO procesarPago(SolicitudPagoDTO solicitud) throws NegocioException {
+
         if (solicitud == null) {
             throw new NegocioException("La solicitud de pago es inválida.");
-        }
-
-        if (solicitud.getIdComanda() == null || solicitud.getIdComanda().isBlank()) {
-            throw new NegocioException("El id de la comanda es inválido.");
         }
 
         if (solicitud.getMetodoPago() != MetodoPago.EFECTIVO) {
@@ -61,7 +60,6 @@ public class ProcesadorPagoEfectivo implements IProcesadorPago {
         }
 
         float cambio = detalle.getMontoRecibido() - solicitud.getMonto();
-
         detalle.setCambio(cambio);
 
         return new ResultadoPagoDTO(

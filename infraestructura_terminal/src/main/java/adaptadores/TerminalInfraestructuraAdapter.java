@@ -1,19 +1,36 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package adaptadores;
+
 import dtos_infraestructura.RespuestaCodiDTO;
-import org.json.JSONObject;
 import dtos_infraestructura.RespuestaTerminalDTO;
 import enums.Banco;
 import enums.TipoTarjeta;
+import org.json.JSONObject;
 
 /**
- *
+ * TerminalInfraestructuraAdapter.
+ * 
+ * Clase adaptadora encargada de convertir respuestas en formato JSON
+ * provenientes de sistemas externos (como terminal de pago y CoDi)
+ * a objetos DTO internos del sistema.
+ * 
+ * Su funcion es desacoplar la capa de infraestructura del sistema
+ * interno, transformando estructuras JSON en objetos tipados que
+ * pueden ser utilizados por las capas superiores.
+ * 
+ * Facilita la integracion con servicios externos y mejora la
+ * mantenibilidad del sistema.
+ * 
  * @author valeria
  */
 public class TerminalInfraestructuraAdapter {
+
+    /**
+     * Convierte una respuesta JSON de la terminal de pago
+     * a un DTO interno {@link RespuestaTerminalDTO}.
+     *
+     * @param obj objeto JSON recibido desde la terminal
+     * @return DTO con los datos estructurados de la respuesta
+     */
     public RespuestaTerminalDTO convertirJSONADTO(JSONObject obj) {
 
         RespuestaTerminalDTO dto = new RespuestaTerminalDTO();
@@ -23,6 +40,7 @@ public class TerminalInfraestructuraAdapter {
         dto.setMonto((float) obj.optDouble("monto", 0));
         dto.setNumeroAutorizacion(obj.optString("numeroAutorizacion", ""));
         dto.setUltimos4Digitos(obj.optString("ultimos4Digitos", ""));
+
         dto.setBanco(
                 Banco.valueOf(obj.getString("banco"))
         );
@@ -30,9 +48,17 @@ public class TerminalInfraestructuraAdapter {
         dto.setTipoTarjeta(
                 TipoTarjeta.valueOf(obj.getString("tipoTarjeta"))
         );
+
         return dto;
     }
-    
+
+    /**
+     * Convierte una respuesta JSON del servicio CoDi
+     * a un DTO interno {@link RespuestaCodiDTO}.
+     *
+     * @param obj objeto JSON recibido desde CoDi
+     * @return DTO con los datos estructurados de la respuesta
+     */
     public RespuestaCodiDTO convertirJSONACodiDTO(JSONObject obj) {
 
         RespuestaCodiDTO dto = new RespuestaCodiDTO();

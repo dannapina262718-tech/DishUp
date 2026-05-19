@@ -14,8 +14,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * ComandaNegocioAdapter.
+ * 
+ * Clase adaptadora encargada de convertir objetos de la capa de
+ * negocio (entidades) a objetos DTO y viceversa.
+ * 
+ * Su funcion es desacoplar la logica interna del sistema de las
+ * estructuras utilizadas para transporte de datos entre capas,
+ * facilitando la comunicacion entre la capa de dominio y las capas
+ * superiores o externas.
+ * 
+ * Permite transformar la entidad {@link Comanda} en {@link ComandaDTO}
+ * y construir una entidad a partir de datos recibidos en DTOs.
+ * 
+ * @author DishUp
+ */
 public class ComandaNegocioAdapter {
 
+    /**
+     * Convierte una entidad Comanda a su representacion DTO.
+     *
+     * @param comanda entidad de negocio
+     * @return objeto DTO con la informacion de la comanda
+     */
     public ComandaDTO aDTO(Comanda comanda) {
 
         if (comanda == null) {
@@ -26,7 +48,11 @@ public class ComandaNegocioAdapter {
 
         dto.setId(comanda.getId());
         dto.setNombreCliente(comanda.getNombreCliente());
-        dto.setNombreEmpleado(comanda.getEmpleado().getNombres() + comanda.getEmpleado().getApellidoPaterno() + comanda.getEmpleado().getApellidoMaterno());
+        dto.setNombreEmpleado(
+                comanda.getEmpleado().getNombres()
+                + comanda.getEmpleado().getApellidoPaterno()
+                + comanda.getEmpleado().getApellidoMaterno()
+        );
 
         if (comanda.getFecha() != null) {
             dto.setFecha(comanda.getFecha());
@@ -95,7 +121,16 @@ public class ComandaNegocioAdapter {
         return dto;
     }
 
-    public Comanda aEntidad(String nombreCliente, int numeroMesa, List<PedidoDTO> pedidosDTO, EmpleadoDTO empleadoDTO) {
+    /**
+     * Convierte datos recibidos en DTOs a una entidad Comanda.
+     *
+     * @param nombreCliente nombre del cliente
+     * @param numeroMesa numero de la mesa asignada
+     * @param pedidosDTO lista de pedidos en formato DTO
+     * @param empleadoDTO empleado que atiende la comanda
+     * @return entidad Comanda construida
+     */
+    public Comanda aEntidad( String nombreCliente, int numeroMesa, List<PedidoDTO> pedidosDTO, EmpleadoDTO empleadoDTO ) {
 
         Comanda comanda = new Comanda();
 
@@ -110,62 +145,16 @@ public class ComandaNegocioAdapter {
 
         // Empleado
         EmpleadoNegocioAdapter empleadoAdapter = new EmpleadoNegocioAdapter();
-
         comanda.setEmpleado(empleadoAdapter.aEntidad(empleadoDTO));
 
         // Pedidos
-//        List<Pedido> pedidos = new ArrayList<>();
-//
-//        if (pedidosDTO != null) {
-//            
-//            for (PedidoDTO dto : pedidosDTO) {
-//
-//                Pedido existente = null;
-//
-//                for (Pedido p : pedidos) {
-//
-//                    boolean mismoProducto = p.getIdProducto().equals(dto.getIdProducto());
-//                            
-//
-//                    boolean mismaDescripcion = Objects.equals(p.getDescripcion(), dto.getDescripcion());
-//
-//                    System.out.println(mismoProducto);
-//                    System.out.println(mismaDescripcion);
-//                    if (mismoProducto && mismaDescripcion) {
-//                        existente = p;
-//                        break;
-//                    }
-//                }
-//
-//                if (existente != null) {
-//
-//                    existente.setCantidad(
-//                            existente.getCantidad() + dto.getCantidad()
-//                    );
-//
-//                } else {
-//
-//                    Pedido pedido = new Pedido();
-//
-//                    pedido.setId(dto.getId());
-//                    pedido.setNombreProducto(dto.getNombreProducto());
-//                    pedido.setIdProducto(dto.getIdProducto());
-//                    pedido.setCantidad(dto.getCantidad());
-//                    pedido.setDescripcion(dto.getDescripcion());
-//                    pedido.setEstado(EstadoPedido.PENDIENTE);
-//                    pedido.setFechaPedido(LocalDateTime.now());
-//                    pedido.setPrecioProducto(dto.getPrecioProducto());
-//
-//                    pedidos.add(pedido);
-//                }
-//            }
-//        }
         List<Pedido> pedidos = new ArrayList<>();
 
         if (pedidosDTO != null) {
             for (PedidoDTO dto : pedidosDTO) {
 
                 Pedido pedido = new Pedido();
+
                 pedido.setId(dto.getId());
                 pedido.setNombreProducto(dto.getNombreProducto());
                 pedido.setIdProducto(dto.getIdProducto());
@@ -180,6 +169,7 @@ public class ComandaNegocioAdapter {
         }
 
         comanda.setPedidos(pedidos);
+
         return comanda;
     }
 }

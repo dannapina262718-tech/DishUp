@@ -11,6 +11,8 @@ import entidadesMongo.MesaEntidadMongo;
  * 
  * Su función principal es desacoplar la lógica de negocio de la capa de
  * persistencia, permitiendo una conversión clara entre ambos modelos.
+ * 
+ * @DishUp
  */
 public class MesaPersistenciaAdapter {
 

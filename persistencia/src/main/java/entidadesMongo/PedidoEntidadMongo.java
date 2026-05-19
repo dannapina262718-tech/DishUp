@@ -9,12 +9,10 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 /**
  * Entidad de persistencia Pedido para MongoDB.
- * 
- * Esta clase representa cómo se almacena un pedido dentro de la base de datos.
+ * * Esta clase representa cómo se almacena un pedido dentro de la base de datos.
  * Contiene la información del producto solicitado, cantidad, precio, estado del pedido
  * y la fecha en la que fue realizado.
- * 
- * Se utiliza únicamente en la capa de persistencia y no debe contener lógica de negocio.
+ * * Se utiliza únicamente en la capa de persistencia y no debe contener lógica de negocio.
  */
 public class PedidoEntidadMongo {
 
@@ -48,8 +46,9 @@ public class PedidoEntidadMongo {
      * @param precioProducto precio unitario del producto
      * @param estado estado actual del pedido
      * @param fechaPedido fecha en la que se realizó el pedido
+     * @param ingredientesRemovidos lista de ingredientes removidos del producto
      */
-    public PedidoEntidadMongo(String id, String idProducto, String nombreProducto, int cantidad, String descripcion, float precioProducto, EstadoPedido estado, LocalDateTime fechaPedido, List ingredientesRemovidos) {    
+    public PedidoEntidadMongo(String id, String idProducto, String nombreProducto, int cantidad, String descripcion, float precioProducto, EstadoPedido estado, LocalDateTime fechaPedido, List<String> ingredientesRemovidos) {    
         this.id = id;
         this.idProducto = idProducto;
         this.nombreProducto = nombreProducto;
@@ -205,13 +204,21 @@ public class PedidoEntidadMongo {
         this.fechaPedido = fechaPedido;
     }
 
-    public List getIngredientesRemovidos() {
+    /**
+     * Obtiene la lista de ingredientes que fueron removidos del producto.
+     *
+     * @return lista de ingredientes removidos
+     */
+    public List<String> getIngredientesRemovidos() {
         return ingredientesRemovidos;
     }
 
-    public void setIngredientesRemovidos(List ingredientesRemovidos) {
+    /**
+     * Establece la lista de ingredientes que se deben remover del producto.
+     *
+     * @param ingredientesRemovidos lista de ingredientes a remover
+     */
+    public void setIngredientesRemovidos(List<String> ingredientesRemovidos) {
         this.ingredientesRemovidos = ingredientesRemovidos;
     }
-    
-    
 }

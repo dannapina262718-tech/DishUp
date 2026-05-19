@@ -19,6 +19,8 @@ import java.util.List;
  *
  * Su función principal es aislar la lógica de conversión entre la capa de
  * negocio y la capa de persistencia, evitando acoplamiento directo.
+ * 
+ * @author DishUp
  */
 public class ComandaPersistenciaAdapter {
 

@@ -18,11 +18,11 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /**
- * EmpleadoDAO.
- * Se encarga del acceso a datos de los empleados en la base de datos MongoDB.
- *
- * Esta clase realiza operaciones de consulta y actualizacion sobre la coleccion
- * de empleados, y convierte los datos entre MongoDB y el modelo de dominio.
+ * Clase de acceso a datos (DAO) para la gestión de Empleados en MongoDB.
+ * * Esta clase realiza operaciones de consulta y actualización sobre la colección
+ * de empleados, abstrayendo la lógica de persistencia y transformando los datos 
+ * entre los modelos de persistencia (MongoDB) y de dominio.
+ * * Se utiliza únicamente en la capa de persistencia y no debe contener lógica de negocio.
  */
 public class EmpleadoDAO implements IEmpleadoDAO {
 
@@ -30,8 +30,7 @@ public class EmpleadoDAO implements IEmpleadoDAO {
     private final EmpleadoPersistenciaAdapter empleadoAdapter;
 
     /**
-     * Constructor.
-     * Inicializa la conexion con la coleccion de empleados y el adaptador.
+     * Constructor por defecto que inicializa la conexión con la colección de empleados y el adaptador.
      */
     public EmpleadoDAO() {
         this.coleccion = ConexionMongo.obtenerBaseDatos()
@@ -40,11 +39,12 @@ public class EmpleadoDAO implements IEmpleadoDAO {
     }
 
     /**
-     * Obtiene un empleado por su ID.
+     * Obtiene un empleado por su identificador único.
      *
-     * @param id identificador del empleado
-     * @return empleado en modelo de dominio
-     * @throws PersistenciaException si el ID es invalido, no existe o falla la consulta
+     * @param id identificador único del empleado en formato hexadecimal
+     * @return el empleado correspondiente al identificador en el modelo de dominio
+     * @throws PersistenciaException si el ID es nulo, vacío, tiene formato inválido, 
+     * no se encuentra el empleado o falla la consulta en MongoDB
      */
     @Override
     public Empleado obtenerEmpleadoPorId(String id) throws PersistenciaException {
@@ -71,11 +71,12 @@ public class EmpleadoDAO implements IEmpleadoDAO {
     }
 
     /**
-     * Obtiene un empleado por su usuario.
+     * Obtiene un empleado por su nombre de usuario único.
      *
-     * @param user nombre de usuario del empleado
-     * @return empleado en modelo de dominio
-     * @throws PersistenciaException si el usuario es invalido o ocurre un error
+     * @param user nombre de usuario único del empleado
+     * @return el empleado correspondiente al usuario en el modelo de dominio
+     * @throws PersistenciaException si el usuario es nulo, vacío, no se encuentra 
+     * el registro o si ocurre un error en MongoDB
      */
     @Override
     public Empleado obtenerEmpleadoPorUser(String user) throws PersistenciaException {
@@ -102,11 +103,12 @@ public class EmpleadoDAO implements IEmpleadoDAO {
     }
 
     /**
-     * Actualiza el estado de un empleado.
+     * Actualiza el estado actual de un empleado específico en la base de datos.
      *
-     * @param empleado empleado a actualizar
-     * @param estado nuevo estado del empleado
-     * @throws PersistenciaException si los datos son invalidos o falla la operacion
+     * @param empleado el empleado perteneciente al modelo de dominio a actualizar
+     * @param estado el nuevo estado que se le asignará al empleado
+     * @throws PersistenciaException si el empleado es nulo, su ID es inválido, 
+     * el nuevo estado es nulo o falla la operación en MongoDB
      */
     @Override
     public void actualizarEstadoEmpleado(Empleado empleado, EstadoEmpleado estado)
@@ -139,10 +141,10 @@ public class EmpleadoDAO implements IEmpleadoDAO {
     // INICIO CASO DE USO administrarMesas
 
     /**
-     * Obtiene todos los meseros activos.
+     * Obtiene todos los empleados con rol de mesero que se encuentren en estado activo.
      *
-     * @return lista de empleados con rol MESERO y estado ACTIVO
-     * @throws PersistenciaException si ocurre un error en la consulta
+     * @return una lista de empleados con rol MESERO y estado ACTIVO convertidos al modelo de dominio
+     * @throws PersistenciaException si ocurre un error durante la consulta en MongoDB
      */
     @Override
     public List<Empleado> obtenerMeserosActivos() throws PersistenciaException {
@@ -168,11 +170,12 @@ public class EmpleadoDAO implements IEmpleadoDAO {
     }
 
     /**
-     * Busca meseros activos por usuario o nombre.
+     * Busca meseros activos cuyo usuario, nombres o apellidos coincidan de manera parcial 
+     * o total con el texto de filtro proporcionado (insensible a mayúsculas y minúsculas).
      *
-     * @param filtro texto de busqueda (usuario o nombre)
-     * @return lista de meseros que coinciden con el filtro
-     * @throws PersistenciaException si ocurre un error en la consulta
+     * @param filtro texto o cadena de búsqueda para filtrar a los meseros
+     * @return una lista de empleados que cumplen con los criterios de búsqueda y rol especificados
+     * @throws PersistenciaException si ocurre un error en el proceso de consulta de MongoDB
      */
     @Override
     public List<Empleado> buscarMeserosPorUserNombre(String filtro)

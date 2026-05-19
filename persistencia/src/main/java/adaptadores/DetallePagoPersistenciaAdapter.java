@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package adaptadores;
 
 import entidades.DetallePago;
@@ -14,13 +10,32 @@ import entidadesMongo.DetallePagoEntidadMongo;
 import entidadesMongo.DetallePagoTarjetaEntidadMongo;
 
 /**
- *
- * @author valeria
+ * Adaptador encargado de convertir los distintos tipos de detalles de pago
+ * del dominio hacia entidades de persistencia MongoDB.
+ * <p>
+ * Permite mapear la jerarquía de DetallePago a sus equivalentes en la base de datos,
+ * separando la lógica de dominio de la capa de persistencia.
+ * </p>
+ * 
+ * @author DishUp
  */
 public class DetallePagoPersistenciaAdapter {
+
+    /**
+     * Convierte un detalle de pago del dominio a su representación en MongoDB.
+     *
+     * @param detalle objeto de dominio que representa el detalle del pago
+     * @return entidad Mongo correspondiente al tipo de detalle recibido,
+     *         o null si el tipo no es reconocido
+     */
     public DetallePagoEntidadMongo aMongo(DetallePago detalle) {
 
+        if (detalle == null) {
+            return null;
+        }
+
         if (detalle instanceof DetallePagoEfectivo efectivo) {
+
             DetallePagoEfectivoEntidadMongo mongo =
                     new DetallePagoEfectivoEntidadMongo();
 
@@ -31,6 +46,7 @@ public class DetallePagoPersistenciaAdapter {
         }
 
         if (detalle instanceof DetallePagoTarjeta tarjeta) {
+
             DetallePagoTarjetaEntidadMongo mongo =
                     new DetallePagoTarjetaEntidadMongo();
 
@@ -43,6 +59,7 @@ public class DetallePagoPersistenciaAdapter {
         }
 
         if (detalle instanceof DetallePagoCodi codi) {
+
             DetallePagoCodiEntidadMongo mongo =
                     new DetallePagoCodiEntidadMongo();
 

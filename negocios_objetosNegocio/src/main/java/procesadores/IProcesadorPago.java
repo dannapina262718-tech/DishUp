@@ -1,18 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package procesadores;
 
 import dtos.ResultadoPagoDTO;
 import dtos.SolicitudPagoDTO;
-import entidades.Pago;
 import excepcion.NegocioException;
 
 /**
+ * Interfaz encargada de definir el contrato para los procesadores de pago.
  *
- * @author valeria
+ * Cada implementación representa una forma distinta de procesar un pago
+ * (por ejemplo: tarjeta, CoDi, etc.).
+ *
+ * Permite aplicar el patrón Strategy para encapsular la lógica de pago.
  */
 public interface IProcesadorPago {
+
+    /**
+     * Procesa un pago a partir de una solicitud.
+     *
+     * @param solicitud información necesaria para realizar el pago
+     * @return resultado del procesamiento del pago
+     * @throws NegocioException si la solicitud es inválida o el pago no puede procesarse
+     */
     ResultadoPagoDTO procesarPago(SolicitudPagoDTO solicitud) throws NegocioException;
 }
