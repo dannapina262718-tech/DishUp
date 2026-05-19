@@ -1,20 +1,33 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
- */
 package enums;
 
 /**
- * Enumerador para los estados de los pedidos.
- * 
- * Representa el estado en el que se encuentra el pedido durante su proceso de 
- * inicio a fin.
- * 
+ * EstadoPedidoDTO.
+ * Representa los posibles estados de un pedido dentro del sistema.
+ *
+ * Este enum se utiliza para indicar en que etapa del proceso
+ * se encuentra un pedido desde que es creado hasta que es entregado.
+ *
  * @author DishUp
  */
 public enum EstadoPedidoDTO {
+
+    /**
+     * El pedido ha sido registrado pero aun no se prepara.
+     */
     PENDIENTE,
+
+    /**
+     * El pedido se encuentra en proceso de preparacion.
+     */
     EN_PREPARACION,
-    LISTA, 
+
+    /**
+     * El pedido ya esta listo para ser entregado.
+     */
+    LISTA,
+
+    /**
+     * El pedido ya fue entregado al cliente.
+     */
     ENTREGADO
 }

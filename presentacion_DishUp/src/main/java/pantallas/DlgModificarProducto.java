@@ -4,7 +4,6 @@
  */
 package pantallas;
 
-import dtos.IngredienteDTO;
 import dtos.IngredienteEnProductoDTO;
 import dtos.PedidoDTO;
 import dtos.ProductoDTO;
@@ -17,7 +16,7 @@ import javax.swing.JLabel;
 
 /**
  *
- * @author valeria
+ * @author DishUp
  */
 public class DlgModificarProducto extends javax.swing.JDialog {
 
