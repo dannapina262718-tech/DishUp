@@ -7,12 +7,11 @@ import inventario.SistemaInventario;
 import java.util.List;
 
 /**
- * InventarioFachada.
- * Clase fachada que expone las operaciones del sistema de inventario
- * hacia el resto del sistema.
+ * InventarioFachada. Clase fachada que expone las operaciones del sistema de
+ * inventario hacia el resto del sistema.
  *
- * Esta clase actua como intermediario entre la logica del sistema principal
- * y el sistema externo de inventario, delegando las operaciones a la clase
+ * Esta clase actua como intermediario entre la logica del sistema principal y
+ * el sistema externo de inventario, delegando las operaciones a la clase
  * SistemaInventario.
  *
  * @author DishUp
@@ -65,17 +64,17 @@ public class InventarioFachada implements ISistemaInventario {
             throws InfraestructuraException {
         return sistema.descontarStock(pedidos);
     }
+    
     /**
-     * Agrega stock a un ingrediente en inventario.
+     * Regresa stock de una lista de productos al inventario.
      *
-     * @param ingrediente nombre del ingrediente.
-     * @param cantidad cantidad a agregar.
+     * @param pedidos lista de productos con cantidades a regresar.
+     * @param ingredientesRemovidos ingredientes que no se regresan.
      * @return true si la operacion fue exitosa.
      * @throws InfraestructuraException si ocurre un error de comunicacion.
      */
-    
     @Override
-    public boolean agregarStock(String ingrediente, int cantidad)throws InfraestructuraException {
-        return sistema.agregarStock(ingrediente, cantidad);
+    public boolean regresarStock(List<InventarioRequestDTO> pedidos, List<String> ingredientesRemovidos) throws InfraestructuraException {
+        return sistema.regresarStock(pedidos, ingredientesRemovidos);
     }
 }

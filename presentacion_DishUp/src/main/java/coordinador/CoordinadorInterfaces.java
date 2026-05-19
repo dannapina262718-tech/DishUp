@@ -528,7 +528,7 @@ public class CoordinadorInterfaces {
         try {
             comandaFachada.cancelarPedido(comanda.getId(), pedido.getId());
 
-            JOptionPane.showMessageDialog(frmComandas, "Pedido cancelado correctamente");
+            // JOptionPane.showMessageDialog(frmComandas, "Pedido cancelado correctamente");
 
             refrescarPantallaComandas();
 
