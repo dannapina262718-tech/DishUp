@@ -33,11 +33,12 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /**
- * Clase de acceso a datos (DAO) para la gestión de Comandas en MongoDB.
- * * Implementa la interfaz IComandaDAO para realizar operaciones CRUD y consultas
- * avanzadas sobre la colección de comandas, abstrayendo la lógica de persistencia
- * y transformando los datos entre los modelos de persistencia y de dominio.
- * * Se utiliza únicamente en la capa de persistencia y no debe contener lógica de negocio.
+ * Clase de acceso a datos (DAO) para la gestión de Comandas en MongoDB. *
+ * Implementa la interfaz IComandaDAO para realizar operaciones CRUD y consultas
+ * avanzadas sobre la colección de comandas, abstrayendo la lógica de
+ * persistencia y transformando los datos entre los modelos de persistencia y de
+ * dominio. * Se utiliza únicamente en la capa de persistencia y no debe
+ * contener lógica de negocio.
  */
 public class ComandaDAO implements IComandaDAO {
 
@@ -47,7 +48,8 @@ public class ComandaDAO implements IComandaDAO {
     private final PagoPersistenciaAdapter adapterPago;
 
     /**
-     * Constructor por defecto que inicializa las colecciones de MongoDB y los adaptadores.
+     * Constructor por defecto que inicializa las colecciones de MongoDB y los
+     * adaptadores.
      */
     public ComandaDAO() {
         this.coleccion = ConexionMongo.obtenerBaseDatos().getCollection("comandas", ComandaEntidadMongo.class);
@@ -60,8 +62,10 @@ public class ComandaDAO implements IComandaDAO {
      * Inserta una nueva comanda en la base de datos de MongoDB.
      *
      * @param comanda la comanda perteneciente al modelo de dominio a insertar
-     * @return la comanda insertada con su identificador único generado por la base de datos
-     * @throws PersistenciaException si la comanda es nula o si ocurre un error en MongoDB
+     * @return la comanda insertada con su identificador único generado por la
+     * base de datos
+     * @throws PersistenciaException si la comanda es nula o si ocurre un error
+     * en MongoDB
      */
     @Override
     public Comanda insertarComanda(Comanda comanda) throws PersistenciaException {
@@ -94,7 +98,8 @@ public class ComandaDAO implements IComandaDAO {
      * Obtiene todas las comandas almacenadas en la base de datos.
      *
      * @return una lista con todas las comandas convertidas al modelo de dominio
-     * @throws PersistenciaException si ocurre un error durante la consulta en MongoDB
+     * @throws PersistenciaException si ocurre un error durante la consulta en
+     * MongoDB
      */
     @Override
     public List<Comanda> obtenerTodas() throws PersistenciaException {
@@ -118,7 +123,8 @@ public class ComandaDAO implements IComandaDAO {
      *
      * @param numeroMesa el número de la mesa a consultar
      * @return una lista de comandas correspondientes a la mesa indicada
-     * @throws PersistenciaException si ocurre un error durante la consulta en MongoDB
+     * @throws PersistenciaException si ocurre un error durante la consulta en
+     * MongoDB
      */
     @Override
     public List<Comanda> obtenerComandasPorMesa(int numeroMesa) throws PersistenciaException {
@@ -141,8 +147,10 @@ public class ComandaDAO implements IComandaDAO {
      * Busca y obtiene una comanda por su identificador único.
      *
      * @param id el identificador hexadecimal de la comanda
-     * @return la comanda correspondiente al identificador, o null si no se encuentra
-     * @throws PersistenciaException si el id proporcionado es nulo o si ocurre un error en MongoDB
+     * @return la comanda correspondiente al identificador, o null si no se
+     * encuentra
+     * @throws PersistenciaException si el id proporcionado es nulo o si ocurre
+     * un error en MongoDB
      */
     @Override
     public Comanda obtenerPorId(String id) throws PersistenciaException {
@@ -164,8 +172,10 @@ public class ComandaDAO implements IComandaDAO {
      *
      * @param idComanda el identificador de la comanda a modificar
      * @param nuevoEstado el nuevo estado que se le asignará a la comanda
-     * @return true si la comanda fue modificada exitosamente, false de lo contrario
-     * @throws PersistenciaException si alguno de los parámetros es inválido o si ocurre un error en MongoDB
+     * @return true si la comanda fue modificada exitosamente, false de lo
+     * contrario
+     * @throws PersistenciaException si alguno de los parámetros es inválido o
+     * si ocurre un error en MongoDB
      */
     @Override
     public boolean actualizarEstado(String idComanda, String nuevoEstado) throws PersistenciaException {
@@ -195,7 +205,8 @@ public class ComandaDAO implements IComandaDAO {
      * @param idComanda el identificador de la comanda destino
      * @param nuevoPedido el objeto pedido a añadir
      * @return true si el pedido fue añadido con éxito, false de lo contrario
-     * @throws PersistenciaException si ocurre un error en la operación de actualización en MongoDB
+     * @throws PersistenciaException si ocurre un error en la operación de
+     * actualización en MongoDB
      */
     @Override
     public boolean agregarPedidoAComanda(String idComanda, Pedido nuevoPedido) throws PersistenciaException {
@@ -218,8 +229,10 @@ public class ComandaDAO implements IComandaDAO {
      * Elimina de forma permanente una comanda de la base de datos.
      *
      * @param idComanda el identificador de la comanda a eliminar
-     * @return true si la comanda fue eliminada de forma efectiva, false de lo contrario
-     * @throws PersistenciaException si el id es inválido o si se genera un error en el motor de MongoDB
+     * @return true si la comanda fue eliminada de forma efectiva, false de lo
+     * contrario
+     * @throws PersistenciaException si el id es inválido o si se genera un
+     * error en el motor de MongoDB
      */
     @Override
     public boolean eliminarComanda(String idComanda) throws PersistenciaException {
@@ -243,12 +256,15 @@ public class ComandaDAO implements IComandaDAO {
     }
 
     /**
-     * Registra un nuevo pago dentro del arreglo de pagos de una comanda específica.
+     * Registra un nuevo pago dentro del arreglo de pagos de una comanda
+     * específica.
      *
      * @param idComanda el identificador de la comanda
      * @param pago el objeto pago del modelo de dominio a registrar
-     * @return true si el pago se agregó exitosamente a la comanda, false de lo contrario
-     * @throws PersistenciaException si el id es inválido, el pago es nulo o por fallas de base de datos
+     * @return true si el pago se agregó exitosamente a la comanda, false de lo
+     * contrario
+     * @throws PersistenciaException si el id es inválido, el pago es nulo o por
+     * fallas de base de datos
      */
     @Override
     public boolean insertarPagoAComanda(String idComanda, Pago pago) throws PersistenciaException {
@@ -280,10 +296,12 @@ public class ComandaDAO implements IComandaDAO {
     }
 
     /**
-     * Obtiene una lista de comandas que contengan al menos un pedido en estado "LISTA".
+     * Obtiene una lista de comandas que contengan al menos un pedido en estado
+     * "LISTA".
      *
      * @return lista de comandas con pedidos listos para entrega
-     * @throws PersistenciaException si ocurre un error en la consulta de MongoDB
+     * @throws PersistenciaException si ocurre un error en la consulta de
+     * MongoDB
      */
     @Override
     public List<Comanda> obtenerComandasListas() throws PersistenciaException {
@@ -318,8 +336,10 @@ public class ComandaDAO implements IComandaDAO {
      *
      * @param idComanda el identificador de la comanda
      * @param pedidos la nueva lista de pedidos a establecer
-     * @return true si la lista de pedidos de la comanda fue actualizada, false de lo contrario
-     * @throws PersistenciaException si los parámetros son nulos/vacíos o por errores del Driver de Mongo
+     * @return true si la lista de pedidos de la comanda fue actualizada, false
+     * de lo contrario
+     * @throws PersistenciaException si los parámetros son nulos/vacíos o por
+     * errores del Driver de Mongo
      */
     @Override
     public boolean actualizarComanda(String idComanda, List<Pedido> pedidos) throws PersistenciaException {
@@ -386,23 +406,26 @@ public class ComandaDAO implements IComandaDAO {
     @Override
     public boolean actualizarEstadoPedido(String idComanda, String idProducto, String nuevoEstado) throws PersistenciaException {
         try {
-        UpdateResult result = coleccion.updateOne(
-                and(eq("_id", new ObjectId(idComanda)), eq("pedidos.idProducto", idProducto)),
-                set("pedidos.$.estado", nuevoEstado)
-        );
-        return result.getModifiedCount() > 0;
-    } catch (MongoException e) {
-        throw new PersistenciaException("Error al actualizar el estado del pedido en la comanda", e);
+            UpdateResult result = coleccion.updateOne(
+                    and(eq("_id", new ObjectId(idComanda)), eq("pedidos.idProducto", idProducto)),
+                    set("pedidos.$.estado", nuevoEstado)
+            );
+            return result.getModifiedCount() > 0;
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al actualizar el estado del pedido en la comanda", e);
+        }
     }
-    }
-}
+
     /**
-     * Calcula el monto acumulado total de una comanda mediante un pipeline de agregación.
-     * * Multiplica la cantidad por el precio unitario de cada producto dentro del arreglo de pedidos.
+     * Calcula el monto acumulado total de una comanda mediante un pipeline de
+     * agregación. * Multiplica la cantidad por el precio unitario de cada
+     * producto dentro del arreglo de pedidos.
      *
      * @param idComanda el identificador de la comanda a calcular
-     * @return el monto total flotante calculado de los pedidos; 0f si no hay pedidos o no se encuentra la comanda
-     * @throws PersistenciaException si el id es nulo o si falla el proceso de agregación
+     * @return el monto total flotante calculado de los pedidos; 0f si no hay
+     * pedidos o no se encuentra la comanda
+     * @throws PersistenciaException si el id es nulo o si falla el proceso de
+     * agregación
      */
     @Override
     public float calcularMontoComanda(String idComanda) throws PersistenciaException {
@@ -435,10 +458,12 @@ public class ComandaDAO implements IComandaDAO {
     }
 
     /**
-     * Calcula de nuevo el importe total de la comanda y actualiza su campo 'montoTotal' en la base de datos.
+     * Calcula de nuevo el importe total de la comanda y actualiza su campo
+     * 'montoTotal' en la base de datos.
      *
      * @param idComanda el identificador de la comanda a recalcular
-     * @throws PersistenciaException si ocurre un error al calcular o persistir el nuevo monto total
+     * @throws PersistenciaException si ocurre un error al calcular o persistir
+     * el nuevo monto total
      */
     @Override
     public void recalcularMonto(String idComanda) throws PersistenciaException {
@@ -451,12 +476,15 @@ public class ComandaDAO implements IComandaDAO {
     }
 
     /**
-     * Edita los campos internos de un pedido específico anidado dentro de una comanda usando arrayFilters.
+     * Edita los campos internos de un pedido específico anidado dentro de una
+     * comanda usando arrayFilters.
      *
      * @param idComanda el identificador de la comanda contenedora
      * @param pedidoEditado el pedido con los nuevos valores modificados
-     * @return true si se localizó la comanda y aplicaron los filtros de actualización, false de lo contrario
-     * @throws PersistenciaException si las referencias son nulas o si ocurre un fallo en MongoDB
+     * @return true si se localizó la comanda y aplicaron los filtros de
+     * actualización, false de lo contrario
+     * @throws PersistenciaException si las referencias son nulas o si ocurre un
+     * fallo en MongoDB
      */
     @Override
     public boolean editarPedidoDeComanda(String idComanda, Pedido pedidoEditado) throws PersistenciaException {
@@ -494,12 +522,15 @@ public class ComandaDAO implements IComandaDAO {
     }
 
     /**
-     * Cancela y remueve un pedido específico del arreglo de pedidos de una comanda (Pull).
+     * Cancela y remueve un pedido específico del arreglo de pedidos de una
+     * comanda (Pull).
      *
      * @param idComanda el identificador de la comanda
      * @param idPedido el identificador del pedido que se desea remover
-     * @return true si se removió el elemento de los pedidos de la comanda, false de lo contrario
-     * @throws PersistenciaException si cualquiera de los ids suministrados es nulo o vacío
+     * @return true si se removió el elemento de los pedidos de la comanda,
+     * false de lo contrario
+     * @throws PersistenciaException si cualquiera de los ids suministrados es
+     * nulo o vacío
      */
     @Override
     public boolean cancelarPedidoDeComanda(String idComanda, String idPedido) throws PersistenciaException {

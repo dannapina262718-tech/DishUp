@@ -184,6 +184,15 @@ public class CoordinadorInterfaces {
             return new ArrayList<>();
         }
     }
+    
+    public List<ComandaDTO> obtenerComandasPendientes(){
+        try {
+            return 
+            
+        } catch (PagosException e) {
+            System.err.println("No se pudieron obtener las comandas pendientes");
+        }
+    }
 
     public EmpleadoDTO validarExistenciaUsuario(EmpleadoDTO e) throws EmpleadosException {
         empleadoActual = empleadoFachada.login(e);
@@ -536,8 +545,8 @@ public class CoordinadorInterfaces {
      public void setFrmCocina(FrmPantallaCocina frmCocina) {
         this.frmCocina = frmCocina;
     }
-     
-
+    
+   
     public void cancelarPedido(ComandaDTO comanda, PedidoDTO pedido) {
         try {
             comandaFachada.cancelarPedido(comanda.getId(), pedido.getId());
@@ -615,6 +624,9 @@ public class CoordinadorInterfaces {
             frmComandas.revalidate();
         }
 
+    }
+    private void obtenerComandasPendientes(){
+        comandaFachada.ob
     }
 
 }

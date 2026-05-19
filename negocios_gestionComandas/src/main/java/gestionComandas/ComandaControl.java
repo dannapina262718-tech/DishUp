@@ -179,6 +179,15 @@ public class ComandaControl {
             throw new ComandasException("No fue posible obtener las comandas listas");
         }
     }
+    
+    protected List<ComandaDTO> obterComandasPendientes() throws ComandasException{
+        try {
+            return comandaBO.obtenerComandasPendientes();
+            
+        } catch (NegocioException e) {
+            throw new ComandasException("No se pueden recuperar las comandas pendientes");
+        }
+    }
 
     /**
      * Marca una comanda como entregada.

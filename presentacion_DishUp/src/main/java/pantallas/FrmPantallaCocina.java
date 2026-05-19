@@ -8,7 +8,7 @@ import coordinador.CoordinadorInterfaces;
 import dtos.ComandaDTO;
 import dtos.EmpleadoDTO;
 import dtos.PedidoDTO;
-import fachada.ComandaFachada;
+import gestionComandas.ComandaFachada;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -122,7 +122,6 @@ public class FrmPantallaCocina extends javax.swing.JFrame {
         );
 
         lblPediddosPendientes.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        lblPediddosPendientes.setForeground(new java.awt.Color(204, 204, 204));
         lblPediddosPendientes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblPediddosPendientes.setText("Pedidos Pendientes");
 
@@ -210,10 +209,6 @@ public class FrmPantallaCocina extends javax.swing.JFrame {
                 pnlComandas.add(Box.createVerticalStrut(10));
             }
     }
-    
-    
-    
-    
     
     
     public class ComandaCard extends JPanel {
@@ -315,8 +310,6 @@ public class FrmPantallaCocina extends javax.swing.JFrame {
         add(panelCuerpo, BorderLayout.CENTER);
     }
 
-    public JButton getBtnAccion() {
-        return btnAccion;
-    }
+   
 }
 }

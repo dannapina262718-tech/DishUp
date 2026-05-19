@@ -396,7 +396,7 @@ public class ComandaBO {
             List<Comanda> comandas = comandaDAO.obtenerComandasPendientes();
             List<ComandaDTO> listaDTO = new ArrayList<>();
             for (Comanda c : comandas) {
-                listaDTO.add(adapter.aDTO(c));
+                listaDTO.add(comandaAdapter.aDTO(c));
             }
             return listaDTO;
         } catch (PersistenciaException e) {
@@ -462,7 +462,7 @@ public class ComandaBO {
         
     }
 
-}
+
     /**
      * Calcula y muta internamente el importe monetario total de una comanda sumando los precios base de sus pedidos.
      *
