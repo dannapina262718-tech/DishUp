@@ -17,7 +17,7 @@ import entidadesMongo.DetallePagoTarjetaEntidadMongo;
  * separando la lógica de dominio de la capa de persistencia.
  * </p>
  * 
- * @author DishUp
+ * @author valeria
  */
 public class DetallePagoPersistenciaAdapter {
 

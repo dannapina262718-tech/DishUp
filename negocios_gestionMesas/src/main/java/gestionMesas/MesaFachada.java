@@ -1,10 +1,10 @@
-package fachada;
+package gestionMesas;
 
-import control.MesaControl;
+import gestionMesas.MesaControl;
 import dtos.EmpleadoDTO;
 import dtos.MesaDTO;
 import excepciones.MesasException;
-import interfaz.IGestionMesas;
+import gestionMesas.IGestionMesas;
 import java.util.List;
 
 /**

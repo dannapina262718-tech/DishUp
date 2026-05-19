@@ -1,10 +1,9 @@
-package fachada;
+package gestionEmpleados;
 
-import control.EmpleadoControl;
+import gestionEmpleados.EmpleadoControl;
 import dtos.EmpleadoDTO;
 import dtos.MesaDTO;
 import excepciones.EmpleadosException;
-import interfaz.IGestionEmpleados;
 import java.util.List;
 
 /**

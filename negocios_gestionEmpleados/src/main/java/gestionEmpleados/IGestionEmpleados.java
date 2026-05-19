@@ -1,4 +1,4 @@
-package interfaz;
+package gestionEmpleados;
 
 import dtos.EmpleadoDTO;
 import dtos.MesaDTO;

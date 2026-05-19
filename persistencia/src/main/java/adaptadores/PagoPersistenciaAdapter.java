@@ -10,6 +10,8 @@ import org.bson.types.ObjectId;
  * 
  * Incluye la conversión de los datos principales del pago y su detalle asociado,
  * delegando la transformación del detalle al DetallePagoPersistenciaAdapter.
+ * 
+ * @author valeria
  */
 public class PagoPersistenciaAdapter {
 

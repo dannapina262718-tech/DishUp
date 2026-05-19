@@ -10,6 +10,8 @@ import excepcion.NegocioException;
  * evitando que la lógica de negocio dependa directamente de las implementaciones
  * concretas de cada método de pago.
  * </p>
+ * 
+ * @author valeria
  */
 public class ProcesadorPagoFactory {
 

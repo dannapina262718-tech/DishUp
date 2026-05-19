@@ -19,7 +19,7 @@ import java.util.List;
  * 
  * Permite tambien convertir listas completas de pedidos.
  * 
- * @author DishUp
+ * @author valeria
  */
 public class PedidoNegocioAdapter {
 

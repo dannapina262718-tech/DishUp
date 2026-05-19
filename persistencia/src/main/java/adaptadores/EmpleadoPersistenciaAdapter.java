@@ -13,6 +13,8 @@ import enums.RolEmpleado;
  * 
  * Su propósito es desacoplar la capa de negocio de la capa de persistencia,
  * permitiendo una conversión clara entre ambos modelos.
+ * 
+ * @author DishUp
  */
 public class EmpleadoPersistenciaAdapter {
 

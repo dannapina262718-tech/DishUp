@@ -12,6 +12,8 @@ import excepcion.NegocioException;
  * Valida el monto recibido, calcula el cambio y construye
  * el resultado del pago sin depender de infraestructura externa.
  * </p>
+ * 
+ * @author valeria
  */
 public class ProcesadorPagoEfectivo implements IProcesadorPago {
 

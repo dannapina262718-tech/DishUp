@@ -1,4 +1,4 @@
-package control;
+package gestionEmpleados;
 
 import daos.EmpleadoDAO;
 import dtos.EmpleadoDTO;
@@ -28,7 +28,7 @@ public class EmpleadoControl {
      * Constructor que inicializa la capa de negocio de empleados
      * junto con su DAO correspondiente.
      */
-    public EmpleadoControl() {
+    protected EmpleadoControl() {
         IEmpleadoDAO empleadoDAO = new EmpleadoDAO();
         this.empleadoBO = new EmpleadoBO(empleadoDAO);
     }
@@ -40,7 +40,7 @@ public class EmpleadoControl {
      * @return Empleado asociado a la mesa.
      * @throws EmpleadosException Si la mesa es invalida o ocurre un error.
      */
-    public EmpleadoDTO obtenerEmpleadoPorMesa(MesaDTO mesa) throws EmpleadosException {
+    protected EmpleadoDTO obtenerEmpleadoPorMesa(MesaDTO mesa) throws EmpleadosException {
 
         if (mesa == null) {
             throw new EmpleadosException("La mesa no puede ser nula.");
@@ -64,7 +64,7 @@ public class EmpleadoControl {
      * @return Empleado autenticado.
      * @throws EmpleadosException Si los datos son invalidos o falla el login.
      */
-    public EmpleadoDTO login(EmpleadoDTO empleado) throws EmpleadosException {
+    protected EmpleadoDTO login(EmpleadoDTO empleado) throws EmpleadosException {
 
         if (empleado == null) {
             throw new EmpleadosException("Empleado nulo.");
@@ -87,7 +87,7 @@ public class EmpleadoControl {
      * @param empleado Empleado a activar.
      * @throws EmpleadosException Si los datos son invalidos o ocurre un error.
      */
-    public void activarEmpleado(EmpleadoDTO empleado) throws EmpleadosException {
+    protected void activarEmpleado(EmpleadoDTO empleado) throws EmpleadosException {
 
         if (empleado == null) {
             throw new EmpleadosException("Empleado nulo.");
@@ -110,7 +110,7 @@ public class EmpleadoControl {
      * @param empleado Empleado a desactivar.
      * @throws EmpleadosException Si los datos son invalidos o ocurre un error.
      */
-    public void desactivarEmpleado(EmpleadoDTO empleado) throws EmpleadosException {
+    protected void desactivarEmpleado(EmpleadoDTO empleado) throws EmpleadosException {
 
         if (empleado == null) {
             throw new EmpleadosException("Empleado nulo.");
@@ -133,7 +133,7 @@ public class EmpleadoControl {
      * @return Lista de empleados con rol mesero activos.
      * @throws EmpleadosException Si ocurre un error en la consulta.
      */
-    public List<EmpleadoDTO> obtenerMeserosActivos() throws EmpleadosException {
+    protected List<EmpleadoDTO> obtenerMeserosActivos() throws EmpleadosException {
 
         try {
             return empleadoBO.obtenerMeserosActivos();
@@ -149,7 +149,7 @@ public class EmpleadoControl {
      * @return Lista de meseros que coinciden con el filtro.
      * @throws EmpleadosException Si ocurre un error en la busqueda.
      */
-    public List<EmpleadoDTO> buscarMeserosPorUserNombre(String filtro) throws EmpleadosException {
+    protected List<EmpleadoDTO> buscarMeserosPorUserNombre(String filtro) throws EmpleadosException {
         try {
             return empleadoBO.buscarMeserosNombreUser(filtro);
         } catch (NegocioException ex) {

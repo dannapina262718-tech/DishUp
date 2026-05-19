@@ -1,4 +1,4 @@
-package control;
+package gestionComandas;
 
 import dtos.ComandaDTO;
 import dtos.EmpleadoDTO;
@@ -11,12 +11,10 @@ import java.util.List;
 import objetosNegocio.ComandaBO;
 
 /**
- * ComandaControl. Clase de control encargada de validar y gestionar las
- * operaciones relacionadas con las comandas dentro del sistema.
+ * Clase de control encargada de validar y gestionar las operaciones relacionadas con las comandas.
  *
- * Esta clase actua como intermediario entre la capa de presentacion y la capa
- * de negocio (ComandaBO), validando la informacion antes de enviarla y
- * manejando las excepciones del sistema.
+ * Esta clase actúa como intermediario entre la capa de presentación y la capa de negocio (ComandaBO),
+ * validando datos de entrada, aplicando reglas de negocio básicas y gestionando excepciones.
  *
  * @author DishUp
  */
@@ -34,17 +32,13 @@ public class ComandaControl {
     /**
      * Crea una nueva comanda en el sistema.
      *
-     * Valida que el nombre del cliente no este vacio y que la comanda contenga
-     * al menos un pedido valido antes de enviarla a la capa de negocio.
-     *
-     * @param nombreCliente Nombre del cliente asociado a la comanda.
-     * @param numeroMesa Numero de la mesa asignada.
-     * @param pedidos Lista de pedidos que conforman la comanda.
-     * @param empleadoActual Empleado que registra la comanda.
-     * @throws ComandasException Si los datos son invalidos o ocurre un error en
-     * el proceso.
+     * @param nombreCliente nombre del cliente asociado a la comanda
+     * @param numeroMesa número de la mesa asignada
+     * @param pedidos lista de pedidos que conforman la comanda
+     * @param empleadoActual empleado que registra la comanda
+     * @throws ComandasException si los datos son inválidos o ocurre un error en el proceso
      */
-    public void crearComanda(String nombreCliente, int numeroMesa,
+    protected void crearComanda(String nombreCliente, int numeroMesa,
             List<PedidoDTO> pedidos, EmpleadoDTO empleadoActual) throws ComandasException {
 
         if (nombreCliente == null || nombreCliente.isBlank()) {
@@ -71,12 +65,11 @@ public class ComandaControl {
     /**
      * Obtiene todas las comandas asociadas a una mesa.
      *
-     * @param numeroMesa Numero de la mesa a consultar.
-     * @return Lista de comandas encontradas.
-     * @throws ComandasException Si el numero de mesa es invalido o ocurre un
-     * error.
+     * @param numeroMesa número de la mesa a consultar
+     * @return lista de comandas encontradas
+     * @throws ComandasException si el número de mesa es inválido o ocurre un error
      */
-    public List<ComandaDTO> obtenerComandasPorMesa(int numeroMesa) throws ComandasException {
+    protected List<ComandaDTO> obtenerComandasPorMesa(int numeroMesa) throws ComandasException {
 
         if (numeroMesa <= 0) {
             throw new ComandasException("Número de mesa inválido");
@@ -86,17 +79,13 @@ public class ComandaControl {
     }
 
     /**
-     * Agrega uno o varios pedidos a una comanda existente.
+     * Agrega pedidos a una comanda existente.
      *
-     * Valida que el id de la comanda sea correcto y que los pedidos contengan
-     * informacion valida antes de enviarlos a negocio.
-     *
-     * @param idComanda Identificador de la comanda.
-     * @param pedidos Lista de pedidos a agregar.
-     * @throws ComandasException Si los datos son invalidos o falla la
-     * operacion.
+     * @param idComanda identificador de la comanda
+     * @param pedidos lista de pedidos a agregar
+     * @throws ComandasException si los datos son inválidos o la operación falla
      */
-    public void agregarPedidoAComanda(String idComanda, List<PedidoDTO> pedidos) throws ComandasException {
+    protected void agregarPedidoAComanda(String idComanda, List<PedidoDTO> pedidos) throws ComandasException {
 
         if (idComanda == null || idComanda.isBlank()) {
             throw new ComandasException("Id de comanda inválido");
@@ -120,12 +109,12 @@ public class ComandaControl {
     }
 
     /**
-     * Actualiza la informacion completa de una comanda.
+     * Actualiza una comanda existente.
      *
-     * @param comanda Objeto comanda con los datos actualizados.
-     * @throws ComandasException Si la comanda es invalida o ocurre un error.
+     * @param comanda objeto comanda con datos actualizados
+     * @throws ComandasException si la comanda es inválida o ocurre un error
      */
-    public void actualizarComanda(ComandaDTO comanda) throws ComandasException {
+    protected void actualizarComanda(ComandaDTO comanda) throws ComandasException {
 
         if (comanda == null || comanda.getId() == null || comanda.getId().isBlank()) {
             throw new ComandasException("Comanda inválida");
@@ -143,16 +132,14 @@ public class ComandaControl {
     }
 
     /**
-     * Elimina una comanda siempre que todos sus pedidos esten en estado
-     * PENDIENTE.
+     * Elimina una comanda si todos sus pedidos están en estado PENDIENTE.
      *
-     * @param idComanda Identificador de la comanda a eliminar.
-     * @param mesa a la que se le puede hacer el cambio de estado
-     * @return true si la eliminacion fue exitosa.
-     * @throws ComandasException Si la comanda no es valida o no cumple las
-     * condiciones.
+     * @param idComanda identificador de la comanda
+     * @param mesa mesa asociada a la comanda
+     * @return true si la eliminación fue exitosa
+     * @throws ComandasException si la comanda no es válida o no cumple condiciones
      */
-    public boolean eliminarComanda(String idComanda, MesaDTO mesa) throws ComandasException {
+    protected boolean eliminarComanda(String idComanda, MesaDTO mesa) throws ComandasException {
 
         if (idComanda == null || idComanda.isBlank()) {
             throw new ComandasException("Id de comanda inválido");
@@ -165,17 +152,10 @@ public class ComandaControl {
                 throw new ComandasException("La comanda no existe");
             }
 
-            boolean todosPendientes = true;
-
             for (PedidoDTO pedido : comanda.getPedidos()) {
                 if (pedido.getEstado() != EstadoPedidoDTO.PENDIENTE) {
-                    todosPendientes = false;
-                    break;
+                    throw new ComandasException("Solo se puede eliminar si todos los pedidos están en PENDIENTE");
                 }
-            }
-
-            if (!todosPendientes) {
-                throw new ComandasException("Solo se puede eliminar si todos los pedidos están en PENDIENTE");
             }
 
             return comandaBO.eliminarComanda(idComanda, mesa);
@@ -186,12 +166,12 @@ public class ComandaControl {
     }
 
     /**
-     * Obtiene todas las comandas que se encuentran en estado LISTA.
+     * Obtiene todas las comandas en estado LISTA.
      *
-     * @return Lista de comandas listas.
-     * @throws ComandasException Si ocurre un error en la consulta.
+     * @return lista de comandas listas
+     * @throws ComandasException si ocurre un error en la consulta
      */
-    public List<ComandaDTO> obtenerComandasListas() throws ComandasException {
+    protected List<ComandaDTO> obtenerComandasListas() throws ComandasException {
 
         try {
             return comandaBO.obtenerComandasListas();
@@ -201,14 +181,12 @@ public class ComandaControl {
     }
 
     /**
-     * Marca una comanda como entregada, actualizando los pedidos en estado
-     * LISTA.
+     * Marca una comanda como entregada.
      *
-     * @param idComanda Identificador de la comanda.
-     * @throws ComandasException Si la comanda no existe o no hay pedidos
-     * listos.
+     * @param idComanda identificador de la comanda
+     * @throws ComandasException si la comanda no existe o no tiene pedidos listos
      */
-    public void entregarComanda(String idComanda) throws ComandasException {
+    protected void entregarComanda(String idComanda) throws ComandasException {
 
         try {
             ComandaDTO comanda = comandaBO.obtenerComandaPorId(idComanda);
@@ -236,25 +214,37 @@ public class ComandaControl {
                 }
             }
 
-            // persistir pedidos
             comandaBO.actualizarComanda(comanda);
 
         } catch (NegocioException ex) {
             throw new ComandasException("Error al entregar comanda: " + ex.getMessage());
         }
     }
-    
-    public ComandaDTO obtenerComandaPorId(String idComanda) throws ComandasException {
+
+    /**
+     * Obtiene una comanda por su identificador.
+     *
+     * @param idComanda identificador de la comanda
+     * @return comanda encontrada
+     * @throws ComandasException si ocurre un error en la consulta
+     */
+    protected ComandaDTO obtenerComandaPorId(String idComanda) throws ComandasException {
+
         try {
             return comandaBO.obtenerComandaPorId(idComanda);
         } catch (NegocioException ex) {
             throw new ComandasException("Error al obtener comanda: " + ex.getMessage());
         }
     }
-    
 
-
-    public void cancelarPedidoDeComanda(String idComanda, String idPedido) throws ComandasException {
+    /**
+     * Cancela un pedido dentro de una comanda.
+     *
+     * @param idComanda identificador de la comanda
+     * @param idPedido identificador del pedido
+     * @throws ComandasException si los datos son inválidos o falla la operación
+     */
+    protected void cancelarPedidoDeComanda(String idComanda, String idPedido) throws ComandasException {
 
         if (idComanda == null || idComanda.isBlank()) {
             throw new ComandasException("Id comanda inválido");
@@ -265,15 +255,20 @@ public class ComandaControl {
         }
 
         try {
-
             comandaBO.cancelarPedidoDeComanda(idComanda, idPedido);
-
         } catch (NegocioException ex) {
             throw new ComandasException(ex.getMessage());
         }
     }
 
-    public void editarPedidoDeComanda(String idComanda, PedidoDTO pedido) throws ComandasException {
+    /**
+     * Edita un pedido dentro de una comanda.
+     *
+     * @param idComanda identificador de la comanda
+     * @param pedido pedido con información actualizada
+     * @throws ComandasException si los datos son inválidos o falla la operación
+     */
+    protected void editarPedidoDeComanda(String idComanda, PedidoDTO pedido) throws ComandasException {
 
         if (idComanda == null || idComanda.isBlank()) {
             throw new ComandasException("Id comanda inválido");
@@ -285,10 +280,8 @@ public class ComandaControl {
 
         try {
             comandaBO.editarPedidoDeComanda(idComanda, pedido);
-
         } catch (NegocioException ex) {
             throw new ComandasException(ex.getMessage());
         }
     }
-
 }

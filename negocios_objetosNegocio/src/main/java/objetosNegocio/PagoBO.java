@@ -20,6 +20,8 @@ import procesadores.ProcesadorPagoFactory;
  * Valida reglas de negocio para el pago de comandas y mesas,
  * coordina el procesamiento del pago con la infraestructura de pagos
  * y registra los pagos en la comanda.
+ * 
+ * @author valeria
  */
 public class PagoBO {
 

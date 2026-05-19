@@ -4,6 +4,7 @@ import adaptadores.EmpleadoPersistenciaAdapter;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Updates.set;
 import conexion.ConexionMongo;
 import entidades.Empleado;
@@ -153,7 +154,7 @@ public class EmpleadoDAO implements IEmpleadoDAO {
                     this.coleccion.find(and(
                             eq("rol", RolEmpleado.MESERO),
                             eq("estado", EstadoEmpleado.ACTIVO)
-                    )).into(new ArrayList<>());
+                    )).sort(ascending("nombres")).into(new ArrayList<>());
 
             List<Empleado> activosDominio = new ArrayList<>();
 

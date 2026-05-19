@@ -1,4 +1,4 @@
-package control;
+package gestionMesas;
 
 import daos.MesaDAO;
 import dtos.EmpleadoDTO;
@@ -31,7 +31,7 @@ public class MesaControl {
      * Constructor que inicializa la capa de negocio de mesas
      * junto con su DAO correspondiente.
      */
-    public MesaControl() {
+    protected MesaControl() {
         IMesaDAO mesaDAO = new MesaDAO();
         this.mesaBO = new MesaBO(mesaDAO);
     }
@@ -42,7 +42,7 @@ public class MesaControl {
      * @param mesa Objeto MesaDTO a validar.
      * @throws MesasException Si la mesa es nula o no tiene ID.
      */
-    private void validarMesa(MesaDTO mesa) throws MesasException {
+    protected void validarMesa(MesaDTO mesa) throws MesasException {
         if (mesa == null) {
             throw new MesasException("La mesa no puede ser nula");
         }
@@ -57,7 +57,7 @@ public class MesaControl {
      * @param empleado Objeto EmpleadoDTO a validar.
      * @throws MesasException Si el empleado es nulo o no tiene ID.
      */
-    private void validarEmpleado(EmpleadoDTO empleado) throws MesasException {
+    protected void validarEmpleado(EmpleadoDTO empleado) throws MesasException {
         if (empleado == null) {
             throw new MesasException("El empleado no puede ser nulo");
         }
@@ -73,7 +73,7 @@ public class MesaControl {
      * @return Lista de mesas asignadas.
      * @throws MesasException Si el empleado es invalido o ocurre un error.
      */
-    public List<MesaDTO> obtenerMesasPorMesero(EmpleadoDTO empleado) throws MesasException {
+    protected List<MesaDTO> obtenerMesasPorMesero(EmpleadoDTO empleado) throws MesasException {
         validarEmpleado(empleado);
 
         try {
@@ -90,7 +90,7 @@ public class MesaControl {
      * @return Mesa encontrada.
      * @throws MesasException Si la mesa es invalida o ocurre un error.
      */
-    public MesaDTO obtenerMesaPorId(MesaDTO mesa) throws MesasException {
+    protected MesaDTO obtenerMesaPorId(MesaDTO mesa) throws MesasException {
         validarMesa(mesa);
 
         try {
@@ -106,7 +106,7 @@ public class MesaControl {
      * @param mesa Mesa a eliminar.
      * @throws MesasException Si la mesa es invalida o ocurre un error.
      */
-    public void eliminarMesa(MesaDTO mesa) throws MesasException {
+    protected void eliminarMesa(MesaDTO mesa) throws MesasException {
         validarMesa(mesa);
 
         try {
@@ -124,7 +124,7 @@ public class MesaControl {
      * @param mesa Mesa a registrar.
      * @throws MesasException Si los datos son invalidos o ocurre un error.
      */
-    public void agregarMesa(MesaDTO mesa) throws MesasException {
+    protected void agregarMesa(MesaDTO mesa) throws MesasException {
 
         if (mesa == null) {
             throw new MesasException("La mesa no puede ser nula");
@@ -154,7 +154,7 @@ public class MesaControl {
      * @param mesero Empleado mesero.
      * @throws MesasException Si los datos son invalidos o el empleado no cumple requisitos.
      */
-    public void actualizarMesasDeMesero(List<MesaDTO> mesasAsignar, List<MesaDTO> mesasQuitar, EmpleadoDTO mesero) throws MesasException {
+    protected void actualizarMesasDeMesero(List<MesaDTO> mesasAsignar, List<MesaDTO> mesasQuitar, EmpleadoDTO mesero) throws MesasException {
 
         for (MesaDTO mesa : mesasAsignar) {
             validarMesa(mesa);
@@ -195,7 +195,7 @@ public class MesaControl {
      * @return Lista de mesas libres.
      * @throws MesasException Si ocurre un error en la consulta.
      */
-    public List<MesaDTO> obtenerMesasDisponibles() throws MesasException {
+    protected List<MesaDTO> obtenerMesasDisponibles() throws MesasException {
         try {
             return mesaBO.obtenerMesasDisponibles();
         } catch (NegocioException ex) {
@@ -209,7 +209,7 @@ public class MesaControl {
      * @return Lista de mesas.
      * @throws MesasException Si ocurre un error en la consulta.
      */
-    public List<MesaDTO> obtenerMesas() throws MesasException {
+    protected List<MesaDTO> obtenerMesas() throws MesasException {
         try {
             return mesaBO.obtenerMesas();
         } catch (NegocioException ex) {

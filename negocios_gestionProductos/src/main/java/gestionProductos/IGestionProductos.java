@@ -1,4 +1,4 @@
-package interfaz;
+package gestionProductos;
 
 import dtos.ProductoDTO;
 import dtos.IngredienteEnProductoDTO;

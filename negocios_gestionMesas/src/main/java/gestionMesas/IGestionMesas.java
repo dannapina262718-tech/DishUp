@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
 
-package interfaz;
+package gestionMesas;
 
 import dtos.EmpleadoDTO;
 import dtos.MesaDTO;

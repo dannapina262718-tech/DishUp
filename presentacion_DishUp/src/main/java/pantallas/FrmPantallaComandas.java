@@ -12,7 +12,7 @@ import dtos.PedidoDTO;
 import enums.EstadoMesaDTO;
 import enums.EstadoPedidoDTO;
 import excepciones.MesasException;
-import fachada.MesaFachada;
+import gestionMesas.MesaFachada;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;

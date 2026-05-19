@@ -1,13 +1,14 @@
-package fachada;
+package gestionProductos;
 
-import control.ProductoControl;
+import gestionProductos.ProductoControl;
 import dtos.IngredienteEnProductoDTO;
 import dtos.ProductoDTO;
 import dtos.ProductoIngredienteDTO;
 import enums.TipoProductoDTO;
 import excepciones.ProductosException;
+import fachada.InventarioFachada;
 import interfaces.ISistemaInventario;
-import interfaz.IGestionProductos;
+import gestionProductos.IGestionProductos;
 import java.util.List;
 
 /**
