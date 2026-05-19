@@ -2,6 +2,7 @@ package pantallas;
 
 import coordinador.CoordinadorInterfaces;
 import dtos.PedidoDTO;
+import enums.EstadoPedidoDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -141,6 +142,37 @@ public class DlgDetallePedido extends JDialog {
         // FOOTER
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 20));
         footer.setBackground(Color.WHITE);
+
+        if (pedido.getEstado() == EstadoPedidoDTO.PENDIENTE) {
+
+            JButton btnEditar = new JButton("Editar");
+
+            btnEditar.addActionListener(e -> {
+                coordinador.editarPedido(pedido);
+                dispose();
+            });
+
+            JButton btnCancelar = new JButton("Cancelar");
+
+            btnCancelar.addActionListener(e -> {
+
+                int confirmacion = JOptionPane.showConfirmDialog(
+                        this,
+                        "¿Cancelar pedido?",
+                        "Confirmar",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirmacion == JOptionPane.YES_OPTION) {
+
+                    coordinador.cancelarPedido(pedido);
+                    dispose();
+                }
+            });
+
+            footer.add(btnEditar);
+            footer.add(btnCancelar);
+        }
 
         panelPrincipal.add(footer, BorderLayout.SOUTH);
     }

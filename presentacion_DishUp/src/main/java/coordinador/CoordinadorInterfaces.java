@@ -360,9 +360,9 @@ public class CoordinadorInterfaces {
 
     public void actualizarComanda(ComandaDTO comanda, List<PedidoDTO> nuevosPedidos) {
         try {
-            if (nuevosPedidos != null && !nuevosPedidos.isEmpty()) {
-                comanda.getPedidos().addAll(nuevosPedidos);
-            }
+//            if (nuevosPedidos != null && !nuevosPedidos.isEmpty()) {
+//                comanda.getPedidos().addAll(nuevosPedidos);
+//            }
 
             comandaFachada.actualizarComanda(comanda);
             if (frmComandas != null) {
@@ -453,6 +453,121 @@ public class CoordinadorInterfaces {
         // comandaFachada.entregarPedido(pedido);
         if (frmComandas != null) {
             frmComandas.actualizarPantalla();
+        }
+    }
+
+    public void cancelarPedido(PedidoDTO pedido) {
+        try {
+
+            if (comandaActual == null) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "No hay comanda seleccionada"
+                );
+                return;
+            }
+
+            comandaFachada.cancelarPedido(
+                    comandaActual.getId(),
+                    pedido.getId()
+            );
+
+            comandaActual.getPedidos().remove(pedido);
+
+            if (frmComandas != null) {
+                frmComandas.actualizarPantalla();
+            }
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Pedido cancelado correctamente"
+            );
+
+        } catch (ComandasException e) {
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error al cancelar pedido: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    public void editarPedido(PedidoDTO pedidoOriginal) {
+
+        try {
+
+            if (comandaActual == null) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "No hay comanda seleccionada"
+                );
+                return;
+            }
+
+            List<IngredienteEnProductoDTO> removibles
+                    = obtenerIngredientesRemovibles(
+                            pedidoOriginal.getIdProducto()
+                    );
+
+            ProductoDTO productoTemp = new ProductoDTO();
+
+            productoTemp.setId(pedidoOriginal.getIdProducto());
+            productoTemp.setNombre(pedidoOriginal.getNombreProducto());
+            productoTemp.setPrecio(pedidoOriginal.getPrecioProducto());
+
+            DlgModificarProducto dlg
+                    = new DlgModificarProducto(
+                            frmProductos,
+                            productoTemp,
+                            removibles,
+                            pedidoOriginal
+                    );
+
+            dlg.setVisible(true);
+
+            PedidoDTO pedidoEditado = dlg.getResultado();
+
+            if (pedidoEditado != null) {
+
+                pedidoEditado.setId(pedidoOriginal.getId());
+
+                comandaFachada.editarPedido(
+                        comandaActual.getId(),
+                        pedidoEditado
+                );
+
+                pedidoOriginal.setDescripcion(
+                        pedidoEditado.getDescripcion()
+                );
+
+                pedidoOriginal.setCantidad(
+                        pedidoEditado.getCantidad()
+                );
+
+                pedidoOriginal.setPrecioProducto(
+                        pedidoEditado.getPrecioProducto()
+                );
+
+                if (frmComandas != null) {
+                    frmComandas.actualizarPantalla();
+                }
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Pedido editado correctamente"
+                );
+            }
+
+        } catch (ComandasException e) {
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error al editar pedido: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 

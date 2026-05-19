@@ -8,13 +8,12 @@ import excepciones.ComandasException;
 import java.util.List;
 
 /**
- * IGestionComandas.
- * Interfaz que define las operaciones principales para la gestion de comandas
- * dentro del sistema.
+ * IGestionComandas. Interfaz que define las operaciones principales para la
+ * gestion de comandas dentro del sistema.
  *
- * Esta interfaz establece los metodos que deben ser implementados por la
- * capa de fachada para permitir la creacion, consulta, actualizacion,
- * eliminacion y entrega de comandas.
+ * Esta interfaz establece los metodos que deben ser implementados por la capa
+ * de fachada para permitir la creacion, consulta, actualizacion, eliminacion y
+ * entrega de comandas.
  *
  * @author DishUp
  */
@@ -74,7 +73,7 @@ public interface IGestionComandas {
      * @throws ComandasException Si ocurre un error en la operacion.
      */
     public void entregarComanda(String idComanda) throws ComandasException;
-    
+
     /**
      * Actualiza la informacion de una comanda existente.
      *
@@ -82,5 +81,9 @@ public interface IGestionComandas {
      * @throws ComandasException Si ocurre un error en la actualizacion.
      */
     public void actualizarComanda(ComandaDTO comanda) throws ComandasException;
-    
+
+    public void cancelarPedido(String idComanda, String idPedido) throws ComandasException;
+
+    public void editarPedido(String idComanda, PedidoDTO pedidoEditado) throws ComandasException;
+
 }
