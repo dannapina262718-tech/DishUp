@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ComandaNegocioAdapter {
-    
-    
+
     public ComandaDTO aDTO(Comanda comanda) {
 
         if (comanda == null) {
@@ -71,7 +70,7 @@ public class ComandaNegocioAdapter {
         }
 
         dto.setPedidos(pedidosDTO);
-        
+
         List<PagoDTO> pagosDTO = new ArrayList<>();
 
         if (comanda.getPagos() != null) {
@@ -92,7 +91,6 @@ public class ComandaNegocioAdapter {
         }
 
         dto.setPagos(pagosDTO);
-
 
         return dto;
     }
@@ -116,54 +114,72 @@ public class ComandaNegocioAdapter {
         comanda.setEmpleado(empleadoAdapter.aEntidad(empleadoDTO));
 
         // Pedidos
+//        List<Pedido> pedidos = new ArrayList<>();
+//
+//        if (pedidosDTO != null) {
+//            
+//            for (PedidoDTO dto : pedidosDTO) {
+//
+//                Pedido existente = null;
+//
+//                for (Pedido p : pedidos) {
+//
+//                    boolean mismoProducto = p.getIdProducto().equals(dto.getIdProducto());
+//                            
+//
+//                    boolean mismaDescripcion = Objects.equals(p.getDescripcion(), dto.getDescripcion());
+//
+//                    System.out.println(mismoProducto);
+//                    System.out.println(mismaDescripcion);
+//                    if (mismoProducto && mismaDescripcion) {
+//                        existente = p;
+//                        break;
+//                    }
+//                }
+//
+//                if (existente != null) {
+//
+//                    existente.setCantidad(
+//                            existente.getCantidad() + dto.getCantidad()
+//                    );
+//
+//                } else {
+//
+//                    Pedido pedido = new Pedido();
+//
+//                    pedido.setId(dto.getId());
+//                    pedido.setNombreProducto(dto.getNombreProducto());
+//                    pedido.setIdProducto(dto.getIdProducto());
+//                    pedido.setCantidad(dto.getCantidad());
+//                    pedido.setDescripcion(dto.getDescripcion());
+//                    pedido.setEstado(EstadoPedido.PENDIENTE);
+//                    pedido.setFechaPedido(LocalDateTime.now());
+//                    pedido.setPrecioProducto(dto.getPrecioProducto());
+//
+//                    pedidos.add(pedido);
+//                }
+//            }
+//        }
         List<Pedido> pedidos = new ArrayList<>();
 
         if (pedidosDTO != null) {
-            
             for (PedidoDTO dto : pedidosDTO) {
 
-                Pedido existente = null;
+                Pedido pedido = new Pedido();
+                pedido.setId(dto.getId());
+                pedido.setNombreProducto(dto.getNombreProducto());
+                pedido.setIdProducto(dto.getIdProducto());
+                pedido.setCantidad(dto.getCantidad());
+                pedido.setDescripcion(dto.getDescripcion());
+                pedido.setEstado(EstadoPedido.PENDIENTE);
+                pedido.setFechaPedido(LocalDateTime.now());
+                pedido.setPrecioProducto(dto.getPrecioProducto());
 
-                for (Pedido p : pedidos) {
-
-                    boolean mismoProducto = p.getIdProducto().equals(dto.getIdProducto());
-                            
-
-                    boolean mismaDescripcion = Objects.equals(p.getDescripcion(), dto.getDescripcion());
-
-                    System.out.println(mismoProducto);
-                    System.out.println(mismaDescripcion);
-                    if (mismoProducto && mismaDescripcion) {
-                        existente = p;
-                        break;
-                    }
-                }
-
-                if (existente != null) {
-
-                    existente.setCantidad(
-                            existente.getCantidad() + dto.getCantidad()
-                    );
-
-                } else {
-
-                    Pedido pedido = new Pedido();
-
-                    pedido.setId(dto.getId());
-                    pedido.setNombreProducto(dto.getNombreProducto());
-                    pedido.setIdProducto(dto.getIdProducto());
-                    pedido.setCantidad(dto.getCantidad());
-                    pedido.setDescripcion(dto.getDescripcion());
-                    pedido.setEstado(EstadoPedido.PENDIENTE);
-                    pedido.setFechaPedido(LocalDateTime.now());
-                    pedido.setPrecioProducto(dto.getPrecioProducto());
-
-                    pedidos.add(pedido);
-                }
+                pedidos.add(pedido);
             }
         }
+
         comanda.setPedidos(pedidos);
         return comanda;
     }
 }
-

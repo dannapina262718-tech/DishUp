@@ -132,6 +132,11 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         jButton2.setBackground(new java.awt.Color(213, 210, 203));
         jButton2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jButton2.setText("Cerrar Sesión");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panHeaderLayout = new javax.swing.GroupLayout(panHeader);
         panHeader.setLayout(panHeaderLayout);
@@ -322,11 +327,15 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
     private void btnLevantarComandaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLevantarComandaMouseClicked
         if (mesaSeleccionada != null) {
             coordinador.mostrarRegistrarCliente(mesaSeleccionada);
+            this.setVisible(false);
         } else {
-            System.out.println("Selecciona una mesa primero");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Selecciona una mesa primero",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE
+            );
         }
-
-        this.setVisible(false);
     }//GEN-LAST:event_btnLevantarComandaMouseClicked
 
     private void btnEnviarComandasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarComandasActionPerformed
@@ -340,6 +349,10 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
     private void btnEnviarComandasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEnviarComandasMouseClicked
         JOptionPane.showMessageDialog(this, "Comandas enviadas a cocina", "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnEnviarComandasMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        coordinador.cerrarSesion();
+        this.dispose();    }//GEN-LAST:event_jButton2ActionPerformed
 
     public void quitarLabels() {
         lblSeleccioneMesa.setVisible(false);
@@ -377,7 +390,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
 
     public void cargarMesas() {
         panMesas.removeAll();
-        btnLevantarComanda.setVisible(false);
+        btnLevantarComanda.setVisible(true);
 
         List<MesaDTO> mesas = new ArrayList<>();
 
@@ -468,7 +481,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
                         = coordinador.getComandasDeMesa(mesa.getNumeroMesa());
 
                 mostrarComandasDeMesa(mesa.getNumeroMesa(), comandas);
-                
+
                 actualizarPantalla();
                 // refrescarMesaActual();
             });
