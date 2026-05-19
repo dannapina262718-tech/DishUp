@@ -20,13 +20,14 @@ public class Comanda {
     private LocalDateTime fecha;
     private float montoTotal;
     private EstadoComanda estado;
+    private int tiempoEstimado;
     private List<Pedido> pedidos;
     private List<Pago> pagos;
 
     public Comanda() {
     }
 
-    public Comanda(String id, String nombreCliente, Empleado empleado, Mesa mesa, LocalDateTime fecha, float montoTotal, EstadoComanda estado, List<Pedido> pedidos, List<Pago> pagos) {
+    public Comanda(String id, String nombreCliente, Empleado empleado, Mesa mesa, LocalDateTime fecha, float montoTotal, EstadoComanda estado, int tiempoEstimado, List<Pedido> pedidos, List<Pago> pagos) {
         this.id = id;
         this.nombreCliente = nombreCliente;
         this.empleado = empleado;
@@ -34,6 +35,7 @@ public class Comanda {
         this.fecha = fecha;
         this.montoTotal = montoTotal;
         this.estado = estado;
+        this.tiempoEstimado = tiempoEstimado;
         this.pedidos = pedidos;
         this.pagos = pagos;
     }
@@ -92,8 +94,16 @@ public class Comanda {
 
     public void setEstado(EstadoComanda estado) {
         this.estado = estado;
+    } 
+
+    public int getTiempoEstimado() {
+        return tiempoEstimado;
     }
 
+    public void setTiempoEstimado(int tiempoEstimado) {
+        this.tiempoEstimado = tiempoEstimado;
+    }
+    
     public List<Pedido> getPedidos() {
         return pedidos;
     }

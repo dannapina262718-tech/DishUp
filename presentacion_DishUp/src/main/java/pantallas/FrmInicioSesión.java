@@ -169,6 +169,10 @@ public class FrmInicioSesión extends javax.swing.JFrame {
                 case GERENTE:
                     coordinador.pantallaMesas(resultado);
                     break;
+                case
+                        COCINERO:
+                    coordinador.pantallaCocina(empleado);
+                    break;
                 default:
                     JOptionPane.showMessageDialog(this, "Rol no reconocido"); 
                     return;

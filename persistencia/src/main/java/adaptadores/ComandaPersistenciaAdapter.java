@@ -29,6 +29,7 @@ public class ComandaPersistenciaAdapter {
         mongo.setMontoTotal(comanda.getMontoTotal());
         mongo.setNumeroMesa(comanda.getMesa().getNumero());
         mongo.setNombreEmpleado(comanda.getEmpleado().getNombres());
+        mongo.setTiempoEstimado(comanda.getTiempoEstimado());
 
         MesaEntidadMongo mesaMongo = new MesaEntidadMongo();
         mesaMongo.setNumero(comanda.getMesa().getNumero());
@@ -71,6 +72,7 @@ public class ComandaPersistenciaAdapter {
         comanda.setFecha(mongo.getFecha());
         comanda.setEstado(mongo.getEstado());
         comanda.setMontoTotal(mongo.getMontoTotal());
+        comanda.setTiempoEstimado(mongo.getTiempoEstimado());
         
         entidades.Empleado empleado = new entidades.Empleado();
         empleado.setNombres(mongo.getNombreEmpleado());

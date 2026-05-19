@@ -201,4 +201,25 @@ public class ComandaBO {
             throw new NegocioException("Error al recalcular estado", e);
         }
     }
+     public List<ComandaDTO> obtenerComandasPendientes() throws NegocioException {
+         try{
+             List<Comanda> comandas = comandaDAO.obtenerComandasPendientes();
+             List<ComandaDTO> listaDTO = new ArrayList<>();
+             for (Comanda c : comandas){
+                 listaDTO.add(adapter.aDTO(c));
+             }
+             return listaDTO;
+         }catch(PersistenciaException e) {
+            throw new NegocioException("Error al obtener comandas pendientes", e);
+             
+         }
+         
+     }
+     public void cambiarEstadoPedido(ComandaDTO comandaDTO) throws NegocioException{
+         
+     }
+     public int asiganarTiempoEstimado(ComandaDTO comandaDTO, int Timepo){
+         return 0;
+     }
+
 }

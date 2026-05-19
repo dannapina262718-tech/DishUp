@@ -5,8 +5,27 @@
 package pantallas;
 
 import coordinador.CoordinadorInterfaces;
+import dtos.ComandaDTO;
 import dtos.EmpleadoDTO;
+import dtos.PedidoDTO;
 import fachada.ComandaFachada;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Label;
+import java.awt.RenderingHints;
+import java.awt.geom.RoundRectangle2D;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -20,7 +39,7 @@ public class FrmPantallaCocina extends javax.swing.JFrame {
     /**
      * Creates new form FrmCocina
      */
-    public FrmPantallaCocina(CoordinadorInterfaces coordinador) {
+    public FrmPantallaCocina(CoordinadorInterfaces coordinador, EmpleadoDTO cocina) {
         this.coordinador = coordinador;
         this.coordinador.setFrmCocina(this);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -54,7 +73,6 @@ public class FrmPantallaCocina extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(1104, 748));
         setMinimumSize(new java.awt.Dimension(1104, 748));
-        setPreferredSize(new java.awt.Dimension(1104, 748));
 
         PnlFondo.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -184,4 +202,121 @@ public class FrmPantallaCocina extends javax.swing.JFrame {
     private javax.swing.JPanel panHeader;
     private javax.swing.JPanel pnlComandas;
     // End of variables declaration//GEN-END:variables
+
+    public void mostrarCoamndasPendientes(List<ComandaDTO> comandas){
+        pnlComandas.removeAll();
+        for (ComandaDTO c : comandas) {
+                pnlComandas.add(new FrmPantallaCocina.ComandaCard(c));
+                pnlComandas.add(Box.createVerticalStrut(10));
+            }
+    }
+    
+    
+    
+    
+    
+    
+    public class ComandaCard extends JPanel {
+    private String encabezado;
+    private String estado;
+    private JButton btnAccion;
+
+    private final Color COLOR_NARANJA = new Color(242, 172, 81);
+    private final Color COLOR_GRIS_FONDO = new Color(230, 230, 230);
+    private final Color COLOR_TEXTO = new Color(51, 51, 51);
+
+    public ComandaCard(ComandaDTO comanda) {
+        this.encabezado = "MESA: " +comanda.getNumMesa() + " | "+comanda.getNombreCliente();
+        this.estado = comanda.getEstado().name();
+        
+        setOpaque(false);
+        setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0)); 
+
+        
+        JPanel panelHeader = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(COLOR_NARANJA);
+                
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight() + 10, 15, 15));
+                g2.dispose();
+            }
+        };
+        panelHeader.setOpaque(false);
+        panelHeader.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+        JLabel lblTitulo = new JLabel(encabezado);
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTitulo.setForeground(COLOR_TEXTO);
+
+        JLabel lblEstado = new JLabel(estado);
+        lblEstado.setFont(new Font("Arial", Font.BOLD, 16));
+        lblEstado.setForeground(COLOR_TEXTO);
+
+        panelHeader.add(lblTitulo, BorderLayout.WEST);
+        panelHeader.add(lblEstado, BorderLayout.EAST);
+
+        JPanel panelCuerpo = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(COLOR_GRIS_FONDO);
+                g2.fill(new RoundRectangle2D.Float(0, -10, getWidth(), getHeight() + 10, 15, 15));
+                g2.dispose();
+            }
+        };
+        panelCuerpo.setOpaque(false);
+        panelCuerpo.setLayout(new BorderLayout());
+        panelCuerpo.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JPanel panelProductos = new JPanel();
+        panelProductos.setOpaque(false);
+        panelProductos.setLayout(new BoxLayout(panelProductos, BoxLayout.Y_AXIS));
+
+        for (PedidoDTO ped : comanda.getPedidos()) {
+            JLabel lblPedido = new JLabel();
+
+                String texto = "• " + ped.getNombreProducto();
+
+                if (ped.getDescripcion() != null
+                        && !ped.getDescripcion().trim().isEmpty()) {
+
+                    texto += " (" + ped.getDescripcion() + ")";
+                }
+            lblPedido.setFont(new Font("Arial", Font.PLAIN, 13));
+            lblPedido.setForeground(COLOR_TEXTO);
+            lblPedido.setAlignmentX(Component.LEFT_ALIGNMENT);
+            panelProductos.add(lblPedido);
+            panelProductos.add(Box.createVerticalStrut(5));
+        }
+        panelCuerpo.add(panelProductos, BorderLayout.CENTER);
+
+        // Botón "Empezar pedido"
+        btnAccion = new JButton("Empezar pedido");
+        btnAccion.setBackground(COLOR_NARANJA);
+        btnAccion.setForeground(Color.WHITE);
+        btnAccion.setFont(new Font("Arial", Font.BOLD, 12));
+        btnAccion.setFocusPainted(false);
+        btnAccion.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        
+        // Contenedor para alinear el botón a la derecha
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        panelBoton.setOpaque(false);
+        panelBoton.add(btnAccion);
+        
+        panelCuerpo.add(panelBoton, BorderLayout.SOUTH);
+
+        // Agregar secciones al panel principal
+        add(panelHeader, BorderLayout.NORTH);
+        add(panelCuerpo, BorderLayout.CENTER);
+    }
+
+    public JButton getBtnAccion() {
+        return btnAccion;
+    }
+}
 }

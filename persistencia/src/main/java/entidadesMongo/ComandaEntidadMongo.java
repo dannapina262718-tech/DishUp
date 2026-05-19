@@ -29,14 +29,16 @@ public class ComandaEntidadMongo {
     private LocalDateTime fecha;
     private float montoTotal;
     private EstadoComanda estado;
+    private int tiempoEstimado;
 
     private List<PedidoEntidadMongo> pedidos;
     private List<PagoEntidadMongo> pagos;
+    
 
     public ComandaEntidadMongo() {
     }
 
-    public ComandaEntidadMongo(String id, String nombreCliente, String nombreEmpleado, Integer numeroMesa, LocalDateTime fecha, float montoTotal, EstadoComanda estado, List<PedidoEntidadMongo> pedidos, List<PagoEntidadMongo> pagos) {
+    public ComandaEntidadMongo(String id, String nombreCliente, String nombreEmpleado, Integer numeroMesa, LocalDateTime fecha, float montoTotal, EstadoComanda estado, int tiempoEstimado, List<PedidoEntidadMongo> pedidos, List<PagoEntidadMongo> pagos) {
         this.id = id;
         this.nombreCliente = nombreCliente;
         this.nombreEmpleado = nombreEmpleado;
@@ -44,6 +46,7 @@ public class ComandaEntidadMongo {
         this.fecha = fecha;
         this.montoTotal = montoTotal;
         this.estado = estado;
+        this.tiempoEstimado = tiempoEstimado;
         this.pedidos = pedidos;
         this.pagos = pagos;
     }
@@ -102,6 +105,14 @@ public class ComandaEntidadMongo {
 
     public void setEstado(EstadoComanda estado) {
         this.estado = estado;
+    }
+
+    public int getTiempoEstimado() {
+        return tiempoEstimado;
+    }
+
+    public void setTiempoEstimado(int tiempoEstimado) {
+        this.tiempoEstimado = tiempoEstimado;
     }
 
     public List<PedidoEntidadMongo> getPedidos() {

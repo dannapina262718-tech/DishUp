@@ -3,6 +3,7 @@ package daos;
 import adaptadores.ComandaPersistenciaAdapter;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 import com.mongodb.client.result.DeleteResult;
@@ -205,5 +206,60 @@ public class ComandaDAO implements IComandaDAO {
         } catch (MongoException e) {
             throw new PersistenciaException("Error al actualizar comanda", e);
         }
+    }
+
+    @Override
+    public List<Comanda> obtenerComandasPendientes() throws PersistenciaException {
+        try {
+            List<ComandaEntidadMongo> listaMongo = coleccion.find().into(new ArrayList<>());
+            List<Comanda> lista = new ArrayList<>();
+
+            for (ComandaEntidadMongo mongo : listaMongo) {
+
+                boolean tienePedidosPendientes = false;
+
+                for (PedidoEntidadMongo pedido : mongo.getPedidos()) {
+                    if (pedido.getEstado().name().equals("PENDIENTE")) {
+                        tienePedidosPendientes = true;
+                        break;
+                    }
+                }
+
+                if (tienePedidosPendientes) {
+                    lista.add(adapter.aDominio(mongo));
+                }
+            }
+
+            return lista;
+
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al obtener comandas con pedidos pendientes", e);
+        }
+    }
+
+    @Override
+    public boolean asignarTiempoComanda(String idComanda, int tiempoEstimado) throws PersistenciaException {
+        try {
+            UpdateResult result = coleccion.updateOne(
+                    eq("_id", new ObjectId(idComanda)),
+                    set("tiempoEstimado", tiempoEstimado)
+            );
+            return result.getModifiedCount() > 0;
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al asignar el tiempo estimado a la comanda", e);
+        }
+    }
+
+    @Override
+    public boolean actualizarEstadoPedido(String idComanda, String idProducto, String nuevoEstado) throws PersistenciaException {
+        try {
+        UpdateResult result = coleccion.updateOne(
+                and(eq("_id", new ObjectId(idComanda)), eq("pedidos.idProducto", idProducto)),
+                set("pedidos.$.estado", nuevoEstado)
+        );
+        return result.getModifiedCount() > 0;
+    } catch (MongoException e) {
+        throw new PersistenciaException("Error al actualizar el estado del pedido en la comanda", e);
+    }
     }
 }

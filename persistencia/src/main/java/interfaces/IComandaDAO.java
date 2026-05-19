@@ -25,4 +25,9 @@ public interface IComandaDAO {
 
     public boolean actualizarComanda(String idComanda, List<Pedido> pedidos) throws PersistenciaException;
     
+    List<Comanda> obtenerComandasPendientes() throws PersistenciaException;
+    
+    boolean asignarTiempoComanda(String idComanda, int tiempoEstimado) throws PersistenciaException;
+    
+    boolean actualizarEstadoPedido(String idComanda, String idProducto, String nuevoEstado) throws PersistenciaException;
 }

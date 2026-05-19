@@ -478,8 +478,14 @@ public class CoordinadorInterfaces {
     }
     
     //---------------------------CU PREPARAR PEDIDO---------------------------------------
+    public void pantallaCocina(EmpleadoDTO cocina){
+        frmCocina = new FrmPantallaCocina(this, cocina);
+        frmCocina.setVisible(true);
+    }
+   
      public void setFrmCocina(FrmPantallaCocina frmCocina) {
         this.frmCocina = frmCocina;
     }
+     
 
 }
