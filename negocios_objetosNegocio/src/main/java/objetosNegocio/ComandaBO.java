@@ -42,6 +42,8 @@ public class ComandaBO {
         }
         Comanda comanda = adapter.aEntidad(nombreCliente, numeroMesa, pedidosDTO, empleadoActual);
         comanda.setEstado(calcularEstadoComanda(comanda.getPedidos()));
+        
+        calcularMontoTotalComanda(comanda);
 
         try {
             comandaDAO.insertarComanda(comanda);
@@ -200,5 +202,15 @@ public class ComandaBO {
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al recalcular estado", e);
         }
+    }
+    
+    private void calcularMontoTotalComanda(Comanda comanda) {
+        float total = 0;
+
+        for (Pedido pedido : comanda.getPedidos()) {
+            total += pedido.getPrecioProducto();
+        }
+
+        comanda.setMontoTotal(total);
     }
 }

@@ -186,7 +186,7 @@ public class ComandaDAO implements IComandaDAO {
         }
 
         try {
-            PagoEntidadMongo pagoMongo = adapter.aMongo(pago);
+            PagoEntidadMongo pagoMongo = adapterPago.aMongo(pago);
 
             UpdateResult resultado = coleccion.updateOne(
                     eq("_id", new ObjectId(idComanda)),
@@ -196,6 +196,7 @@ public class ComandaDAO implements IComandaDAO {
             return resultado.getModifiedCount() > 0;
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new PersistenciaException(
                     "No fue posible agregar el pago a la comanda.",
                     ex

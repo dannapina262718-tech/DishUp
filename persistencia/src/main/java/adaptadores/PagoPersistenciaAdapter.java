@@ -13,6 +13,8 @@ import org.bson.types.ObjectId;
  * @author valeria
  */
 public class PagoPersistenciaAdapter {
+    private final DetallePagoPersistenciaAdapter detalleAdapter =
+        new DetallePagoPersistenciaAdapter();
     public PagoPersistenciaAdapter() {
     }
 
@@ -31,7 +33,7 @@ public class PagoPersistenciaAdapter {
         mongo.setMonto(pago.getMonto());
         mongo.setEstadoPago(pago.getEstadoPago());
         mongo.setFechaPago(pago.getFechaPago());
-        mongo.setDetalles(pago.getDetalles());
+        mongo.setDetalles(detalleAdapter.aMongo(pago.getDetalles()));
 
         return mongo;
     }
@@ -49,7 +51,7 @@ public class PagoPersistenciaAdapter {
         pago.setMonto(mongo.getMonto());
         pago.setEstadoPago(mongo.getEstadoPago());
         pago.setFechaPago(mongo.getFechaPago());
-        pago.setDetalles(mongo.getDetalles());
+        mongo.setDetalles(detalleAdapter.aMongo(pago.getDetalles()));
 
         return pago;
     }

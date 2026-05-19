@@ -218,6 +218,13 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
             SolicitudPagoDTO solicitud = new SolicitudPagoDTO(comanda.getId(), MetodoPago.TARJETA, montoPagar, null);
 
             resultadoPago = coordinador.registrarPago(solicitud);
+            
+            if (resultadoPago == null || !resultadoPago.isAprobado()) {
+                JOptionPane.showMessageDialog(this, "No se pudo registrar el pago.");
+                return;
+            }
+
+            dlgPadre.agregarPago(resultadoPago);
 
             lblEstatus.setText("Estatus: " + resultadoPago.getMensaje());
 
@@ -260,23 +267,7 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
     }//GEN-LAST:event_btnConectarTerminalActionPerformed
 
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
-        try {
-
-            if (resultadoPago != null
-                    && resultadoPago.isAprobado()) {
-
-                dlgPadre.agregarPago(resultadoPago);
-            }
-
-            dispose();
-
-        } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    ex.getMessage()
-            );
-        }
+        dispose();
     }//GEN-LAST:event_btnContinuarActionPerformed
 
 
@@ -309,4 +300,6 @@ public class DlgPagoTarjeta extends javax.swing.JDialog {
 
         btnContinuar.setEnabled(false);
     }
+    
+    
 }

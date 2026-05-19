@@ -6,6 +6,7 @@ package pantallas;
 
 import coordinador.CoordinadorInterfaces;
 import dtos.ComandaDTO;
+import dtos.PagoDTO;
 import dtos.PedidoDTO;
 import dtos.ResultadoPagoDTO;
 import entidades.Pago;
@@ -13,7 +14,6 @@ import fachada.PagoFachada;
 import interfaz.IGestionPagos;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         this.comanda = comanda;
         
         this.total = comanda.getTotal();
-        this.restante = total;
+        this.restante = calcularRestanteDesdePagos(comanda);;
         this.pagoFachada = new PagoFachada();
 
         btnFinalizar.setVisible(false);
@@ -61,6 +61,7 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         pnlPagosHechos.setLayout(new BoxLayout(pnlPagosHechos, BoxLayout.Y_AXIS));
 
         cargarTicketComanda(comanda);
+        cargarPagosHechos(comanda);
         actualizarRestante();
     }
 
@@ -363,42 +364,26 @@ public class DlgPagoComanda extends javax.swing.JDialog {
 
     private void btnMetodoEfectivoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoMousePressed
         
-        btnMetodoEfectivo.setFocusPainted(false);
-        btnMetodoEfectivo.setContentAreaFilled(false);
-        btnMetodoEfectivo.setOpaque(true);
-
-        btnMetodoEfectivo.setBackground(Color.decode("#F3AE29"));
     }//GEN-LAST:event_btnMetodoEfectivoMousePressed
 
     private void btnMetodoTarjetaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoTarjetaMousePressed
-        btnMetodoTarjeta.setFocusPainted(false);
-        btnMetodoTarjeta.setContentAreaFilled(false);
-        btnMetodoTarjeta.setOpaque(true);
-
-        btnMetodoTarjeta.setBackground(Color.decode("#F3AE29"));
+        
     }//GEN-LAST:event_btnMetodoTarjetaMousePressed
 
     private void btnMetodoCodiMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoCodiMousePressed
-        btnMetodoCodi.setFocusPainted(false);
-        btnMetodoCodi.setContentAreaFilled(false);
-        btnMetodoCodi.setOpaque(true);
-
-        btnMetodoCodi.setBackground(Color.decode("#F3AE29"));
+       
     }//GEN-LAST:event_btnMetodoCodiMousePressed
 
     private void btnMetodoEfectivoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoMouseReleased
-        btnMetodoEfectivo.setBackground(Color.decode("#FFE3AC"));
-        btnMetodoEfectivo.setBorder(null);
+       
     }//GEN-LAST:event_btnMetodoEfectivoMouseReleased
 
     private void btnMetodoTarjetaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoTarjetaMouseReleased
-        btnMetodoTarjeta.setBackground(Color.decode("#FFE3AC"));
-        btnMetodoTarjeta.setBorder(null);
+       
     }//GEN-LAST:event_btnMetodoTarjetaMouseReleased
 
     private void btnMetodoCodiMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoCodiMouseReleased
-        btnMetodoCodi.setBackground(Color.decode("#FFE3AC"));
-        btnMetodoCodi.setBorder(null);
+
     }//GEN-LAST:event_btnMetodoCodiMouseReleased
 
     private void btnMetodoEfectivoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMetodoEfectivoMouseClicked
@@ -548,6 +533,35 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         pnlPagosHechos.add(Box.createVerticalStrut(5));
 
         actualizarRestante();
+
+        pnlPagosHechos.revalidate();
+        pnlPagosHechos.repaint();
+    }
+
+    private float calcularRestanteDesdePagos(ComandaDTO comanda) {
+        float pagado = 0;
+
+        if (comanda.getPagos() != null) {
+            for (PagoDTO pago : comanda.getPagos()) {
+                pagado += pago.getMonto();
+            }
+        }
+
+        return comanda.getTotal() - pagado;
+    }
+
+    private void cargarPagosHechos(ComandaDTO comanda) {
+        pnlPagosHechos.removeAll();
+
+        if (comanda.getPagos() != null) {
+            for (PagoDTO pago : comanda.getPagos()) {
+                JLabel lbl = new JLabel(
+                        pago.getMetodoPago() + " - $" + pago.getMonto()
+                );
+
+                pnlPagosHechos.add(lbl);
+            }
+        }
 
         pnlPagosHechos.revalidate();
         pnlPagosHechos.repaint();

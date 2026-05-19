@@ -286,11 +286,24 @@ public class CoordinadorInterfaces {
     }
 
     public void mostrarPagoComanda(ComandaDTO comanda) {
-        DlgPagoComanda dlg = new DlgPagoComanda(frmComandas, true, comanda, frmComandas, this);
+        try {
+            ComandaDTO actualizada =
+                    comandaFachada.obtenerComandaPorId(comanda.getId());
 
-        dlg.setLocationRelativeTo(frmComandas);
+            DlgPagoComanda dlg = new DlgPagoComanda(
+                    frmComandas,
+                    true,
+                    actualizada,
+                    frmComandas,
+                    this
+            );
 
-        dlg.setVisible(true);
+            dlg.setLocationRelativeTo(frmComandas);
+            dlg.setVisible(true);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frmComandas, ex.getMessage());
+        }
     }
 
     public void mostrarPagoEfectivo(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {

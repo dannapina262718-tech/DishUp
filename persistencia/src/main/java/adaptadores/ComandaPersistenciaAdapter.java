@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComandaPersistenciaAdapter {
+    private final PagoPersistenciaAdapter pagoAdapter;
 
     public ComandaPersistenciaAdapter() {
+            this.pagoAdapter = new PagoPersistenciaAdapter();
     }
 
     public ComandaEntidadMongo aMongo(Comanda comanda) {
@@ -121,11 +123,17 @@ public class ComandaPersistenciaAdapter {
         }
 
         comanda.setPedidos(pedidos);
+        List<Pago> pagos = new ArrayList<>();
+
+        if (mongo.getPagos() != null) {
+            for (PagoEntidadMongo pagoMongo : mongo.getPagos()) {
+                pagos.add(pagoAdapter.aDominio(pagoMongo));
+            }
+        }
+        
+        comanda.setPagos(pagos);
 
         return comanda;
     }
 
-    public PagoEntidadMongo aMongo(Pago pago) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

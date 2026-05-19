@@ -30,4 +30,6 @@ public interface IGestionComandas {
     
     public void actualizarComanda(ComandaDTO comanda) throws ComandasException;
     
+    ComandaDTO obtenerComandaPorId(String idComanda) throws ComandasException;
+    
 }

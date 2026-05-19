@@ -50,4 +50,9 @@ public class ComandaFachada implements IGestionComandas {
     public void actualizarComanda(ComandaDTO comanda) throws ComandasException {
         comandaControl.actualizarComanda(comanda);
     }
+
+    @Override
+    public ComandaDTO obtenerComandaPorId(String idComanda) throws ComandasException {
+        return comandaControl.obtenerComandaPorId(idComanda);
+    }
 }

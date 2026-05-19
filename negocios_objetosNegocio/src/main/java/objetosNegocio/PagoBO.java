@@ -83,7 +83,7 @@ public class PagoBO {
                 throw new NegocioException("La comanda no existe.");
             }
 
-            return comanda.getEstado() == EstadoComanda.LISTA;
+            return comanda.getEstado() == EstadoComanda.ENTREGADA;
 
         } catch (PersistenciaException ex) {
             throw new NegocioException(
@@ -115,8 +115,8 @@ public class PagoBO {
                 throw new NegocioException("La comanda no existe.");
             }
 
-            if (comanda.getEstado() != EstadoComanda.LISTA) {
-                throw new NegocioException("Solo se pueden pagar comandas listas.");
+            if (comanda.getEstado() != EstadoComanda.ENTREGADA) {
+                throw new NegocioException("Solo se pueden pagar comandas entregadas.");
             }
 
             float totalPagado = 0;
@@ -133,9 +133,16 @@ public class PagoBO {
                 throw new NegocioException("La comanda ya está liquidada.");
             }
 
-            if (solicitud.getMonto() > restante) {
-                throw new NegocioException("El monto a pagar no puede ser mayor al restante.");
+            float monto = Math.round(solicitud.getMonto() * 100f) / 100f;
+            float restanteRedondeado = Math.round(restante * 100f) / 100f;
+            if (monto > restanteRedondeado) {
+                throw new NegocioException(
+                        "El monto a pagar no puede ser mayor al restante."
+                );
             }
+            
+            solicitud.setMonto(monto);
+            restante = restanteRedondeado;
 
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al validar la comanda.", e);
@@ -158,7 +165,7 @@ public class PagoBO {
                 throw new NegocioException("No se pudo guardar el pago en la comanda.");
             }
 
-            float nuevoRestante = restante - resultado.getMontoPagado();
+            float nuevoRestante = Math.round((restante - resultado.getMontoPagado()) * 100f) / 100f;
             resultado.setSaldoRestante(nuevoRestante);
 
             if (Math.abs(nuevoRestante) < 0.01f) {
@@ -169,7 +176,8 @@ public class PagoBO {
             }
 
         } catch (PersistenciaException e) {
-            throw new NegocioException("Error al guardar el pago", e);
+            e.printStackTrace();
+            throw new NegocioException("Error al guardar el pago: " + e.getMessage(), e);
         }
 
         return resultado;

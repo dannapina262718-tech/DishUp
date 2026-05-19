@@ -2,8 +2,10 @@ package adaptadores;
 
 import dtos.ComandaDTO;
 import dtos.EmpleadoDTO;
+import dtos.PagoDTO;
 import dtos.PedidoDTO;
 import entidades.Comanda;
+import entidades.Pago;
 import entidades.Pedido;
 import enums.EstadoComanda;
 import enums.EstadoPedido;
@@ -70,6 +72,28 @@ public class ComandaNegocioAdapter {
         }
 
         dto.setPedidos(pedidosDTO);
+        
+        List<PagoDTO> pagosDTO = new ArrayList<>();
+
+        if (comanda.getPagos() != null) {
+
+            for (Pago pago : comanda.getPagos()) {
+
+                PagoDTO pagoDTO = new PagoDTO();
+
+                pagoDTO.setId(pago.getId());
+                pagoDTO.setMetodoPago(pago.getMetodoPago());
+                pagoDTO.setMonto(pago.getMonto());
+                pagoDTO.setEstadoPago(pago.getEstadoPago());
+                pagoDTO.setFechaPago(pago.getFechaPago());
+                pagoDTO.setDetalles(pago.getDetalles());
+
+                pagosDTO.add(pagoDTO);
+            }
+        }
+
+        dto.setPagos(pagosDTO);
+
 
         return dto;
     }

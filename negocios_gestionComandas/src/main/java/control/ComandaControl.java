@@ -150,4 +150,13 @@ public class ComandaControl {
             throw new ComandasException("Error al entregar comanda: " + ex.getMessage());
         }
     }
+    
+    public ComandaDTO obtenerComandaPorId(String idComanda) throws ComandasException {
+        try {
+            return comandaBO.obtenerComandaPorId(idComanda);
+        } catch (NegocioException ex) {
+            throw new ComandasException("Error al obtener comanda: " + ex.getMessage());
+        }
+    }
+    
 }

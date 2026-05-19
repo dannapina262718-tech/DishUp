@@ -10,6 +10,12 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import entidadesMongo.ComandaEntidadMongo;
+import entidadesMongo.DetallePagoCodiEntidadMongo;
+import entidadesMongo.DetallePagoEfectivoEntidadMongo;
+import entidadesMongo.DetallePagoEntidadMongo;
+import entidadesMongo.DetallePagoTarjetaEntidadMongo;
+import entidadesMongo.PagoEntidadMongo;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -36,6 +42,14 @@ public class ConexionMongo {
             // proveedor de pojos
             CodecProvider proveedorPojo = PojoCodecProvider.builder()
                     .automatic(true)
+                    .register(
+                            ComandaEntidadMongo.class,
+                            PagoEntidadMongo.class,
+                            DetallePagoEntidadMongo.class,
+                            DetallePagoEfectivoEntidadMongo.class,
+                            DetallePagoTarjetaEntidadMongo.class,
+                            DetallePagoCodiEntidadMongo.class
+                    )
                     .build();
             // almacen de codecs
             CodecRegistry registroCodecs = CodecRegistries.fromRegistries(

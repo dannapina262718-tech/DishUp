@@ -249,6 +249,13 @@ public class DlgPagoEfectivo extends javax.swing.JDialog {
             );
 
             resultadoPago = coordinador.registrarPago(solicitud);
+            
+            if (resultadoPago == null || !resultadoPago.isAprobado()) {
+                JOptionPane.showMessageDialog(this, "No se pudo registrar el pago.");
+                return;
+            }
+            
+            dlgPadre.agregarPago(resultadoPago);
 
             DetallePagoEfectivo detalleResultado =
                     (DetallePagoEfectivo) resultadoPago.getDetallePago();
@@ -265,6 +272,8 @@ public class DlgPagoEfectivo extends javax.swing.JDialog {
 
             btnContinuar.setEnabled(true);
             btnAceptar.setEnabled(false);
+            
+            
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Ingresa montos válidos.");
@@ -274,19 +283,7 @@ public class DlgPagoEfectivo extends javax.swing.JDialog {
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
-        try {
-            if (resultadoPago != null && resultadoPago.isAprobado()) {
-                dlgPadre.agregarPago(resultadoPago);
-            }
-            dispose();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
+        dispose();
     }//GEN-LAST:event_btnContinuarActionPerformed
 
 

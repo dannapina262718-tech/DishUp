@@ -28,12 +28,12 @@ public class PagoEntidadMongo {
     private EstadoPagoIndividual estadoPago;
     private LocalDateTime fechaPago;
 
-    private DetallePago detalles;
+    private DetallePagoEntidadMongo detalles;
 
     public PagoEntidadMongo() {
     }
 
-    public PagoEntidadMongo(String id, MetodoPago metodoPago, float monto, EstadoPagoIndividual estadoPago, LocalDateTime fechaPago, DetallePago detalles) {
+    public PagoEntidadMongo(String id, MetodoPago metodoPago, float monto, EstadoPagoIndividual estadoPago, LocalDateTime fechaPago, DetallePagoEntidadMongo detalles) {
         this.id = id;
         this.metodoPago = metodoPago;
         this.monto = monto;
@@ -82,11 +82,11 @@ public class PagoEntidadMongo {
         this.fechaPago = fechaPago;
     }
 
-    public DetallePago getDetalles() {
+    public DetallePagoEntidadMongo getDetalles() {
         return detalles;
     }
 
-    public void setDetalles(DetallePago detalles) {
+    public void setDetalles(DetallePagoEntidadMongo detalles) {
         this.detalles = detalles;
     }
 }
