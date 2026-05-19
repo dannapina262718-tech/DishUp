@@ -216,10 +216,10 @@ public class ComandaBO {
         }
 
     }
-/**
-    public void cambiarEstadoPedido(ComandaDTO comandaDTO) throws NegocioException {
-        try {
+    public void cambiarEstadoPedido(ComandaDTO comandaDTO, PedidoDTO pedidoDTO) throws NegocioException {
+        
             try {
+                
                 if (comandaDTO == null || comandaDTO.getId() == null) {
                     throw new NegocioException("La comanda o su identificador no pueden ser nulos.");
                 }
@@ -229,53 +229,50 @@ public class ComandaBO {
 
                 PedidoDTO pedidoAEditar = null;
                 for (PedidoDTO p : comandaDTO.getPedidos()) {
-                    if (p.getIdProducto().equals(idProducto)) {
+                    if (p.getIdProducto().equals(pedidoDTO.getId())) {
                         pedidoAEditar = p;
                         break;
                     }
                 }
 
-                // Si no se encuentra el producto en la comanda enviada, lanzamos error
                 if (pedidoAEditar == null) {
-                    throw new NegocioException("El producto con ID " + idProducto + " no pertenece a esta comanda.");
+                    throw new NegocioException("El producto " + pedidoDTO.getNombreProducto() + " no pertenece a esta comanda.");
                 }
 
-                // 3. Máquina de estados basándonos en el estado del DTO
-                String estadoActual = pedidoAEditar.getEstado();
+                String estadoActual = pedidoAEditar.getEstado().name();
                 String nuevoEstado = "";
 
-                switch (estadoActual.toUpperCase()) {
+                switch (estadoActual) {
                     case "PENDIENTE":
-                        nuevoEstado = "EN PREPARACION";
+                        pedidoDTO.setEstado(EstadoPedidoDTO.EN_PREPARACION);
                         break;
 
                     case "EN PREPARACION":
-                        nuevoEstado = "LISTO";
+                        pedidoDTO.setEstado(EstadoPedidoDTO.LISTA);
                         break;
 
                     default:
                         throw new NegocioException("El pedido ya se encuentra en un estado final o desconocido (" + estadoActual + ").");
                 }
 
-                // 4. Mandamos a actualizar la base de datos usando el ID de la comanda y del producto
-                boolean actualizado = comandaDAO.actualizarEstadoPedido(comandaDTO.getId(), idProducto, nuevoEstado);
+                boolean actualizado = comandaDAO.actualizarEstadoPedido(comandaDTO.getId(), pedidoDTO.getId(), nuevoEstado);
 
                 if (!actualizado) {
                     throw new NegocioException("No se pudo reflejar el cambio de estado en la base de datos.");
                 }
 
-                // 5. Opcional: Actualizamos el objeto en memoria por si la UI lo sigue usando
-                pedidoAEditar.setEstado(nuevoEstado);
             } catch (PersistenciaException e) {
             throw new NegocioException("Error en el sistema al procesar el cambio de estado", e);
             }
 
-        }
-        
     }
-**/
+
     public int asiganarTiempoEstimado(ComandaDTO comandaDTO, int Timepo) {
-        return 0;
+        try{
+            
+        }catch (PersistenciaException E){
+            throw new NegocioException("Error al asignar el tiempo estimado de la comanda");
+        }
     }
 
 }

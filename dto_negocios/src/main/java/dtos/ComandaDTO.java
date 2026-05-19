@@ -29,6 +29,7 @@ public class ComandaDTO {
     private LocalDateTime fecha;
     private float total;
     private EstadoComandaDTO estado;
+    private int tiempoEstimado;
     private Integer numMesa;
     private List<PedidoDTO> pedidos;
     private List<PagoDTO> pagos;
