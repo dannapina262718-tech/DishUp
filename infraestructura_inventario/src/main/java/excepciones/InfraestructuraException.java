@@ -1,12 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package excepciones;
 
 /**
+ * InfraestructuraException.
+ * Excepcion personalizada utilizada para manejar errores
+ * relacionados con la comunicacion con sistemas externos.
  *
- * @author DishUp
+ * Esta excepcion se lanza cuando ocurre un problema en la capa
+ * de infraestructura, como fallos de conexion, parsing de datos
+ * o respuestas invalidas de servicios externos.
+ *
+ * @author valeria
  */
 public class InfraestructuraException extends Exception {
 
@@ -14,6 +17,12 @@ public class InfraestructuraException extends Exception {
         super(message);
     }
 
+    /**
+     * Constructor que recibe un mensaje de error y la causa original.
+     *
+     * @param message Mensaje descriptivo del error.
+     * @param cause Excepcion original que provoco el error.
+     */
     public InfraestructuraException(String message, Throwable cause) {
         super(message, cause);
     }

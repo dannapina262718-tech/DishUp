@@ -4,7 +4,6 @@
  */
 package pantallas;
 
-import dtos.IngredienteDTO;
 import dtos.IngredienteEnProductoDTO;
 import dtos.PedidoDTO;
 import dtos.ProductoDTO;
@@ -17,7 +16,7 @@ import javax.swing.JLabel;
 
 /**
  *
- * @author valeria
+ * @author DishUp
  */
 public class DlgModificarProducto extends javax.swing.JDialog {
 
@@ -63,6 +62,8 @@ public class DlgModificarProducto extends javax.swing.JDialog {
             check.setBackground(new java.awt.Color(255, 248, 235));
             check.setFont(new java.awt.Font("Segoe UI", 0, 18));
             check.setName(String.valueOf(ing.getId()));
+            check.setText("Sin " + ing.getNombre());
+
             checksIngredientes.add(check);
             pnlListaIngredientes.add(check);
         }
@@ -286,15 +287,16 @@ public class DlgModificarProducto extends javax.swing.JDialog {
 
     private void btnListoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListoActionPerformed
         StringBuilder especificaciones = new StringBuilder();
+        List<String> removidos = new ArrayList<>();
 
         for (JCheckBox chk : checksIngredientes) {
             if (chk.isSelected()) {
-                especificaciones.append(chk.getText()).append(", ");
+                removidos.add(chk.getName()); // ID del ingrediente
+                if (especificaciones.length() > 0) {
+                    especificaciones.append(", ");
+                }
+                especificaciones.append(chk.getText()); // texto legible para descripcion
             }
-        }
-
-        if (especificaciones.length() > 0) {
-            especificaciones.setLength(especificaciones.length() - 2);
         }
 
         resultado = new PedidoDTO();
@@ -302,8 +304,8 @@ public class DlgModificarProducto extends javax.swing.JDialog {
         resultado.setNombreProducto(lblNombreProducto.getText());
         resultado.setCantidad(1);
         resultado.setDescripcion(especificaciones.toString());
+        resultado.setIngredientesRemovidos(removidos);        
         resultado.setPrecioProducto(precioProductoActual);
-
         this.dispose();
     }//GEN-LAST:event_btnListoActionPerformed
 

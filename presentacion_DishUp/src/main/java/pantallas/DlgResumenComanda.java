@@ -3,8 +3,11 @@ package pantallas;
 import coordinador.CoordinadorInterfaces;
 import dtos.ComandaDTO;
 import dtos.PedidoDTO;
+import excepciones.ComandasException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -206,6 +209,7 @@ public class DlgResumenComanda extends javax.swing.JDialog {
     private void btnConfirmarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfirmarMouseClicked
         if (modoEdicion) {
             coordinador.actualizarComanda(comandaActual, pedidosNuevos);
+            this.dispose();
 
         } else if (modoAgregar) {
             if (pedidosNuevos == null || pedidosNuevos.isEmpty()) {
@@ -215,6 +219,7 @@ public class DlgResumenComanda extends javax.swing.JDialog {
                 return;
             }
             coordinador.agregarPedidosAComanda(comandaActual, pedidosNuevos);
+            this.dispose();
 
         } else {
             // NUEVA comanda — usa los pedidosNuevos
@@ -224,7 +229,7 @@ public class DlgResumenComanda extends javax.swing.JDialog {
                         "Validación", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            coordinador.enviarComandaAFinal(nombreCliente, numMesa, pedidosNuevos); 
+            coordinador.enviarComandaAFinal(nombreCliente, numMesa, pedidosNuevos);
         }
 
     }//GEN-LAST:event_btnConfirmarMouseClicked

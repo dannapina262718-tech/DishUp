@@ -10,19 +10,25 @@ import dtos.IngredienteEnProductoDTO;
 import dtos.MesaDTO;
 import dtos.PedidoDTO;
 import dtos.ProductoDTO;
+import dtos.ResultadoPagoDTO;
+import dtos.SolicitudPagoDTO;
 import enums.TipoProductoDTO;
 import excepciones.ComandasException;
 import excepciones.EmpleadosException;
+import excepciones.PagosException;
 import excepciones.MesasException;
 import excepciones.ProductosException;
-import fachada.ComandaFachada;
-import fachada.EmpleadoFachada;
-import fachada.MesaFachada;
-import fachada.ProductoFachada;
-import interfaces.IGestionComandas;
-import interfaz.IGestionEmpleados;
-import interfaz.IGestionMesas;
-import interfaz.IGestionProductos;
+import fachada.PagoFachada;
+import gestionComandas.ComandaFachada;
+import gestionComandas.IGestionComandas;
+import gestionEmpleados.EmpleadoFachada;
+import gestionEmpleados.IGestionEmpleados;
+import gestionMesas.IGestionMesas;
+import gestionMesas.MesaFachada;
+import gestionProductos.IGestionProductos;
+import gestionProductos.ProductoFachada;
+import interfaz.IGestionPagos;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -32,6 +38,10 @@ import pantallas.AdministrarMesas.FrmAsignarMesas;
 import pantallas.AdministrarMesas.FrmPantallaMesas;
 import pantallas.AdministrarMesas.panInfoMesa;
 import pantallas.DlgModificarProducto;
+import pantallas.DlgPagoCodi;
+import pantallas.DlgPagoComanda;
+import pantallas.DlgPagoEfectivo;
+import pantallas.DlgPagoTarjeta;
 import pantallas.DlgResumenComanda;
 import pantallas.FrmCliente;
 import pantallas.FrmInicioSesión;
@@ -51,6 +61,12 @@ public class CoordinadorInterfaces {
     private FrmPantallaComandas frmComandas;
     private FrmCliente frmCliente;
     private FrmProductos frmProductos;
+
+    private DlgPagoComanda dlgPagoComanda;
+    private DlgPagoEfectivo dlgPagoEfectivo;
+    private DlgPagoTarjeta dlgPagoTarjeta;
+    private DlgPagoCodi dlgPagoCodi;
+
     private panInfoMesa panInfoMesa;
     private FrmAsignarMesas frmAsignarMesas;
     private FrmPantallaMesas frmMesas;
@@ -61,12 +77,14 @@ public class CoordinadorInterfaces {
     private IGestionComandas comandaFachada;
     private IGestionEmpleados empleadoFachada;
     private IGestionMesas mesaFachada;
+    private IGestionPagos pagoFachada;
 
     public CoordinadorInterfaces() {
         this.productoFachada = new ProductoFachada();
         this.comandaFachada = new ComandaFachada();
         this.empleadoFachada = new EmpleadoFachada();
         this.mesaFachada = new MesaFachada();
+        this.pagoFachada = new PagoFachada();
     }
 
     public void setFrmProductos(FrmProductos frmProductos) {
@@ -142,6 +160,7 @@ public class CoordinadorInterfaces {
             }
 
             comandaTemporal.clear();
+            frmComandas.cargarMesas();
 
         } catch (ComandasException e) {
             System.out.println("Error: " + e.getMessage());
@@ -203,18 +222,15 @@ public class CoordinadorInterfaces {
     }
 
     public void abrirAgregarPedido(ComandaDTO comanda) {
-
         this.comandaActual = comanda;
-
+        this.comandaTemporal = new ArrayList<>();
         FrmProductos frm = new FrmProductos(this);
-
+        this.frmProductos = frm;
         frm.setMesaAndCliente(
                 comanda.getNumMesa(),
                 comanda.getNombreCliente()
         );
-
         frm.cargarPedidosExistentes(comanda);
-
         frm.setVisible(true);
     }
 
@@ -259,8 +275,62 @@ public class CoordinadorInterfaces {
         dlg.setVisible(true);
     }
 
-    public boolean eliminarComanda(String idComanda) throws ComandasException {
-        return comandaFachada.eliminarComanda(idComanda);
+    public boolean eliminarComanda(String idComanda, MesaDTO mesa) throws ComandasException {
+        return comandaFachada.eliminarComanda(idComanda, mesa);
+    }
+
+    public boolean puedePagarComanda(String id) throws PagosException {
+        return pagoFachada.puedePagarComanda(id);
+    }
+
+    public boolean puedePagarMesa(int numeroMesa) throws PagosException {
+        return pagoFachada.puedePagarMesa(numeroMesa);
+    }
+
+    public void mostrarPagoComanda(ComandaDTO comanda) {
+        try {
+            ComandaDTO actualizada
+                    = comandaFachada.obtenerComandaPorId(comanda.getId());
+
+            DlgPagoComanda dlg = new DlgPagoComanda(
+                    frmComandas,
+                    true,
+                    actualizada,
+                    frmComandas,
+                    this
+            );
+
+            dlg.setLocationRelativeTo(frmComandas);
+            dlg.setVisible(true);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frmComandas, ex.getMessage());
+        }
+    }
+
+    public void mostrarPagoEfectivo(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
+        DlgPagoEfectivo dlg = new DlgPagoEfectivo(frmComandas, true, comanda, restante, dlgPadre, this);
+        dlg.setLocationRelativeTo(dlgPadre);
+
+        dlg.setVisible(true);
+    }
+
+    public void mostrarPagoTarjeta(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
+        DlgPagoTarjeta dlg = new DlgPagoTarjeta(frmComandas, true, comanda, restante, dlgPadre, this);
+        dlg.setLocationRelativeTo(dlgPadre);
+
+        dlg.setVisible(true);
+    }
+
+    public void mostrarPagoCodi(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
+        DlgPagoCodi dlg = new DlgPagoCodi(frmComandas, true, comanda, restante, dlgPadre, this);
+        dlg.setLocationRelativeTo(dlgPadre);
+
+        dlg.setVisible(true);
+    }
+
+    public ResultadoPagoDTO registrarPago(SolicitudPagoDTO solicitud) throws PagosException {
+        return pagoFachada.registrarPago(solicitud);
     }
 
     public List<Integer> obtenerMesasConComandasListas() {
@@ -335,33 +405,13 @@ public class CoordinadorInterfaces {
         PedidoDTO modificado = dlg.getResultado();
         if (modificado != null) {
 
-            // Mantener el id del producto
-            modificado.setIdProducto(pedidoOriginal.getIdProducto());
+            pedidoOriginal.setDescripcion(modificado.getDescripcion());
+            pedidoOriginal.setCantidad(modificado.getCantidad());
+            pedidoOriginal.setPrecioProducto(modificado.getPrecioProducto());
 
-            if (comanda != null) {
-
-                // EDICIÓN DE COMANDA EXISTENTE
-                int idx = comanda.getPedidos().indexOf(pedidoOriginal);
-
-                if (idx >= 0) {
-                    comanda.getPedidos().set(idx, modificado);
-                }
-
-            } else {
-
-                // PEDIDO NUEVO (TEMPORAL)
-                List<PedidoDTO> temporales = getComandaTemporalReal();
-
-                int idx = temporales.indexOf(pedidoOriginal);
-
-                if (idx >= 0) {
-                    temporales.set(idx, modificado);
-                }
-            }
-
-            String desc = (modificado.getDescripcion() != null
-                    && !modificado.getDescripcion().isEmpty())
-                    ? modificado.getDescripcion().replace(", ", "\n• ")
+            String desc = (pedidoOriginal.getDescripcion() != null
+                    && !pedidoOriginal.getDescripcion().isEmpty())
+                    ? pedidoOriginal.getDescripcion().replace(", ", "\n• ")
                     : "";
 
             txtLista.setText("• " + desc);
@@ -381,9 +431,9 @@ public class CoordinadorInterfaces {
 
     public void actualizarComanda(ComandaDTO comanda, List<PedidoDTO> nuevosPedidos) {
         try {
-            if (nuevosPedidos != null && !nuevosPedidos.isEmpty()) {
-                comanda.getPedidos().addAll(nuevosPedidos);
-            }
+//            if (nuevosPedidos != null && !nuevosPedidos.isEmpty()) {
+//                comanda.getPedidos().addAll(nuevosPedidos);
+//            }
 
             comandaFachada.actualizarComanda(comanda);
             if (frmComandas != null) {
@@ -487,5 +537,84 @@ public class CoordinadorInterfaces {
         this.frmCocina = frmCocina;
     }
      
+
+    public void cancelarPedido(ComandaDTO comanda, PedidoDTO pedido) {
+        try {
+            comandaFachada.cancelarPedido(comanda.getId(), pedido.getId());
+
+            // JOptionPane.showMessageDialog(frmComandas, "Pedido cancelado correctamente");
+
+            refrescarPantallaComandas();
+
+        } catch (ComandasException e) {
+            JOptionPane.showMessageDialog(
+                    frmComandas,
+                    e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    public void editarPedido(ComandaDTO comanda, PedidoDTO pedidoOriginal) {
+
+        try {
+            List<IngredienteEnProductoDTO> removibles = obtenerIngredientesRemovibles(pedidoOriginal.getIdProducto());
+
+            ProductoDTO producto = new ProductoDTO();
+
+            producto.setId(pedidoOriginal.getIdProducto());
+            producto.setNombre(pedidoOriginal.getNombreProducto());
+            producto.setPrecio(pedidoOriginal.getPrecioProducto());
+
+            DlgModificarProducto dlg = new DlgModificarProducto(
+                    frmComandas,
+                    producto,
+                    removibles,
+                    pedidoOriginal
+            );
+
+            dlg.setVisible(true);
+
+            PedidoDTO pedidoEditado = dlg.getResultado();
+
+            if (pedidoEditado != null) {
+                pedidoEditado.setId(pedidoOriginal.getId());
+                pedidoEditado.setEstado(
+                        pedidoOriginal.getEstado()
+                );
+                pedidoEditado.setFechaPedido(
+                        pedidoOriginal.getFechaPedido()
+                );
+                comandaFachada.editarPedido(comanda.getId(), pedidoEditado);
+
+                JOptionPane.showMessageDialog(
+                        frmComandas,
+                        "Pedido editado correctamente"
+                );
+
+                refrescarPantallaComandas();
+            }
+
+        } catch (ComandasException e) {
+            JOptionPane.showMessageDialog(
+                    frmComandas,
+                    e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void refrescarPantallaComandas() {
+
+        if (frmComandas != null) {
+            frmComandas.actualizarPantalla();
+            frmComandas.refrescarMesaActual();
+            frmComandas.repaint();
+            frmComandas.revalidate();
+        }
+
+    }
 
 }

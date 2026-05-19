@@ -7,16 +7,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Adapter encargado de convertir ingredientes y modificadores de productos.
- *
+ * IngredienteNegocioAdapter.
+ * 
+ * Clase encargada de convertir y adaptar informacion relacionada
+ * con ingredientes de productos entre la capa de negocio y los DTOs.
+ * 
+ * Su funcion es transformar entidades de ingredientes en estructuras
+ * de transferencia de datos, asi como generar representaciones
+ * utilizadas para modificaciones o relaciones producto-ingrediente.
+ * 
+ * Permite manejar ingredientes removibles, generar modificadores
+ * de productos y construir relaciones entre productos e ingredientes.
+ * 
  * @author DishUp
  */
 public class IngredienteNegocioAdapter {
 
-    public IngredienteNegocioAdapter() {
-    }
-
-    public List<IngredienteEnProductoDTO> convertirIngredientesRemovibles(List<IngredienteEnProducto> ingredientes) {
+    /**
+     * Convierte una lista de ingredientes de entidad a DTO,
+     * filtrando unicamente aquellos que son removibles.
+     *
+     * @param ingredientes lista de ingredientes en entidad
+     * @return lista de ingredientes removibles en formato DTO
+     */
+    public List<IngredienteEnProductoDTO> convertirIngredientesRemovibles(
+            List<IngredienteEnProducto> ingredientes
+    ) {
 
         List<IngredienteEnProductoDTO> removibles = new ArrayList<>();
 
@@ -29,7 +45,7 @@ public class IngredienteNegocioAdapter {
             if (ingrediente != null && ingrediente.isRemovible()) {
 
                 IngredienteEnProductoDTO dto = new IngredienteEnProductoDTO();
-                
+
                 dto.setNombre(ingrediente.getNombre());
                 dto.setCantidad(ingrediente.getCantidad());
                 dto.setRemovible(ingrediente.isRemovible());
@@ -41,7 +57,15 @@ public class IngredienteNegocioAdapter {
         return removibles;
     }
 
-    public List<String> convertirIngredientesAModificadores(List<IngredienteEnProductoDTO> ingredientes) {
+    /**
+     * Convierte ingredientes en una lista de modificadores de producto.
+     *
+     * @param ingredientes lista de ingredientes en formato DTO
+     * @return lista de textos modificadores del producto
+     */
+    public List<String> convertirIngredientesAModificadores(
+            List<IngredienteEnProductoDTO> ingredientes
+    ) {
 
         List<String> modificadores = new ArrayList<>();
 
@@ -52,14 +76,27 @@ public class IngredienteNegocioAdapter {
         for (IngredienteEnProductoDTO ingrediente : ingredientes) {
 
             if (ingrediente != null) {
-                modificadores.add("Sin " + ingrediente.getNombre().toLowerCase());
+                modificadores.add(
+                        "Sin " + ingrediente.getNombre().toLowerCase()
+                );
             }
         }
 
         return modificadores;
     }
 
-    public List<ProductoIngredienteDTO> convertirAProductoIngredienteDTO(String idProducto,List<IngredienteEnProducto> ingredientes) {
+    /**
+     * Convierte ingredientes de entidad a DTO de relacion
+     * producto-ingrediente.
+     *
+     * @param idProducto identificador del producto
+     * @param ingredientes lista de ingredientes en entidad
+     * @return lista de relaciones producto-ingrediente en DTO
+     */
+    public List<ProductoIngredienteDTO> convertirAProductoIngredienteDTO(
+            String idProducto,
+            List<IngredienteEnProducto> ingredientes
+    ) {
 
         List<ProductoIngredienteDTO> lista = new ArrayList<>();
 
@@ -70,6 +107,7 @@ public class IngredienteNegocioAdapter {
         for (IngredienteEnProducto ingrediente : ingredientes) {
 
             if (ingrediente != null) {
+
                 ProductoIngredienteDTO dto = new ProductoIngredienteDTO();
 
                 dto.setIdProducto(idProducto);

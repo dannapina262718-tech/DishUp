@@ -13,42 +13,59 @@
 
     <artifactId>negocios_objetosNegocio</artifactId>
     <packaging>jar</packaging>
-
     <dependencies>
-
-        <!-- Infraestructura inventario -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>infraestructura_inventario</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- DTOs -->
-
-        <!-- Persistencia -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>persistencia</artifactId>
             <version>${project.version}</version>
-           
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dtos_infraestructura</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- Infraestructura terminal -->
+        <dependency>
+            <groupId>com.262719</groupId>
+            <artifactId>infraestructura_terminal</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- DTOs y Dominio de la Base -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dto_negocios</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
         <dependency>
-            <groupId>com.262719</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>dominio</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>infraestructura_inventario</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
+    </dependencies>
     <properties>
         <maven.compiler.release>23</maven.compiler.release>
         <exec.mainClass>

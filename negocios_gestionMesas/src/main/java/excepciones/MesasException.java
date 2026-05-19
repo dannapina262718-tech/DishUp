@@ -1,21 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package excepciones;
 
 
 /**
+ * MesasException.
+ * Excepcion personalizada utilizada para manejar errores
+ * relacionados con las operaciones de mesas dentro del sistema.
+ *
+ * Esta excepcion se utiliza cuando ocurre un problema de validacion,
+ * reglas de negocio o procesamiento en el manejo de mesas.
  *
  * @author DishUp
  */
+public class MesasException extends Exception {
 
-public class MesasException extends Exception{
-
+    /**
+     * Constructor por defecto.
+     */
     public MesasException() {
     }
 
+    /**
+     * Constructor que permite enviar un mensaje de error.
+     *
+     * @param message Mensaje descriptivo del error ocurrido.
+     */
     public MesasException(String message) {
         super(message);
     }

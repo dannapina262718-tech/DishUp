@@ -8,6 +8,14 @@
     </parent>
     <artifactId>dtos_infraestructura</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.262719</groupId>
+            <artifactId>dominio</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
     <properties>
         <maven.compiler.release>23</maven.compiler.release>
         <exec.mainClass>com.dtos_infraestructura.Dtos_infraestructura</exec.mainClass>

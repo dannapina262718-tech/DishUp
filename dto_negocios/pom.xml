@@ -13,4 +13,12 @@
         <exec.mainClass>com.dto_negocios.Dto_negocios</exec.mainClass>
     </properties>
     <name>dtos_negocio</name>
+    <dependencies>
+        <dependency>
+            <groupId>com.262719</groupId>
+            <artifactId>dominio</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
 </project>

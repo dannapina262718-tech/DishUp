@@ -17,6 +17,8 @@
         <module>negocios_objetosNegocio</module>
         <module>infraestructura_inventario</module>
         <module>dtos_infraestructura</module>
+        <module>negocios_gestionPagos</module>
+        <module>infraestructura_terminal</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
