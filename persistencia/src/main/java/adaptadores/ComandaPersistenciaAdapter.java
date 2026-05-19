@@ -13,21 +13,25 @@ import java.util.List;
 
 /**
  * Adaptador de persistencia para la entidad Comanda.
- * 
- * Esta clase se encarga de convertir objetos del modelo de dominio (Comanda)
- * a entidades de MongoDB (ComandaEntidadMongo) y viceversa.
- * 
+ *
+ * Esta clase se encarga de convertir objetos del modelo de dominio (Comanda) a
+ * entidades de MongoDB (ComandaEntidadMongo) y viceversa.
+ *
  * Su función principal es aislar la lógica de conversión entre la capa de
  * negocio y la capa de persistencia, evitando acoplamiento directo.
  */
 public class ComandaPersistenciaAdapter {
+
     private final PagoPersistenciaAdapter pagoAdapter;
+    private final PedidoPersistenciaAdapter pedidoAdapter;
 
     /**
      * Constructor por defecto del adaptador.
      */
     public ComandaPersistenciaAdapter() {
-            this.pagoAdapter = new PagoPersistenciaAdapter();
+        this.pagoAdapter = new PagoPersistenciaAdapter();
+        this.pedidoAdapter = new PedidoPersistenciaAdapter();
+
     }
 
     /**
@@ -61,18 +65,9 @@ public class ComandaPersistenciaAdapter {
 
             for (Pedido pedido : comanda.getPedidos()) {
 
-                PedidoEntidadMongo pedidoMongo = new PedidoEntidadMongo();
-
-                pedidoMongo.setId(pedido.getId());
-                pedidoMongo.setIdProducto(pedido.getIdProducto());
-                pedidoMongo.setNombreProducto(pedido.getNombreProducto());
-                pedidoMongo.setCantidad(pedido.getCantidad());
-                pedidoMongo.setDescripcion(pedido.getDescripcion());
-                pedidoMongo.setPrecioProducto(pedido.getPrecioProducto());
-                pedidoMongo.setEstado(pedido.getEstado());
-                pedidoMongo.setFechaPedido(pedido.getFechaPedido());
-
-                pedidosMongo.add(pedidoMongo);
+                pedidosMongo.add(
+                        pedidoAdapter.aMongo(pedido)
+                );
             }
         }
 
@@ -116,19 +111,9 @@ public class ComandaPersistenciaAdapter {
         if (mongo.getPedidos() != null) {
 
             for (PedidoEntidadMongo pedidoMongo : mongo.getPedidos()) {
-
-                Pedido pedido = new Pedido();
-
-                pedido.setId(pedidoMongo.getId());
-                pedido.setIdProducto(pedidoMongo.getIdProducto());
-                pedido.setNombreProducto(pedidoMongo.getNombreProducto());
-                pedido.setCantidad(pedidoMongo.getCantidad());
-                pedido.setDescripcion(pedidoMongo.getDescripcion());
-                pedido.setPrecioProducto(pedidoMongo.getPrecioProducto());
-                pedido.setEstado(pedidoMongo.getEstado());
-                pedido.setFechaPedido(pedidoMongo.getFechaPedido());
-
-                pedidos.add(pedido);
+                pedidos.add(
+                        pedidoAdapter.aDominio(pedidoMongo)
+                );
             }
         }
 
@@ -140,7 +125,7 @@ public class ComandaPersistenciaAdapter {
                 pagos.add(pagoAdapter.aDominio(pagoMongo));
             }
         }
-        
+
         comanda.setPagos(pagos);
 
         return comanda;

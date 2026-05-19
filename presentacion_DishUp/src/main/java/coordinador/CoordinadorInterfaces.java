@@ -59,7 +59,7 @@ public class CoordinadorInterfaces {
     private FrmPantallaComandas frmComandas;
     private FrmCliente frmCliente;
     private FrmProductos frmProductos;
-    
+
     private DlgPagoComanda dlgPagoComanda;
     private DlgPagoEfectivo dlgPagoEfectivo;
     private DlgPagoTarjeta dlgPagoTarjeta;
@@ -69,7 +69,6 @@ public class CoordinadorInterfaces {
     private FrmAsignarMesas frmAsignarMesas;
     private FrmPantallaMesas frmMesas;
     private FrmInicioSesión frmSesion;
-
 
     private IGestionProductos productoFachada;
     private IGestionComandas comandaFachada;
@@ -290,8 +289,8 @@ public class CoordinadorInterfaces {
 
     public void mostrarPagoComanda(ComandaDTO comanda) {
         try {
-            ComandaDTO actualizada =
-                    comandaFachada.obtenerComandaPorId(comanda.getId());
+            ComandaDTO actualizada
+                    = comandaFachada.obtenerComandaPorId(comanda.getId());
 
             DlgPagoComanda dlg = new DlgPagoComanda(
                     frmComandas,
@@ -315,7 +314,7 @@ public class CoordinadorInterfaces {
 
         dlg.setVisible(true);
     }
-    
+
     public void mostrarPagoTarjeta(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
         DlgPagoTarjeta dlg = new DlgPagoTarjeta(frmComandas, true, comanda, restante, dlgPadre, this);
         dlg.setLocationRelativeTo(dlgPadre);
@@ -333,7 +332,6 @@ public class CoordinadorInterfaces {
     public ResultadoPagoDTO registrarPago(SolicitudPagoDTO solicitud) throws PagosException {
         return pagoFachada.registrarPago(solicitud);
     }
-    
 
     public List<Integer> obtenerMesasConComandasListas() {
         try {
@@ -529,121 +527,84 @@ public class CoordinadorInterfaces {
         }
     }
 
-    public void cancelarPedido(PedidoDTO pedido) {
+    public void cancelarPedido(ComandaDTO comanda, PedidoDTO pedido) {
         try {
+            comandaFachada.cancelarPedido(comanda.getId(), pedido.getId());
 
-            if (comandaActual == null) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "No hay comanda seleccionada"
-                );
-                return;
-            }
+            JOptionPane.showMessageDialog(frmComandas, "Pedido cancelado correctamente");
 
-            comandaFachada.cancelarPedido(
-                    comandaActual.getId(),
-                    pedido.getId()
-            );
-
-            comandaActual.getPedidos().remove(pedido);
-
-            if (frmComandas != null) {
-                frmComandas.actualizarPantalla();
-            }
-
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Pedido cancelado correctamente"
-            );
+            refrescarPantallaComandas();
 
         } catch (ComandasException e) {
-
             JOptionPane.showMessageDialog(
-                    null,
-                    "Error al cancelar pedido: " + e.getMessage(),
+                    frmComandas,
+                    e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
         }
     }
 
-    public void editarPedido(PedidoDTO pedidoOriginal) {
+    public void editarPedido(ComandaDTO comanda, PedidoDTO pedidoOriginal) {
 
         try {
+            List<IngredienteEnProductoDTO> removibles = obtenerIngredientesRemovibles(pedidoOriginal.getIdProducto());
 
-            if (comandaActual == null) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "No hay comanda seleccionada"
-                );
-                return;
-            }
+            ProductoDTO producto = new ProductoDTO();
 
-            List<IngredienteEnProductoDTO> removibles
-                    = obtenerIngredientesRemovibles(
-                            pedidoOriginal.getIdProducto()
-                    );
+            producto.setId(pedidoOriginal.getIdProducto());
+            producto.setNombre(pedidoOriginal.getNombreProducto());
+            producto.setPrecio(pedidoOriginal.getPrecioProducto());
 
-            ProductoDTO productoTemp = new ProductoDTO();
-
-            productoTemp.setId(pedidoOriginal.getIdProducto());
-            productoTemp.setNombre(pedidoOriginal.getNombreProducto());
-            productoTemp.setPrecio(pedidoOriginal.getPrecioProducto());
-
-            DlgModificarProducto dlg
-                    = new DlgModificarProducto(
-                            frmProductos,
-                            productoTemp,
-                            removibles,
-                            pedidoOriginal
-                    );
+            DlgModificarProducto dlg = new DlgModificarProducto(
+                    frmComandas,
+                    producto,
+                    removibles,
+                    pedidoOriginal
+            );
 
             dlg.setVisible(true);
 
             PedidoDTO pedidoEditado = dlg.getResultado();
 
             if (pedidoEditado != null) {
-
                 pedidoEditado.setId(pedidoOriginal.getId());
-
-                comandaFachada.editarPedido(
-                        comandaActual.getId(),
-                        pedidoEditado
+                pedidoEditado.setEstado(
+                        pedidoOriginal.getEstado()
                 );
-
-                pedidoOriginal.setDescripcion(
-                        pedidoEditado.getDescripcion()
+                pedidoEditado.setFechaPedido(
+                        pedidoOriginal.getFechaPedido()
                 );
-
-                pedidoOriginal.setCantidad(
-                        pedidoEditado.getCantidad()
-                );
-
-                pedidoOriginal.setPrecioProducto(
-                        pedidoEditado.getPrecioProducto()
-                );
-
-                if (frmComandas != null) {
-                    frmComandas.actualizarPantalla();
-                }
+                comandaFachada.editarPedido(comanda.getId(), pedidoEditado);
 
                 JOptionPane.showMessageDialog(
-                        null,
+                        frmComandas,
                         "Pedido editado correctamente"
                 );
+
+                refrescarPantallaComandas();
             }
 
         } catch (ComandasException e) {
-
             JOptionPane.showMessageDialog(
-                    null,
-                    "Error al editar pedido: " + e.getMessage(),
+                    frmComandas,
+                    e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
         }
     }
 
-    
+
+    private void refrescarPantallaComandas() {
+
+        if (frmComandas != null) {
+            frmComandas.actualizarPantalla();
+            frmComandas.refrescarMesaActual();
+            frmComandas.repaint();
+            frmComandas.revalidate();
+        }
+
+    }
 
 }
