@@ -324,7 +324,7 @@ public class ComandaBO {
         }
 
         comanda.setMontoTotal(total);
-
+    }
 
     public void cancelarPedidoDeComanda(String idComanda, String idPedido) throws NegocioException {
 

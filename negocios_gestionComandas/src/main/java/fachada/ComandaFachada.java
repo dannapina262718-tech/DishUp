@@ -118,9 +118,8 @@ public class ComandaFachada implements IGestionComandas {
     public ComandaDTO obtenerComandaPorId(String idComanda) throws ComandasException {
         return comandaControl.obtenerComandaPorId(idComanda);
     }
-}
 
-
+    @Override
     public void cancelarPedido(String idComanda, String idPedido) throws ComandasException {
         comandaControl.cancelarPedidoDeComanda(idComanda, idPedido);
     }
