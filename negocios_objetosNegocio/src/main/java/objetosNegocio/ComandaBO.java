@@ -267,12 +267,10 @@ public class ComandaBO {
 
     }
 
-    public int asiganarTiempoEstimado(ComandaDTO comandaDTO, int Timepo) {
-        try{
-            
-        }catch (PersistenciaException E){
-            throw new NegocioException("Error al asignar el tiempo estimado de la comanda");
-        }
+    public int asiganarTiempoEstimado(ComandaDTO comandaDTO, int Timepo) throws NegocioException {
+            comandaDTO.setTiempoEstimado(Timepo);
+            return Timepo;
+        
     }
 
 }

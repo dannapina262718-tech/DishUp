@@ -37,13 +37,14 @@ public class ComandaDTO {
     public ComandaDTO() {
     }
 
-    public ComandaDTO(String id, String nombreCliente, String nombreEmpleado, LocalDateTime fecha, float total, EstadoComandaDTO estado, Integer numMesa, List<PedidoDTO> pedidos, List<PagoDTO> pagos) {
+    public ComandaDTO(String id, String nombreCliente, String nombreEmpleado, LocalDateTime fecha, float total, EstadoComandaDTO estado, int tiempoEstimado, Integer numMesa, List<PedidoDTO> pedidos, List<PagoDTO> pagos) {
         this.id = id;
         this.nombreCliente = nombreCliente;
         this.nombreEmpleado = nombreEmpleado;
         this.fecha = fecha;
         this.total = total;
         this.estado = estado;
+        this.tiempoEstimado = tiempoEstimado;
         this.numMesa = numMesa;
         this.pedidos = pedidos;
         this.pagos = pagos;
@@ -95,6 +96,14 @@ public class ComandaDTO {
 
     public void setEstado(EstadoComandaDTO estado) {
         this.estado = estado;
+    }
+
+    public void setTiempoEstimado(int tiempoEstimado) {
+        this.tiempoEstimado = tiempoEstimado;
+    }
+
+    public int getTiempoEstimado() {
+        return tiempoEstimado;
     }
 
     public Integer getNumMesa() {

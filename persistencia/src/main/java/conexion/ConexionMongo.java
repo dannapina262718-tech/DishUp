@@ -21,7 +21,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
  */
 
 public class ConexionMongo {
-    private static final String url = "mongodb+srv://dishup_user:DishUp2026@dishupcluster.b37ha6e.mongodb.net/dishup_db?appName=DishUpCluster";
+    private static final String url = "";
     //private static final String url = "mongodb://localhost:27017";
     private static final String BASE_DATOS = "dishup_db";
     
