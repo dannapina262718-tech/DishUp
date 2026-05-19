@@ -4,7 +4,9 @@
  */
 package fachada;
 
+import dtos_infraestructura.RespuestaCodiDTO;
 import dtos_infraestructura.RespuestaTerminalDTO;
+import dtos_infraestructura.SolicitudCodiDTO;
 import dtos_infraestructura.SolicitudTerminalDTO;
 import excepciones.InfraestructuraTerminalException;
 import interfaces.ISistemaTerminal;
@@ -24,5 +26,10 @@ public class TerminalFachada implements ISistemaTerminal {
     @Override
     public RespuestaTerminalDTO cobrarTarjeta(SolicitudTerminalDTO solicitud) throws InfraestructuraTerminalException{
         return sistema.cobrarTarjeta(solicitud);
+    }
+
+    @Override
+    public RespuestaCodiDTO cobrarCodi(SolicitudCodiDTO solicitud) throws InfraestructuraTerminalException {
+        return sistema.cobrarCodi(solicitud);
     }
 }

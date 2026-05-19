@@ -192,6 +192,11 @@ public class DlgPagoComanda extends javax.swing.JDialog {
                 btnMetodoCodiMouseReleased(evt);
             }
         });
+        btnMetodoCodi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMetodoCodiActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setBorder(null);
         jScrollPane1.setForeground(new java.awt.Color(255, 255, 255));
@@ -416,6 +421,29 @@ public class DlgPagoComanda extends javax.swing.JDialog {
         
         }
     }//GEN-LAST:event_btnMetodoTarjetaActionPerformed
+
+    private void btnMetodoCodiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMetodoCodiActionPerformed
+        try {
+            if (comanda == null) {
+                JOptionPane.showMessageDialog(this, "Comanda inválida.");
+                return;
+            }
+
+            if (restante <= 0) {
+                JOptionPane.showMessageDialog(this, "La cuenta ya fue liquidada.");
+                return;
+            }
+
+            coordinador.mostrarPagoCodi(comanda, restante, this);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    ex.getMessage()
+            );
+        
+        }
+    }//GEN-LAST:event_btnMetodoCodiActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFinalizar;

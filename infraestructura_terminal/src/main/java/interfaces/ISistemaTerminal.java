@@ -4,7 +4,9 @@
  */
 package interfaces;
 
+import dtos_infraestructura.RespuestaCodiDTO;
 import dtos_infraestructura.RespuestaTerminalDTO;
+import dtos_infraestructura.SolicitudCodiDTO;
 import dtos_infraestructura.SolicitudTerminalDTO;
 import excepciones.InfraestructuraTerminalException;
 
@@ -15,4 +17,5 @@ import excepciones.InfraestructuraTerminalException;
  */
 public interface ISistemaTerminal {
     RespuestaTerminalDTO cobrarTarjeta(SolicitudTerminalDTO solicitud) throws InfraestructuraTerminalException;
+    RespuestaCodiDTO cobrarCodi(SolicitudCodiDTO solicitud) throws InfraestructuraTerminalException;
 }

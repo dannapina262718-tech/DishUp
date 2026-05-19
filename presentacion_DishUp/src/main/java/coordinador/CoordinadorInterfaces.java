@@ -37,6 +37,7 @@ import pantallas.AdministrarMesas.FrmAsignarMesas;
 import pantallas.AdministrarMesas.FrmPantallaMesas;
 import pantallas.AdministrarMesas.panInfoMesa;
 import pantallas.DlgModificarProducto;
+import pantallas.DlgPagoCodi;
 import pantallas.DlgPagoComanda;
 import pantallas.DlgPagoEfectivo;
 import pantallas.DlgPagoTarjeta;
@@ -62,6 +63,7 @@ public class CoordinadorInterfaces {
     private DlgPagoComanda dlgPagoComanda;
     private DlgPagoEfectivo dlgPagoEfectivo;
     private DlgPagoTarjeta dlgPagoTarjeta;
+    private DlgPagoCodi dlgPagoCodi;
 
     private panInfoMesa panInfoMesa;
     private FrmAsignarMesas frmAsignarMesas;
@@ -316,6 +318,13 @@ public class CoordinadorInterfaces {
     
     public void mostrarPagoTarjeta(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
         DlgPagoTarjeta dlg = new DlgPagoTarjeta(frmComandas, true, comanda, restante, dlgPadre, this);
+        dlg.setLocationRelativeTo(dlgPadre);
+
+        dlg.setVisible(true);
+    }
+    
+    public void mostrarPagoCodi(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
+        DlgPagoCodi dlg = new DlgPagoCodi(frmComandas, true, comanda, restante, dlgPadre, this);
         dlg.setLocationRelativeTo(dlgPadre);
 
         dlg.setVisible(true);
@@ -634,5 +643,7 @@ public class CoordinadorInterfaces {
             );
         }
     }
+
+    
 
 }
