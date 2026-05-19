@@ -8,11 +8,11 @@ import java.util.List;
 
 /**
  * Interfaz de acceso a datos para la entidad Comanda.
- * 
+ *
  * Define las operaciones principales de persistencia relacionadas con comandas,
  * incluyendo creación, consulta, actualización, eliminación y manejo de pedidos
  * asociados a una comanda.
- * 
+ *
  * Esta interfaz forma parte de la capa DAO y permite desacoplar la lógica de
  * persistencia de la implementación concreta (por ejemplo MongoDB).
  */
@@ -103,7 +103,7 @@ public interface IComandaDAO {
      * @throws PersistenciaException si ocurre un error en la operación
      */
     public boolean actualizarComanda(String idComanda, List<Pedido> pedidos) throws PersistenciaException;
-    
+
     /**
      * Calcula el monto total de una comanda.
      *
@@ -120,4 +120,8 @@ public interface IComandaDAO {
      * @throws PersistenciaException si ocurre un error en la operación
      */
     void recalcularMonto(String idComanda) throws PersistenciaException;
+
+    public boolean editarPedidoDeComanda(String idComanda, Pedido pedidoEditado) throws PersistenciaException;
+    
+    public boolean cancelarPedidoDeComanda(String idComanda, String idPedido) throws PersistenciaException;
 }

@@ -398,33 +398,13 @@ public class CoordinadorInterfaces {
         PedidoDTO modificado = dlg.getResultado();
         if (modificado != null) {
 
-            // Mantener el id del producto
-            modificado.setIdProducto(pedidoOriginal.getIdProducto());
+            pedidoOriginal.setDescripcion(modificado.getDescripcion());
+            pedidoOriginal.setCantidad(modificado.getCantidad());
+            pedidoOriginal.setPrecioProducto(modificado.getPrecioProducto());
 
-            if (comanda != null) {
-
-                // EDICIÓN DE COMANDA EXISTENTE
-                int idx = comanda.getPedidos().indexOf(pedidoOriginal);
-
-                if (idx >= 0) {
-                    comanda.getPedidos().set(idx, modificado);
-                }
-
-            } else {
-
-                // PEDIDO NUEVO (TEMPORAL)
-                List<PedidoDTO> temporales = getComandaTemporalReal();
-
-                int idx = temporales.indexOf(pedidoOriginal);
-
-                if (idx >= 0) {
-                    temporales.set(idx, modificado);
-                }
-            }
-
-            String desc = (modificado.getDescripcion() != null
-                    && !modificado.getDescripcion().isEmpty())
-                    ? modificado.getDescripcion().replace(", ", "\n• ")
+            String desc = (pedidoOriginal.getDescripcion() != null
+                    && !pedidoOriginal.getDescripcion().isEmpty())
+                    ? pedidoOriginal.getDescripcion().replace(", ", "\n• ")
                     : "";
 
             txtLista.setText("• " + desc);
@@ -444,9 +424,9 @@ public class CoordinadorInterfaces {
 
     public void actualizarComanda(ComandaDTO comanda, List<PedidoDTO> nuevosPedidos) {
         try {
-            if (nuevosPedidos != null && !nuevosPedidos.isEmpty()) {
-                comanda.getPedidos().addAll(nuevosPedidos);
-            }
+//            if (nuevosPedidos != null && !nuevosPedidos.isEmpty()) {
+//                comanda.getPedidos().addAll(nuevosPedidos);
+//            }
 
             comandaFachada.actualizarComanda(comanda);
             if (frmComandas != null) {
@@ -537,6 +517,121 @@ public class CoordinadorInterfaces {
         // comandaFachada.entregarPedido(pedido);
         if (frmComandas != null) {
             frmComandas.actualizarPantalla();
+        }
+    }
+
+    public void cancelarPedido(PedidoDTO pedido) {
+        try {
+
+            if (comandaActual == null) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "No hay comanda seleccionada"
+                );
+                return;
+            }
+
+            comandaFachada.cancelarPedido(
+                    comandaActual.getId(),
+                    pedido.getId()
+            );
+
+            comandaActual.getPedidos().remove(pedido);
+
+            if (frmComandas != null) {
+                frmComandas.actualizarPantalla();
+            }
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Pedido cancelado correctamente"
+            );
+
+        } catch (ComandasException e) {
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error al cancelar pedido: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    public void editarPedido(PedidoDTO pedidoOriginal) {
+
+        try {
+
+            if (comandaActual == null) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "No hay comanda seleccionada"
+                );
+                return;
+            }
+
+            List<IngredienteEnProductoDTO> removibles
+                    = obtenerIngredientesRemovibles(
+                            pedidoOriginal.getIdProducto()
+                    );
+
+            ProductoDTO productoTemp = new ProductoDTO();
+
+            productoTemp.setId(pedidoOriginal.getIdProducto());
+            productoTemp.setNombre(pedidoOriginal.getNombreProducto());
+            productoTemp.setPrecio(pedidoOriginal.getPrecioProducto());
+
+            DlgModificarProducto dlg
+                    = new DlgModificarProducto(
+                            frmProductos,
+                            productoTemp,
+                            removibles,
+                            pedidoOriginal
+                    );
+
+            dlg.setVisible(true);
+
+            PedidoDTO pedidoEditado = dlg.getResultado();
+
+            if (pedidoEditado != null) {
+
+                pedidoEditado.setId(pedidoOriginal.getId());
+
+                comandaFachada.editarPedido(
+                        comandaActual.getId(),
+                        pedidoEditado
+                );
+
+                pedidoOriginal.setDescripcion(
+                        pedidoEditado.getDescripcion()
+                );
+
+                pedidoOriginal.setCantidad(
+                        pedidoEditado.getCantidad()
+                );
+
+                pedidoOriginal.setPrecioProducto(
+                        pedidoEditado.getPrecioProducto()
+                );
+
+                if (frmComandas != null) {
+                    frmComandas.actualizarPantalla();
+                }
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Pedido editado correctamente"
+                );
+            }
+
+        } catch (ComandasException e) {
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error al editar pedido: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 

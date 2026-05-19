@@ -11,8 +11,13 @@ import com.mongodb.client.model.Updates;
 
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.elemMatch;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Projections;
+
+import com.mongodb.client.model.Updates;
+import static com.mongodb.client.model.Updates.pull;
 
 import static com.mongodb.client.model.Updates.set;
 import com.mongodb.client.result.DeleteResult;
@@ -64,7 +69,6 @@ public class ComandaDAO implements IComandaDAO {
 
         try {
             ComandaEntidadMongo mongo = adapter.aMongo(comanda);
-            
 
             InsertOneResult result = coleccion.insertOne(mongo);
 
@@ -126,13 +130,13 @@ public class ComandaDAO implements IComandaDAO {
 
     @Override
     public Comanda obtenerPorId(String id) throws PersistenciaException {
-        if(id == null){
+        if (id == null) {
             throw new PersistenciaException("El id es nulo");
         }
 
         try {
             ComandaEntidadMongo mongo = coleccion.find(eq("_id", new ObjectId(id))).first();
-            
+
             return adapter.aDominio(mongo);
 
         } catch (MongoException e) {
@@ -165,7 +169,7 @@ public class ComandaDAO implements IComandaDAO {
     @Override
     public boolean agregarPedidoAComanda(String idComanda, Pedido nuevoPedido) throws PersistenciaException {
         try {
-            
+
             UpdateResult result = coleccion.updateOne(eq("_id", new ObjectId(idComanda)),
                     com.mongodb.client.model.Updates.push(
                             "pedidos",
@@ -280,33 +284,30 @@ public class ComandaDAO implements IComandaDAO {
             throw new PersistenciaException("Error al actualizar comanda", e);
         }
     }
+
     @Override
-    public float calcularMontoComanda(String idComanda) throws PersistenciaException{
-        if(idComanda == null){
+    public float calcularMontoComanda(String idComanda) throws PersistenciaException {
+        if (idComanda == null) {
             throw new PersistenciaException("El id es nulo");
         }
-        try{
+        try {
             List<Bson> pipeline = Arrays.asList(
-                    
                     Aggregates.match(eq("_id", new ObjectId(idComanda))),
-                    
                     Aggregates.unwind("$pedidos"),
-                    
                     Aggregates.project(
                             Projections.fields(
-                                    Projections.computed("subtotal", new Document("$multiply", Arrays.asList("$pedidos.cantidad","$pedidos.precioProducto")))
+                                    Projections.computed("subtotal", new Document("$multiply", Arrays.asList("$pedidos.cantidad", "$pedidos.precioProducto")))
                             )
                     ),
-                    Aggregates.group(null, Accumulators.sum("montoTotal", "$subtotal"))  
+                    Aggregates.group(null, Accumulators.sum("montoTotal", "$subtotal"))
             );
 
             List<Document> resultado = coleccionraw.aggregate(pipeline).into(new ArrayList<>());
 
-            
             if (resultado.isEmpty()) {
                 return 0f;
             }
-            
+
             return ((Number) resultado.get(0).get("montoTotal")).floatValue();
 
         } catch (Exception e) {
@@ -319,9 +320,80 @@ public class ComandaDAO implements IComandaDAO {
         float total = calcularMontoComanda(idComanda);
 
         coleccion.updateOne(
-            eq("_id", new ObjectId(idComanda)),
-            set("montoTotal", total)
+                eq("_id", new ObjectId(idComanda)),
+                set("montoTotal", total)
         );
+    }
+
+    @Override
+    public boolean editarPedidoDeComanda(String idComanda, Pedido pedidoEditado) throws PersistenciaException {
+
+        if (idComanda == null || idComanda.isBlank()) {
+            throw new PersistenciaException("El id de la comanda es inválido");
+        }
+
+        if (pedidoEditado == null) {
+            throw new PersistenciaException("El pedido es nulo");
+        }
+
+        if (pedidoEditado.getId() == null) {
+            throw new PersistenciaException("El id del pedido es nulo");
+        }
+
+        try {
+            Bson filtro = and(
+                    eq("_id", new ObjectId(idComanda)),
+                    elemMatch(
+                            "pedidos",
+                            eq("_id", pedidoEditado.getId())
+                    )
+            );
+
+            Bson updates = Updates.combine(
+                    set("pedidos.$.descripcion",
+                            pedidoEditado.getDescripcion()),
+                    set("pedidos.$.cantidad",
+                            pedidoEditado.getCantidad()),
+                    set("pedidos.$.precioProducto",
+                            pedidoEditado.getPrecioProducto())
+            );
+
+            UpdateResult result = coleccion.updateOne(filtro, updates);
+
+            return result.getModifiedCount() > 0;
+
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al editar pedido", e);
+        }
+    }
+
+    @Override
+    public boolean cancelarPedidoDeComanda(String idComanda, String idPedido) throws PersistenciaException {
+
+        if (idComanda == null || idComanda.isBlank()) {
+            throw new PersistenciaException(
+                    "El id de la comanda es inválido"
+            );
+        }
+
+        if (idPedido == null || idPedido.isBlank()) {
+            throw new PersistenciaException(
+                    "El id del pedido es inválido"
+            );
+        }
+
+        try {
+
+            UpdateResult result = coleccion.updateOne(
+                    eq("_id", new ObjectId(idComanda)),
+                    pull("pedidos", new Document("_id", idPedido))
+            );
+
+            return result.getModifiedCount() > 0;
+
+        } catch (MongoException e) {
+            throw new PersistenciaException("Error al cancelar pedido", e);
+        }
     }
 }
 

@@ -10,13 +10,12 @@ import interfaces.IGestionComandas;
 import java.util.List;
 
 /**
- * ComandaFachada.
- * Clase fachada que expone las operaciones de gestion de comandas
- * hacia la capa de presentacion.
+ * ComandaFachada. Clase fachada que expone las operaciones de gestion de
+ * comandas hacia la capa de presentacion.
  *
- * Esta clase implementa la interfaz IGestionComandas y delega
- * la logica de negocio al ComandaControl, funcionando como punto
- * de acceso unico para las operaciones relacionadas con comandas.
+ * Esta clase implementa la interfaz IGestionComandas y delega la logica de
+ * negocio al ComandaControl, funcionando como punto de acceso unico para las
+ * operaciones relacionadas con comandas.
  *
  * @author DishUp
  */
@@ -38,7 +37,8 @@ public class ComandaFachada implements IGestionComandas {
      * @param numeroMesa Numero de la mesa asignada.
      * @param pedidos Lista de pedidos que forman la comanda.
      * @param empleadoActual Empleado que registra la comanda.
-     * @throws ComandasException Si ocurre un error en la creacion de la comanda.
+     * @throws ComandasException Si ocurre un error en la creacion de la
+     * comanda.
      */
     @Override
     public void crearComanda(String nombreCliente, int numeroMesa, List<PedidoDTO> pedidos, EmpleadoDTO empleadoActual) throws ComandasException {
@@ -115,9 +115,19 @@ public class ComandaFachada implements IGestionComandas {
         comandaControl.actualizarComanda(comanda);
     }
 
-    @Override
     public ComandaDTO obtenerComandaPorId(String idComanda) throws ComandasException {
         return comandaControl.obtenerComandaPorId(idComanda);
+    }
+}
+
+
+    public void cancelarPedido(String idComanda, String idPedido) throws ComandasException {
+        comandaControl.cancelarPedidoDeComanda(idComanda, idPedido);
+    }
+
+    @Override
+    public void editarPedido(String idComanda, PedidoDTO pedidoEditado) throws ComandasException {
+        comandaControl.editarPedidoDeComanda(idComanda, pedidoEditado);
     }
 }
 

@@ -380,7 +380,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
         btnLevantarComanda.setVisible(false);
 
         List<MesaDTO> mesas = new ArrayList<>();
-        
+
         try {
             mesas = fachada.obtenerMesasPorMesero(mesero);
         } catch (MesasException ex) {
@@ -389,72 +389,94 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
 
         List<Integer> mesasConComandasListas = coordinador.obtenerMesasConComandasListas();
 
-            for (MesaDTO mesa : mesas) {
+        for (MesaDTO mesa : mesas) {
 
-                JButton btn = new JButton("Mesa " + mesa.getNumeroMesa());
+            JButton btn = new JButton("Mesa " + mesa.getNumeroMesa());
 
-                btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-                btn.setMaximumSize(new Dimension(150, 60));
-                btn.setFocusPainted(false);
+            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            btn.setMaximumSize(new Dimension(150, 60));
+            btn.setFocusPainted(false);
+
+            boolean tieneListos = mesasConComandasListas.contains(mesa.getNumeroMesa());
+
+            if (mesa.getEstado() == EstadoMesaDTO.LIBRE) {
+
+                btn.setBackground(Color.decode("#FFD481"));
+
+            } else if (tieneListos) {
+
+                btn.setBackground(Color.decode("#7EDB72")); // verde seleccionado
+
+            } else {
+
+                btn.setBackground(Color.decode("#808080"));
+            }
+
+            btn.setFont(new Font("Arial", Font.PLAIN, 18));
+            btn.setBorder(null);
+
+            btn.addActionListener(e -> {
+
+                panComandasLlenas.remove(lblSeleccioneMesa);
+                panComandasLlenas.remove(lblEspacio);
+                btnLevantarComanda.setVisible(true);
+                panComandas.revalidate();
+                panComandas.repaint();
+
+                if (btnSeleccionado != null && mesaSeleccionada != null) {
+
+                    MesaDTO anterior = mesaSeleccionada;
+
+                    boolean anteriorTieneListos = mesasConComandasListas.contains(anterior.getNumeroMesa());
+
+                    if (anterior.getEstado() == EstadoMesaDTO.LIBRE) {
+
+                        btnSeleccionado.setBackground(Color.decode("#FFE3AC"));
+
+                    } else if (anteriorTieneListos) {
+
+                        btnSeleccionado.setBackground(Color.decode("#B9F6B1"));
+
+                    } else {
+
+                        btnSeleccionado.setBackground(Color.decode("#D6D6D6"));
+                    }
+
+                    btnSeleccionado.setFont(new Font("Arial", Font.PLAIN, 18));
+                    btnSeleccionado.setBorder(null);
+                }
+                boolean tienePedidosListos
+                        = mesasConComandasListas.contains(mesa.getNumeroMesa());
 
                 if (mesa.getEstado() == EstadoMesaDTO.LIBRE) {
+
                     btn.setBackground(Color.decode("#FFE3AC"));
+
+                } else if (tienePedidosListos) {
+
+                    btn.setBackground(Color.decode("#B9F6B1")); // VERDE
+
                 } else {
-                    btn.setBackground(Color.decode("#D6D6D6"));
+
+                    btn.setBackground(Color.decode("#D6D6D6")); // GRIS
                 }
 
-                btn.setFont(new Font("Arial", Font.PLAIN, 18));
-                btn.setBorder(null);
+                btnSeleccionado = btn;
+                mesaSeleccionada = mesa;
 
-                btn.addActionListener(e -> {
+                List<ComandaDTO> comandas
+                        = coordinador.getComandasDeMesa(mesa.getNumeroMesa());
 
-                    panComandasLlenas.remove(lblSeleccioneMesa);
-                    panComandasLlenas.remove(lblEspacio);
-                    btnLevantarComanda.setVisible(true);
-                    panComandas.revalidate();
-                    panComandas.repaint();
+                mostrarComandasDeMesa(mesa.getNumeroMesa(), comandas);
+            });
 
-                    if (btnSeleccionado != null && mesaSeleccionada != null) {
-
-                        MesaDTO anterior = mesaSeleccionada;
-
-                        if (anterior.getEstado() == EstadoMesaDTO.LIBRE) {
-                            btnSeleccionado.setBackground(Color.decode("#FFE3AC"));
-                        } else {
-                            btnSeleccionado.setBackground(Color.decode("#D6D6D6"));
-                        }
-
-                        btnSeleccionado.setFont(new Font("Arial", Font.PLAIN, 18));
-                        btnSeleccionado.setBorder(null);
-                    }
-
-
-                    if(mesa.getEstado() == EstadoMesaDTO.LIBRE){
-                        btn.setBackground(Color.decode("#FFD481"));
-                        btn.setFont(new Font("Arial", Font.BOLD, 18));
-                        btn.setBorder(BorderFactory.createLineBorder(Color.decode("#FFBE41"), 2));
-                    } else {
-                        btn.setBackground(Color.decode("#808080"));
-                        btn.setFont(new Font("Arial", Font.BOLD, 18));
-                        btn.setBorder(BorderFactory.createLineBorder(Color.decode("#4D4D4D"), 2));
-                    }
-
-                    btnSeleccionado = btn;
-                    mesaSeleccionada = mesa;
-
-                    List<ComandaDTO> comandas =
-                            coordinador.getComandasDeMesa(mesa.getNumeroMesa());
-
-                    mostrarComandasDeMesa(mesa.getNumeroMesa(), comandas);
-                });
-
-                panMesas.add(btn);
-                panMesas.add(Box.createVerticalStrut(28));
-            }
+            panMesas.add(btn);
+            panMesas.add(Box.createVerticalStrut(28));
+        }
         panMesas.revalidate();
         panMesas.repaint();
     }
-    
+
     private JPanel contenedorComandas;
 
     public void mostrarComandasDeMesa(int numeroMesa, List<ComandaDTO> comandas) {
@@ -584,7 +606,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
 
                     texto += " (" + ped.getDescripcion() + ")";
                 }
-                
+
                 String estadoTexto = ped.getEstado().name();
 
                 switch (estadoTexto) {
@@ -597,7 +619,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
                         break;
                 }
 
-                lblPedido.setText(texto +" | "+ped.getCantidad()+" | $" + ped.getPrecioProducto() + " | " + estadoTexto);
+                lblPedido.setText(texto + " | " + ped.getCantidad() + " | $" + ped.getPrecioProducto() + " | " + estadoTexto);
 
                 switch (ped.getEstado()) {
                     case PENDIENTE:

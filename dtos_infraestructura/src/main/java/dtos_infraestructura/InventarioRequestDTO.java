@@ -1,5 +1,7 @@
 package dtos_infraestructura;
 
+import java.util.List;
+
 /**
  * InventarioRequestDTO.
  * Representa la solicitud de inventario enviada hacia un sistema externo.
@@ -16,6 +18,7 @@ public class InventarioRequestDTO {
 
     private String idProducto;
     private Integer cantidad;
+    private List<String> ingredientesRemovidos;
 
     /**
      * Constructor por defecto.
@@ -23,17 +26,13 @@ public class InventarioRequestDTO {
     public InventarioRequestDTO() {
     }
 
-    /**
-     * Constructor que inicializa la solicitud de inventario.
-     *
-     * @param idProducto Identificador del producto.
-     * @param cantidad Cantidad solicitada o a modificar.
-     */
-    public InventarioRequestDTO(String idProducto, Integer cantidad) {
+    public InventarioRequestDTO(String idProducto, Integer cantidad, List<String> ingredientesRemovidos) {
         this.idProducto = idProducto;
         this.cantidad = cantidad;
+        this.ingredientesRemovidos = ingredientesRemovidos;
     }
 
+    
     /**
      * Obtiene el identificador del producto.
      *
@@ -69,4 +68,13 @@ public class InventarioRequestDTO {
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
+
+    public List<String> getIngredientesRemovidos() {
+        return ingredientesRemovidos;
+    }
+
+    public void setIngredientesRemovidos(List<String> ingredientesRemovidos) {
+        this.ingredientesRemovidos = ingredientesRemovidos;
+    }
+    
 }
