@@ -468,6 +468,9 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
                         = coordinador.getComandasDeMesa(mesa.getNumeroMesa());
 
                 mostrarComandasDeMesa(mesa.getNumeroMesa(), comandas);
+                
+                actualizarPantalla();
+                // refrescarMesaActual();
             });
 
             panMesas.add(btn);
