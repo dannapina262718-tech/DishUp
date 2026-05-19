@@ -28,7 +28,7 @@ import org.json.JSONObject;
  */
 public class SistemaInventario {
 
-    private final String BASE_URL = "http://localhost:5001";
+    private final String BASE_URL = "http://localhost:5000";
     // private final String BASE_URL = "https://sistema-inventario-3m6j.onrender.com";
 
     private final ProductoInfraestructuraAdapter productoAdapter;

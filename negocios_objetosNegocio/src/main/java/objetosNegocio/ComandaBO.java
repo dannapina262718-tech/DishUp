@@ -24,6 +24,7 @@ import interfaces.IComandaDAO;
 import interfaces.IMesaDAO;
 import java.util.ArrayList;
 import java.util.List;
+import org.bson.types.ObjectId;
 
 public class ComandaBO {
 
@@ -47,7 +48,6 @@ public class ComandaBO {
         this.mesaBO = new MesaBO();
     }
 
-
     public void crearComanda(String nombreCliente, int numeroMesa, List<PedidoDTO> pedidosDTO, EmpleadoDTO empleadoActual) throws NegocioException {
         try {
 
@@ -55,6 +55,9 @@ public class ComandaBO {
 
             for (PedidoDTO pedido : pedidosDTO) {
                 pedido.setEstado(EstadoPedidoDTO.PENDIENTE);
+                if (pedido.getId() == null) {
+                    pedido.setId(new ObjectId().toHexString());
+                }
             }
 
             Comanda comanda = comandaAdapter.aEntidad(
@@ -128,6 +131,9 @@ public class ComandaBO {
 
             for (PedidoDTO pedido : pedidosDTO) {
                 pedido.setEstado(EstadoPedidoDTO.PENDIENTE);
+                if (pedido.getId() == null) {
+                    pedido.setId(new ObjectId().toHexString());
+                }
             }
 
             procesarComanda(pedidosDTO);
@@ -315,7 +321,6 @@ public class ComandaBO {
         }
     }
 
-    
     private void calcularMontoTotalComanda(Comanda comanda) {
         float total = 0;
 
@@ -340,7 +345,7 @@ public class ComandaBO {
 
             for (Pedido p : comanda.getPedidos()) {
 
-                if (p.getId().equals(idPedido)) {
+                if (p.getId() != null && p.getId().equals(idPedido)) {
 
                     if (p.getEstado() != EstadoPedido.PENDIENTE) {
                         throw new NegocioException("Solo se pueden cancelar pedidos PENDIENTES");
@@ -387,7 +392,7 @@ public class ComandaBO {
 
             for (Pedido p : comanda.getPedidos()) {
 
-                if (p.getId().equals(pedidoDTO.getId())) {
+                if (p.getId() != null && p.getId().equals(pedidoDTO.getId())) {
 
                     if (p.getEstado() != EstadoPedido.PENDIENTE) {
                         throw new NegocioException("Solo se pueden editar pedidos PENDIENTES");

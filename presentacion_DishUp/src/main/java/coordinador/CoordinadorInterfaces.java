@@ -219,18 +219,15 @@ public class CoordinadorInterfaces {
     }
 
     public void abrirAgregarPedido(ComandaDTO comanda) {
-
         this.comandaActual = comanda;
-
+        this.comandaTemporal = new ArrayList<>();
         FrmProductos frm = new FrmProductos(this);
-
+        this.frmProductos = frm;
         frm.setMesaAndCliente(
                 comanda.getNumMesa(),
                 comanda.getNombreCliente()
         );
-
         frm.cargarPedidosExistentes(comanda);
-
         frm.setVisible(true);
     }
 
@@ -321,7 +318,7 @@ public class CoordinadorInterfaces {
 
         dlg.setVisible(true);
     }
-    
+
     public void mostrarPagoCodi(ComandaDTO comanda, float restante, DlgPagoComanda dlgPadre) {
         DlgPagoCodi dlg = new DlgPagoCodi(frmComandas, true, comanda, restante, dlgPadre, this);
         dlg.setLocationRelativeTo(dlgPadre);
@@ -594,7 +591,6 @@ public class CoordinadorInterfaces {
             );
         }
     }
-
 
     private void refrescarPantallaComandas() {
 

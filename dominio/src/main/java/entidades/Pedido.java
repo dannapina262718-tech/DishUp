@@ -2,6 +2,7 @@ package entidades;
 
 import enums.EstadoPedido;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Pedido.
@@ -22,6 +23,7 @@ public class Pedido {
     private String nombreProducto;
     private Integer cantidad;
     private String descripcion;
+    private List<String> ingredientesRemovidos;
     private float precioProducto;
     private EstadoPedido estado;
     private LocalDateTime fechaPedido;
@@ -44,12 +46,13 @@ public class Pedido {
      * @param estado Estado actual del pedido.
      * @param fechaPedido Fecha en la que se realizo el pedido.
      */
-    public Pedido(String id, String idProducto, String nombreProducto, Integer cantidad, String descripcion, float precioProducto, EstadoPedido estado, LocalDateTime fechaPedido) {
+    public Pedido(String id, String idProducto, String nombreProducto, Integer cantidad, String descripcion, List<String> ingredientesRemovidos, float precioProducto, EstadoPedido estado, LocalDateTime fechaPedido) {
         this.id = id;
         this.idProducto = idProducto;
         this.nombreProducto = nombreProducto;
         this.cantidad = cantidad;
         this.descripcion = descripcion;
+        this.ingredientesRemovidos = ingredientesRemovidos;
         this.precioProducto = precioProducto;
         this.estado = estado;
         this.fechaPedido = fechaPedido;
@@ -166,4 +169,14 @@ public class Pedido {
     public void setFechaPedido(LocalDateTime fechaPedido) {
         this.fechaPedido = fechaPedido;
     }
+
+    public List<String> getIngredientesRemovidos() {
+        return ingredientesRemovidos;
+    }
+
+    public void setIngredientesRemovidos(List<String> ingredientesRemovidos) {
+        this.ingredientesRemovidos = ingredientesRemovidos;
+    }
+    
+    
 }

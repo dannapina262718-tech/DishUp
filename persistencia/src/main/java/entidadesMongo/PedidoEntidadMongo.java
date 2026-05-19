@@ -2,6 +2,7 @@ package entidadesMongo;
 
 import enums.EstadoPedido;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.bson.BsonType;
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonRepresentation;
@@ -18,7 +19,7 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 public class PedidoEntidadMongo {
 
     @BsonId
-    @BsonRepresentation(BsonType.OBJECT_ID)
+    @BsonRepresentation(BsonType.STRING)
     private String id;
 
     private String idProducto;
@@ -28,6 +29,7 @@ public class PedidoEntidadMongo {
     private float precioProducto;
     private EstadoPedido estado;
     private LocalDateTime fechaPedido;
+    private List<String> ingredientesRemovidos;
 
     /**
      * Constructor vacío requerido por MongoDB.
@@ -47,9 +49,7 @@ public class PedidoEntidadMongo {
      * @param estado estado actual del pedido
      * @param fechaPedido fecha en la que se realizó el pedido
      */
-    public PedidoEntidadMongo(String id, String idProducto, String nombreProducto,
-                             int cantidad, String descripcion, float precioProducto,
-                             EstadoPedido estado, LocalDateTime fechaPedido) {
+    public PedidoEntidadMongo(String id, String idProducto, String nombreProducto, int cantidad, String descripcion, float precioProducto, EstadoPedido estado, LocalDateTime fechaPedido, List ingredientesRemovidos) {    
         this.id = id;
         this.idProducto = idProducto;
         this.nombreProducto = nombreProducto;
@@ -58,6 +58,7 @@ public class PedidoEntidadMongo {
         this.precioProducto = precioProducto;
         this.estado = estado;
         this.fechaPedido = fechaPedido;
+        this.ingredientesRemovidos = ingredientesRemovidos;
     }
 
     /**
@@ -203,4 +204,14 @@ public class PedidoEntidadMongo {
     public void setFechaPedido(LocalDateTime fechaPedido) {
         this.fechaPedido = fechaPedido;
     }
+
+    public List getIngredientesRemovidos() {
+        return ingredientesRemovidos;
+    }
+
+    public void setIngredientesRemovidos(List ingredientesRemovidos) {
+        this.ingredientesRemovidos = ingredientesRemovidos;
+    }
+    
+    
 }

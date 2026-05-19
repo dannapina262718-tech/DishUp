@@ -2,6 +2,7 @@ package dtos;
 
 import enums.EstadoPedidoDTO;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * PedidoDTO.
@@ -24,6 +25,7 @@ public class PedidoDTO {
     private Integer cantidad;
     private EstadoPedidoDTO estado;
     private String descripcion;
+    private List<String> ingredientesRemovidos;
     private float precioProducto;
     private LocalDateTime fechaPedido;
 
@@ -39,13 +41,14 @@ public class PedidoDTO {
      * @param precioProducto Precio del producto.
      * @param fechaPedido Fecha y hora en la que se realizo el pedido.
      */
-    public PedidoDTO(String id, String idProducto, String nombreProducto, Integer cantidad, EstadoPedidoDTO estado, String descripcion, float precioProducto, LocalDateTime fechaPedido) {
+    public PedidoDTO(String id, String idProducto, String nombreProducto, Integer cantidad, EstadoPedidoDTO estado, String descripcion, List<String> ingredientesRemovidos, float precioProducto, LocalDateTime fechaPedido) {    
         this.id = id;
         this.idProducto = idProducto;
         this.nombreProducto = nombreProducto;
         this.cantidad = cantidad;
         this.estado = estado;
         this.descripcion = descripcion;
+        this.ingredientesRemovidos = ingredientesRemovidos;
         this.precioProducto = precioProducto;
         this.fechaPedido = fechaPedido;
     }
@@ -200,6 +203,14 @@ public class PedidoDTO {
         this.fechaPedido = fechaPedido;
     }
 
+    public List<String> getIngredientesRemovidos() {
+        return ingredientesRemovidos;
+    }
+
+    public void setIngredientesRemovidos(List<String> ingredientesRemovidos) {
+        this.ingredientesRemovidos = ingredientesRemovidos;
+    }
+    
     /**
      * Devuelve una representacion en texto del pedido.
      *

@@ -219,6 +219,7 @@ public class DlgResumenComanda extends javax.swing.JDialog {
                 return;
             }
             coordinador.agregarPedidosAComanda(comandaActual, pedidosNuevos);
+            this.dispose();
 
         } else {
             // NUEVA comanda — usa los pedidosNuevos

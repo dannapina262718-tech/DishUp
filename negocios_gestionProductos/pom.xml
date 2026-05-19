@@ -26,7 +26,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <maven.compiler.release>23</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release>
         <exec.mainClass>com.negocios_gestionproductos.Negocios_gestionProductos</exec.mainClass>
     </properties>
 </project>

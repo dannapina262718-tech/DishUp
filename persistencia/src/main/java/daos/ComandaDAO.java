@@ -15,6 +15,7 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.elemMatch;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.UpdateOptions;
 
 import com.mongodb.client.model.Updates;
 import static com.mongodb.client.model.Updates.pull;
@@ -50,7 +51,6 @@ public class ComandaDAO implements IComandaDAO {
     private final PagoPersistenciaAdapter adapterPago;
 
     private MongoCollection<Document> coleccionRaw;
-
 
     public ComandaDAO() {
         this.coleccion = ConexionMongo.obtenerBaseDatos().getCollection("comandas", ComandaEntidadMongo.class);
@@ -331,36 +331,30 @@ public class ComandaDAO implements IComandaDAO {
         if (idComanda == null || idComanda.isBlank()) {
             throw new PersistenciaException("El id de la comanda es inválido");
         }
-
-        if (pedidoEditado == null) {
-            throw new PersistenciaException("El pedido es nulo");
-        }
-
-        if (pedidoEditado.getId() == null) {
-            throw new PersistenciaException("El id del pedido es nulo");
+        if (pedidoEditado == null || pedidoEditado.getId() == null) {
+            throw new PersistenciaException("El pedido o su id es nulo");
         }
 
         try {
-            Bson filtro = and(
-                    eq("_id", new ObjectId(idComanda)),
-                    elemMatch(
-                            "pedidos",
-                            eq("_id", pedidoEditado.getId())
-                    )
-            );
+            Bson filtro = eq("_id", new ObjectId(idComanda));
 
             Bson updates = Updates.combine(
-                    set("pedidos.$.descripcion",
-                            pedidoEditado.getDescripcion()),
-                    set("pedidos.$.cantidad",
-                            pedidoEditado.getCantidad()),
-                    set("pedidos.$.precioProducto",
-                            pedidoEditado.getPrecioProducto())
+                    set("pedidos.$[p].descripcion", pedidoEditado.getDescripcion()),
+                    set("pedidos.$[p].ingredientesRemovidos", pedidoEditado.getIngredientesRemovidos()),
+                    set("pedidos.$[p].cantidad", pedidoEditado.getCantidad()),
+                    set("pedidos.$[p].precioProducto", pedidoEditado.getPrecioProducto())
             );
 
-            UpdateResult result = coleccion.updateOne(filtro, updates);
+            UpdateOptions options = new UpdateOptions().arrayFilters(
+                    List.of(eq("p._id", pedidoEditado.getId()))
+            );
 
-            return result.getModifiedCount() > 0;
+            UpdateResult result = coleccion.updateOne(filtro, updates, options);
+
+            System.out.println("MATCHED: " + result.getMatchedCount());
+            System.out.println("MODIFIED: " + result.getModifiedCount());
+
+            return result.getMatchedCount() > 0;
 
         } catch (MongoException e) {
             throw new PersistenciaException("Error al editar pedido", e);
@@ -396,4 +390,3 @@ public class ComandaDAO implements IComandaDAO {
         }
     }
 }
-

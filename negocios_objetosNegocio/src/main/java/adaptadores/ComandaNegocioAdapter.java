@@ -149,6 +149,7 @@ public class ComandaNegocioAdapter {
 
                     Pedido pedido = new Pedido();
 
+                    pedido.setId(dto.getId());
                     pedido.setNombreProducto(dto.getNombreProducto());
                     pedido.setIdProducto(dto.getIdProducto());
                     pedido.setCantidad(dto.getCantidad());

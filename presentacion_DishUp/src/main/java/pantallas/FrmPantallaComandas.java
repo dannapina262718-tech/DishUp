@@ -562,7 +562,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
             btnPago.setBackground(Color.decode("#FFB21D"));
             btnPago.setPreferredSize(new Dimension(80, 30));
             btnPago.setFocusPainted(false);
-            
+
             try {
                 boolean puedePagar = coordinador.puedePagarComanda(comanda.getId());
 
@@ -572,7 +572,7 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
             } catch (Exception ex) {
                 btnPago.setVisible(false);
             }
-            
+
             // -- PAGO POR COMANDA --
             btnPago.addActionListener(e -> {
                 try {
@@ -668,13 +668,13 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent e) {
 
-                        DlgDetallePedido dlg
-                                = new DlgDetallePedido(
-                                        null,
-                                        true,
-                                        ped,
-                                        coordinador
-                                );
+                        DlgDetallePedido dlg = new DlgDetallePedido(
+                                null,
+                                true,
+                                comanda,
+                                ped,
+                                coordinador
+                        );
 
                         dlg.setVisible(true);
                     }
@@ -710,13 +710,13 @@ public class FrmPantallaComandas extends javax.swing.JFrame {
             JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
             footer.setBackground(Color.WHITE);
 
-            JButton btnEditar = new JButton("Editar comanda");
+            JButton btnEditar = new JButton("Agregar pedido");
             btnEditar.setBackground(Color.decode("#FFAD72"));
             btnEditar.setPreferredSize(new Dimension(140, 35));
             btnEditar.setFocusPainted(false);
 
             btnEditar.addActionListener(e -> {
-                coordinador.abrirEditarComanda(comanda);
+                coordinador.abrirAgregarPedido(comanda);
                 SwingUtilities.getWindowAncestor(this).dispose();
             });
 

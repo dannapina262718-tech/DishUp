@@ -12,20 +12,11 @@ import entidadesMongo.PedidoEntidadMongo;
  */
 public class PedidoPersistenciaAdapter {
 
-    /**
-     * Convierte Pedido -> PedidoEntidadMongo
-     *
-     * @param pedido pedido del dominio
-     * @return entidad mongo
-     */
     public PedidoEntidadMongo aMongo(Pedido pedido) {
-
         if (pedido == null) {
             return null;
         }
-
         PedidoEntidadMongo mongo = new PedidoEntidadMongo();
-
         mongo.setId(pedido.getId());
         mongo.setIdProducto(pedido.getIdProducto());
         mongo.setNombreProducto(pedido.getNombreProducto());
@@ -34,24 +25,15 @@ public class PedidoPersistenciaAdapter {
         mongo.setPrecioProducto(pedido.getPrecioProducto());
         mongo.setEstado(pedido.getEstado());
         mongo.setFechaPedido(pedido.getFechaPedido());
-
+        mongo.setIngredientesRemovidos(pedido.getIngredientesRemovidos());
         return mongo;
     }
 
-    /**
-     * Convierte PedidoEntidadMongo -> Pedido
-     *
-     * @param mongo entidad mongo
-     * @return pedido dominio
-     */
     public Pedido aDominio(PedidoEntidadMongo mongo) {
-
         if (mongo == null) {
             return null;
         }
-
         Pedido pedido = new Pedido();
-
         pedido.setId(mongo.getId());
         pedido.setIdProducto(mongo.getIdProducto());
         pedido.setNombreProducto(mongo.getNombreProducto());
@@ -60,7 +42,8 @@ public class PedidoPersistenciaAdapter {
         pedido.setPrecioProducto(mongo.getPrecioProducto());
         pedido.setEstado(mongo.getEstado());
         pedido.setFechaPedido(mongo.getFechaPedido());
-
+        pedido.setIngredientesRemovidos(mongo.getIngredientesRemovidos());
         return pedido;
     }
+
 }
