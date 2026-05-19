@@ -85,8 +85,6 @@ public interface IComandaDAO {
 
     public boolean insertarPagoAComanda(String idComanda, Pago pago) throws PersistenciaException;
 
-    public List<Comanda> obtenerComandasListas() throws PersistenciaException;
-
     /**
      * Obtiene las comandas que están listas.
      *
