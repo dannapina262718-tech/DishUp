@@ -334,33 +334,13 @@ public class CoordinadorInterfaces {
         PedidoDTO modificado = dlg.getResultado();
         if (modificado != null) {
 
-            // Mantener el id del producto
-            modificado.setIdProducto(pedidoOriginal.getIdProducto());
+            pedidoOriginal.setDescripcion(modificado.getDescripcion());
+            pedidoOriginal.setCantidad(modificado.getCantidad());
+            pedidoOriginal.setPrecioProducto(modificado.getPrecioProducto());
 
-            if (comanda != null) {
-
-                // EDICIÓN DE COMANDA EXISTENTE
-                int idx = comanda.getPedidos().indexOf(pedidoOriginal);
-
-                if (idx >= 0) {
-                    comanda.getPedidos().set(idx, modificado);
-                }
-
-            } else {
-
-                // PEDIDO NUEVO (TEMPORAL)
-                List<PedidoDTO> temporales = getComandaTemporalReal();
-
-                int idx = temporales.indexOf(pedidoOriginal);
-
-                if (idx >= 0) {
-                    temporales.set(idx, modificado);
-                }
-            }
-
-            String desc = (modificado.getDescripcion() != null
-                    && !modificado.getDescripcion().isEmpty())
-                    ? modificado.getDescripcion().replace(", ", "\n• ")
+            String desc = (pedidoOriginal.getDescripcion() != null
+                    && !pedidoOriginal.getDescripcion().isEmpty())
+                    ? pedidoOriginal.getDescripcion().replace(", ", "\n• ")
                     : "";
 
             txtLista.setText("• " + desc);

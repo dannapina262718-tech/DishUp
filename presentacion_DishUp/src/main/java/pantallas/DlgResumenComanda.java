@@ -208,7 +208,7 @@ public class DlgResumenComanda extends javax.swing.JDialog {
 
     private void btnConfirmarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfirmarMouseClicked
         if (modoEdicion) {
-            coordinador.agregarPedidosAComanda(comandaActual, pedidosNuevos);
+            coordinador.actualizarComanda(comandaActual, pedidosNuevos);
             this.dispose();
 
         } else if (modoAgregar) {
@@ -228,7 +228,7 @@ public class DlgResumenComanda extends javax.swing.JDialog {
                         "Validación", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            coordinador.enviarComandaAFinal(nombreCliente, numMesa, pedidosNuevos); 
+            coordinador.enviarComandaAFinal(nombreCliente, numMesa, pedidosNuevos);
         }
 
     }//GEN-LAST:event_btnConfirmarMouseClicked

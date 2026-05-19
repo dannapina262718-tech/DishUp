@@ -721,7 +721,13 @@ public final class FrmProductos extends javax.swing.JFrame {
                     }
 
                     if (comandaOrigen != null) {
-                        comandaOrigen.getPedidos().remove(pedido);
+                        for (int i = 0; i < comandaOrigen.getPedidos().size(); i++) {
+
+                            if (comandaOrigen.getPedidos().get(i) == pedido) {
+                                comandaOrigen.getPedidos().remove(i);
+                                break;
+                            }
+                        }
                     } else {
                         coordinador.eliminarPedidoTemporal(pedido);
                     }
@@ -755,7 +761,7 @@ public final class FrmProductos extends javax.swing.JFrame {
         item.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (e.getClickCount() == 2  && pedido.getEstado() == EstadoPedidoDTO.PENDIENTE || pedido.getEstado() == null) {
+                if (e.getClickCount() == 2 && (pedido.getEstado() == EstadoPedidoDTO.PENDIENTE || pedido.getEstado() == null)) {
                     coordinador.abrirModificacionPedidoExistente(
                             FrmProductos.this, pedido, comandaOrigen, item, txtLista
                     );
@@ -769,7 +775,7 @@ public final class FrmProductos extends javax.swing.JFrame {
         item.setMaximumSize(new Dimension(Integer.MAX_VALUE, item.getPreferredSize().height));
 
         pnlPedidos.add(item);
-        pnlPedidos.add(Box.createVerticalGlue());
+        //  pnlPedidos.add(Box.createVerticalGlue());
         pnlPedidos.revalidate();
         pnlPedidos.repaint();
 
@@ -912,12 +918,22 @@ public final class FrmProductos extends javax.swing.JFrame {
     }
 
     public void refrescarPedidos() {
+
         pnlPedidos.removeAll();
 
-        List<PedidoDTO> pedidos = coordinador.getComandaTemporal();
+        if (esEdicion && comandaEdicion != null) {
 
-        for (PedidoDTO pedido : pedidos) {
-            agregarPedidoVisual(pedido, null);
+            for (PedidoDTO pedido : comandaEdicion.getPedidos()) {
+                agregarPedidoVisual(pedido, comandaEdicion);
+            }
+
+        } else {
+
+            List<PedidoDTO> pedidos = coordinador.getComandaTemporal();
+
+            for (PedidoDTO pedido : pedidos) {
+                agregarPedidoVisual(pedido, null);
+            }
         }
 
         pnlPedidos.revalidate();
