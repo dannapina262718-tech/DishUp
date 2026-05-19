@@ -191,6 +191,10 @@ public class SistemaInventario {
 
             JSONObject json = new JSONObject(response.toString());
 
+            if (!json.has("exito")) {
+                throw new InfraestructuraException("Respuesta inválida del servidor");
+            }
+
             return json.getBoolean("exito");
 
         } catch (Exception e) {
@@ -229,11 +233,15 @@ public class SistemaInventario {
                 JSONObject obj = new JSONObject();
                 obj.put("productoId", Integer.parseInt(pedido.getIdProducto()));
                 obj.put("cantidad", pedido.getCantidad());
-                if (ingredientesRemovidos != null && !ingredientesRemovidos.isEmpty()) {
-                    obj.put("ingredientesRemovidos", new JSONArray(ingredientesRemovidos));
-                }
                 productosArray.put(obj);
             }
+
+            body.put("productos", productosArray);
+
+            if (ingredientesRemovidos != null && !ingredientesRemovidos.isEmpty()) {
+                body.put("ingredientesRemovidos", new JSONArray(ingredientesRemovidos));
+            }
+
             body.put("productos", productosArray);
 
             try (OutputStream os = conn.getOutputStream()) {

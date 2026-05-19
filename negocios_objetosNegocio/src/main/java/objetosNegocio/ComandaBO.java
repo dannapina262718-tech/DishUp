@@ -142,6 +142,15 @@ public class ComandaBO {
 
             List<Pedido> pedidosNuevos = pedidoAdapter.listaAEntidad(pedidosDTO);
 
+            List<InventarioRequestDTO> inventarioList = new ArrayList<>();
+
+            for (PedidoDTO pedido : pedidosDTO) {
+                InventarioRequestDTO dto = new InventarioRequestDTO();
+                dto.setIdProducto(pedido.getIdProducto());
+                dto.setCantidad(pedido.getCantidad());
+                inventarioList.add(dto);
+            }
+
             for (Pedido nuevo : pedidosNuevos) {
 
                 if (nuevo.getEstado() == null) {
