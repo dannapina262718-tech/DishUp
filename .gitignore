@@ -21,7 +21,6 @@ nbbuild/
 # OS
 Thumbs.db
 .DS_Store
-/negocios_objetosNegocio/nbproject/
-dto_negocios/src/main/java/dtos/IngredienteDTO.java
+
 negocios_objetosNegocio/src/test/java/ProcesadorPagoEfectivoTest.java
 negocios_objetosNegocio/src/test/java/ProcesadorPagoTarjetaTest.java
